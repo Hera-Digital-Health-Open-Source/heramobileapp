@@ -1,0 +1,40 @@
+# Node modules
+node_modules/
+
+# Logs
+*.log
+*.tmp
+
+# macOS
+.DS_Store
+
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+andriod/local.properties
+andriod/app/local.properties
+android/.idea/
+
+# iOS
+ios/build/
+ios/Pods/
+ios/*.xcuserdata
+
+# Env files
+.env
+
+# Expo
+.expo/
+
+# IDE
+.idea/
+.vscode/
+
+# Sentry
+android/sentry.properties
+ios/sentry.properties
+sentry.properties
+
+# Watchman
+.watchmanconfig
