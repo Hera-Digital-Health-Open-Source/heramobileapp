@@ -38,3 +38,6 @@ sentry.properties
 
 # Watchman
 .watchmanconfig
+
+# gitpod
+.gitpod.yml

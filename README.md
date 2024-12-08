@@ -9,6 +9,7 @@ HERA’s mission is to support vulnerable populations, particularly refugees, by
 Our technology stack includes a React Native mobile app and [Django web backend](https://github.com/Hera-Digital-Health-Open-Source/herabackend) with robust APIs, and an admin panel, all of which can be adapted by organizations to provide tailored healthcare solutions.
 
 ## Features
+
 - **Mobile Health Platform**: Connects refugees with available healthcare services.
 - **Customizable Solution**: Open-source codebase that NGOs and organizations can adapt to specific regions and needs.
 - **Focus on Maternal and Child Health**: Prioritizes prenatal care and childhood vaccinations.
@@ -18,6 +19,7 @@ Our technology stack includes a React Native mobile app and [Django web backend]
 To set up the HERA Mobile App locally, follow these steps:
 
 ### Prerequisites
+
 - [Node.js](https://nodejs.org/en/download/) (version 16.20.2)
 - [Yarn](https://yarnpkg.com/getting-started/install)
 - [CocoaPods](https://cocoapods.org) (for iOS development)
@@ -25,50 +27,59 @@ To set up the HERA Mobile App locally, follow these steps:
 ### Installation
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/Hera-Digital-Health-Open-Source/heramobileapp.git
    cd heramobileapp
    ```
 
 2. **Install dependencies** (Yarn is recommended):
+
    ```bash
    yarn install
    ```
 
    > **Note**: If you don’t have Yarn installed, enable it with Node.js’s `corepack`:
+   >
    > ```bash
    > corepack enable
    > ```
+   >
    > Alternatively, you can install Yarn using Homebrew:
+   >
    > ```bash
    > brew install yarn
    > ```
+   >
    > **Tip**: If you switch to Yarn from npm, delete the `package-lock.json` file to avoid conflicts. Yarn will generate a `yarn.lock` file.
 
 3. **Set up environment variables**:  
    Copy the `.env` file to the project root (`heramobileapp`). If you don’t have the `.env` file, ask another team member for access.
-
 
 ### iOS Setup
 
 #### Installing Pods
 
 1. Navigate to the `ios` folder:
+
    ```bash
    cd ios
    ```
 
 2. Run CocoaPods to install dependencies:
+
    ```bash
    pod install
    ```
 
    > **Tip**: If the installation fails or times out, run the command with the `--verbose` flag for more details:
+   >
    > ```bash
    > pod install --verbose
    > ```
 
 3. If CocoaPods isn’t installed, use Homebrew to install it:
+
    ```bash
    brew install cocoapods
    ```
@@ -88,6 +99,7 @@ To set up the HERA Mobile App locally, follow these steps:
 #### Building and Running on iOS Simulator
 
 1. Go to the root directory:
+
    ```bash
    cd ..
    ```
@@ -101,11 +113,13 @@ To set up the HERA Mobile App locally, follow these steps:
 
 1. **Rosetta Installation** (for M1/M2 Macs):  
    If you encounter compatibility issues, install Rosetta:
+
    ```bash
    softwareupdate --install-rosetta
    ```
 
 2. **Yoga Compile Error**:
+
    - Delete the `Pods` folder and `Podfile.lock`:
      ```bash
      rm -rf ios/Pods ios/Podfile.lock
@@ -127,7 +141,6 @@ To set up the HERA Mobile App locally, follow these steps:
    - Update the `sentry.properties` file in the `ios` folder with the new token.
    - [Reference](https://lightrun.com/answers/getsentry-sentry-react-native-build-fails-on-phasescriptexecution).
 
-
 ### Android Setup
 
 1. Follow the Android Studio setup guide from the official [React Native documentation](https://reactnative.dev/docs/environment-setup).
@@ -136,25 +149,31 @@ To set up the HERA Mobile App locally, follow these steps:
    npm run android
    ```
 
-
 ### Notes
+
 - Warnings during pod installation or builds (e.g., dependency mismatches or `ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES` settings) can usually be ignored unless they cause actual issues.
 - Always ensure your development environment matches the project’s prerequisites to avoid unnecessary errors.
 
 ## Contributing
+
 We welcome contributions from everyone! Please check out our Contributing Guide for instructions on how to get involved. We also encourage you to read our [Code of Conduct](CODE_OF_CONDUCT.md) to ensure a positive experience for all contributors.
 
 ## Community & Support
+
 Stay connected with HERA’s community:
+
 - [Facebook](https://www.facebook.com/HeraDigitalHealth)
 - [Twitter](https://twitter.com/HERA_dHealth)
 - [Instagram](https://www.instagram.com/heradigitalhealth/)
 - [YouTube](https://www.youtube.com/channel/UCkQ1ovuIV8qg7lezNgc6w2w)
 
 ## License
+
 This project is licensed under the MIT License. See the [LICENSE](/LICENSE) file for details.
 
 ## Acknowledgments
+
 Thank you to all the contributors who make HERA possible! Special thanks to the HERA team and community for their dedication to open-source development.
+
 - [Su Yuen](https://github.com/suyuen)
 - [Husam](https://github.com/husam79)
