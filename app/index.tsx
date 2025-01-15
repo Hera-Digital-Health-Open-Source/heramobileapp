@@ -1,4 +1,4 @@
-import { FlatList, Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import { 
   imgHomeAppointments,
@@ -23,6 +23,7 @@ import {
   keyWhatsappHotline,
   keySrhr
 } from "@/constants";
+import HomeHeraLegend from "@/components/HomeHeraLegend";
 
 export default function Index() {
   const mainTiles = [
@@ -46,7 +47,7 @@ export default function Index() {
     >
       <View style={{width: '100%', height: 420}}>
         <Image source={imgHomeMain} style={{width: '100%', height: '100%'}}/>
-        <Text style={{position: 'absolute', top: 30, left:30, fontSize: 45, fontFamily: 'Roboto-Medium', color:'#fff' }}>HERA</Text>
+        <HomeHeraLegend />
       </View>
       <View style={styles.linesContainer}>
         <View style={styles.line}>
@@ -58,7 +59,8 @@ export default function Index() {
               textColor={item.textColor}
               backgroundColor={item.backgroundColor}
               requireSignedIn={item.requireSignedIn}
-              key={item.tileKey}/>
+              key={item.tileKey}
+              onPress={() => {alert('Hello')}}/>
           ))}
         </View>
         <View style={styles.line}>
@@ -90,29 +92,18 @@ export default function Index() {
   );
 }
 
-{/* <FlatList
-        numColumns={3}
-        style={{width: '100%', padding: 16, top:-50, height: 300, backgroundColor: '#aaa'}}
-        data={mainTiles}
-        renderItem={({item, index}) => (
-          <MainTile
-            image={item.image}
-            title={item.title} 
-            tileKey={item.tileKey}
-            textColor={item.textColor}
-            backgroundColor={item.backgroundColor}
-            requireSignedIn={item.requireSignedIn}
-            key={item.tileKey}/>
-        )} 
-      /> */}
-
 const styles = StyleSheet.create({
   linesContainer: {
     flex:1,
     top: -50,
+    width: '100%',
+    paddingHorizontal: 16,
+    gap: 9,
   },
   line: {
     flexDirection: 'row',
     width: '100%',
+    // marginVertical: 8,
+    gap: 9,
   }
 });

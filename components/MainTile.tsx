@@ -22,14 +22,14 @@ export default function MainTile(
     onPress
   }: Props){
     return (
-      <View style={[styles.tileOuterContainer, {backgroundColor: backgroundColor}]}>
-        <Pressable onPress={() => onPress ? onPress(tileKey, requireSignedIn) : () => {}}>
-          <View style={styles.tileInnerContainer}>
-            <Image source={image} style={styles.tileImage}/>
-            <Text style={[styles.tileText, {color: textColor}]}>{title}</Text>
-          </View>
-        </Pressable>
-      </View>
+      <Pressable style={[styles.tileOuterContainer, {backgroundColor: backgroundColor}]} onPress={() => onPress ? onPress(tileKey, requireSignedIn) : () => {}}>
+        <View >
+            <View style={styles.tileInnerContainer}>
+              <Image source={image} style={styles.tileImage}/>
+              <Text style={[styles.tileText, {color: textColor}]}>{title}</Text>
+            </View>
+        </View>
+      </Pressable>
     );
 }
 
@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
     height: 120,
     // width: 90,
     flex: 1,
-    margin: 9,
     paddingHorizontal: 10,
     paddingBottom: 12,
     paddingTop:16,
