@@ -9,13 +9,15 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.HeraMobile"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.HeraMobile"
     },
     "web": {
       "bundler": "metro",
@@ -36,7 +38,9 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/Roboto-Medium.ttf"]
+          "fonts": [
+            "./assets/fonts/Roboto-Medium.ttf"
+          ]
         }
       ]
     ],
