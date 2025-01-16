@@ -1,4 +1,5 @@
 // import {StyleSheet, TextStyle, I18nManager} from 'react-native';
+import { StyleSheet } from "react-native";
 
 // export const spacing = {
 //   small: 4,
@@ -30,6 +31,66 @@ export const color = {
   whatsappgreen: '#D5FEE4',
   purple: '#800080',
 };
+
+const InputBoxStyle = {
+  height: 48,
+  paddingHorizontal: 10,
+  paddingVertical: 11,
+  borderRadius: 10,
+  borderColor: '#eee',
+  borderWidth: 1,
+  alignItems: 'center' as 'center', // Explicitly specify the type (not as a string)
+}
+
+const ButtonBasic = {
+  height: 48,
+  justifyContent: 'center' as 'center',
+  marginVertical: 8,
+}
+
+const Button = {
+  ...ButtonBasic,
+  borderRadius: 24,
+  backgroundColor: color.primary,
+  shadowColor: color.black,
+  shadowOpacity: 0.2,
+  elevation: 6,
+  shadowOffset: {
+    height: 1,
+    width: 1,
+  },
+};
+
+const ButtonALT = {
+  ...Button,
+  backgroundColor: color.white,
+};
+
+const ButtonTextBasic = {
+  fontWeight: "700" as "700",
+  textAlign: 'center' as 'center',
+  fontSize: 20,
+  fontFamily: 'Roboto-Bold',
+}
+
+const ButtonText = {
+  ...ButtonTextBasic,
+  color: color.white,
+};
+
+const ButtonTextALT = {
+  ...ButtonText,
+  color: color.primary,
+};
+
+export const GlobalStyles = StyleSheet.create({
+  InputBoxStyle,
+  Button,
+  ButtonALT,
+  ButtonText,
+  ButtonTextALT,
+  ButtonBasic,
+});
 
 // const FULL = {
 //   flex: 1,
@@ -103,40 +164,10 @@ export const color = {
 //   fontFamily: 'Roboto-Regular',
 // };
 
-// const BUTTON = {
-//   height: 48,
-//   justifyContent: 'center',
-//   borderRadius: 24,
-//   backgroundColor: color.primary,
-//   shadowColor: color.black,
-//   shadowOpacity: 0.2,
-//   elevation: 6,
-//   shadowOffset: {
-//     height: 1,
-//     width: 1,
-//   },
-//   marginVertical: 8,
-// };
 
-// const BUTTON_TEXT = {
-//   fontWeight: '700',
-//   textAlign: 'center',
-//   fontSize: 20,
-//   color: color.white,
-//   fontFamily: 'Roboto-Bold',
-// };
 
-// const BUTTON_ALT = {
-//   ...BUTTON,
-//   backgroundColor: color.white,
-//   fontFamily: 'Roboto-Bold',
-// };
 
-// const BUTTON_TEXT_ALT = {
-//   ...BUTTON_TEXT,
-//   color: color.primary,
-//   fontFamily: 'Roboto-Bold',
-// };
+
 
 // const BUTTON_DISABLED = {
 //   ...BUTTON,
