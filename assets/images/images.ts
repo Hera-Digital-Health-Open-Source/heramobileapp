@@ -1,16 +1,21 @@
 // export const imgLogo = require('./images/splash_logo.png');
 // export const imgFamily = require('./images/img_family.png');
 // export const imgLogoSmall = require('./images/img_logo_small.png');
-export const imgHomeAppointments = require('./img_home_appointments.png');
-export const imgHomeTranslator = require('./img_home_translator.png');
-export const imgHomeEmergencyCall = require('./img_home_emergency_call.png');
-export const imgHomeNearbyHealthCenters = require('./img_home_nearby_health_centers.png');
-export const imgHomeChildren = require('./img_home_children.png');
-export const imgHomePregnancy = require('./img_home_pregnancy.png');
-export const imgHomeWhatsappHotline = require('./img_home_whatsapp_hotline.png');
-export const imgHomeSrhr = require('./img_home_shrh.png');
-export const imgHomeMain = require('./img_home_main.png');
+
+// Home Screen
+export const imgHomeAppointments = require('./home/img_home_appointments.png');
+export const imgHomeTranslator = require('./home/img_home_translator.png');
+export const imgHomeEmergencyCall = require('./home/img_home_emergency_call.png');
+export const imgHomeNearbyHealthCenters = require('./home/img_home_nearby_health_centers.png');
+export const imgHomeChildren = require('./home/img_home_children.png');
+export const imgHomePregnancy = require('./home/img_home_pregnancy.png');
+export const imgHomeWhatsappHotline = require('./home/img_home_whatsapp_hotline.png');
+export const imgHomeSrhr = require('./home/img_home_shrh.png');
+export const imgHomeMain = require('./home/img_home_main.png');
 export const heraIcon = require('./hera_icon.png');
+
+//Login & Register Screen
+export const imgLoginMain = require('./login/img_login_main.png');
 // export const imgHomeFeedback = require('./images/img_home_feedback.png');
 // export const imgHomeHealthRecords = require('./images/img_home_health_records.png');
 // export const imgHomeHealthTipsNews = require('./images/img_home_health_tips_news.png');
