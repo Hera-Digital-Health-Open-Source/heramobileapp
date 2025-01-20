@@ -66,6 +66,14 @@ const ButtonALT = {
   backgroundColor: color.white,
 };
 
+const ButtonDisabled = {
+  ...Button,
+  backgroundColor: color.disabled,
+  fontFamily: 'Roboto-Bold',
+};
+
+
+
 const ButtonTextBasic = {
   fontWeight: "700" as "700",
   textAlign: 'center' as 'center',
@@ -83,6 +91,12 @@ const ButtonTextALT = {
   color: color.primary,
 };
 
+const ButtonTextDisabled = {
+  ...ButtonText,
+  color: color.disabledtext,
+  fontFamily: 'Roboto-Bold',
+};
+
 export const GlobalStyles = StyleSheet.create({
   InputBoxStyle,
   Button,
@@ -90,6 +104,8 @@ export const GlobalStyles = StyleSheet.create({
   ButtonText,
   ButtonTextALT,
   ButtonBasic,
+  ButtonDisabled,
+  ButtonTextDisabled,
 });
 
 // const FULL = {
@@ -169,17 +185,9 @@ export const GlobalStyles = StyleSheet.create({
 
 
 
-// const BUTTON_DISABLED = {
-//   ...BUTTON,
-//   backgroundColor: color.disabled,
-//   fontFamily: 'Roboto-Bold',
-// };
 
-// const BUTTON_TEXT_DISABLED = {
-//   ...BUTTON_TEXT,
-//   color: color.disabledtext,
-//   fontFamily: 'Roboto-Bold',
-// };
+
+
 
 // const TOOLBAR = {
 //   padding: 16,
