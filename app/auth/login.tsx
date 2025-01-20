@@ -7,13 +7,17 @@ import DropDownPicker from "@/components/DropDownPicker";
 import CountryModalPicker from "@/components/CountryModalPicker";
 import { GlobalStyles } from "@/assets/theme";
 import Button, {ButtonStyles} from "@/components/Button";
+import { useAuth } from "@/context/AuthContext";
+import { router } from "expo-router";
+
 
 export default function Login(){
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
-  const [selectedCountryCallingCode, setSelectedCountryCallingCode] = useState<string | null>(null);
+  const [selectedCountryCallingCode, setSelectedCountryCallingCode] = useState<string | null>("+90");
   const [mobileNumber, setMobileNumber] = useState<string | undefined>(undefined);
   const [completeMobileNumber, setCompleteMobileNumber] = useState<string | undefined>(undefined);
   const [isRegisterMode, setIsRegisterMode] = useState(true);
+  const { requestOtp, showValidateOtp } = useAuth();
 
   const languages = [
     {label: 'Arabic', key: 'ar'},
@@ -26,6 +30,20 @@ export default function Login(){
       setCompleteMobileNumber(`${selectedCountryCallingCode}${mobileNumber}`);
     }
   }, [selectedCountryCallingCode, mobileNumber]);
+
+  useEffect(() => {
+    if(showValidateOtp){
+      // router.replace({pathname: '/otp-screen', params: {completeMobileNumber: completeMobileNumber}});
+      router.replace('/auth');
+    }
+  }, [showValidateOtp]);
+
+  const handleRequestOtp = () => {
+    if(completeMobileNumber){
+      requestOtp(completeMobileNumber);
+      router.replace('/auth');
+    }
+  }
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -47,7 +65,7 @@ export default function Login(){
             initialKeySelection={selectedLanguage}
             onItemSelectionChanged={(key) => setSelectedLanguage(key)}
           />
-          <Text style={{marginTop: 8}}>Contact Number</Text>
+          <Text style={{marginTop: 16}}>Contact Number</Text>
           <View style={{flexDirection: 'row', gap: 8 , alignContent: 'space-between', marginTop: 8}}>
             <CountryModalPicker
               style={{width:75}}
@@ -66,9 +84,17 @@ export default function Login(){
           <View style={styles.loginButtonsContainer}>
             <Button
               label={isRegisterMode ? "Register" : "Login"}
-              onPress={()=>alert("hello button!")}
+              onPress={handleRequestOtp}
             />
-            <Text style={{width:'100%', textAlign: 'center', marginTop: 12}}>-- OR --</Text>
+            <Text style={{width:'100%', textAlign: 'center', marginTop: 12, marginBottom: 12}}>-- OR --</Text>
+            <Button
+              label={"Login with Google"}
+              onPress={()=>{}}
+            />
+            <Button
+              label={"Login with Apple"}
+              onPress={()=>{}}
+            />
           </View>
         </View>
       </View>
@@ -88,7 +114,7 @@ const styles = StyleSheet.create({
     // backgroundColor: '#faa'
   },
   loginInputsContainer: {
-    marginTop: 8,
+    marginTop: 32,
     width: '100%',
     alignSelf: 'flex-start',
   }
