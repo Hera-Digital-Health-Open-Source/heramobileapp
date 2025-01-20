@@ -4,7 +4,8 @@ import { GlobalStyles } from "@/assets/theme";
 export enum ButtonStyles{
   FILLED = 1,
   UNFILLED = 2,
-  PLAIN = 3
+  PLAIN = 3,
+  DISABLED = 4,
 }
 
 type Props = {
@@ -26,7 +27,10 @@ export default function Button({style, label, buttonType, onPress}: Props){
   } else if(buttonType == ButtonStyles.PLAIN){
     buttonStyle = GlobalStyles.ButtonBasic;
     textStyle = GlobalStyles.ButtonTextALT;
-  }else {
+  } else if(buttonType == ButtonStyles.DISABLED){
+    buttonStyle = GlobalStyles.ButtonDisabled;
+    textStyle = GlobalStyles.ButtonTextDisabled;
+  } else {
     buttonStyle = GlobalStyles.Button;
     textStyle = GlobalStyles.ButtonText;
   }
