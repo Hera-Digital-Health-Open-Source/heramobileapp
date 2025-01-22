@@ -39,7 +39,10 @@
         "expo-font",
         {
           "fonts": [
-            "./assets/fonts/Roboto-Medium.ttf"
+            "./assets/fonts/Roboto-Medium.ttf",
+            "./assets/fonts/Roboto-Bold.ttf",
+            "./assets/fonts/Roboto-ExtraBold.ttf",
+            "./assets/fonts/Roboto-Black.ttf"
           ]
         }
       ],
