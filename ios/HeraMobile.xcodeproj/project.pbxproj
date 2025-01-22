@@ -13,10 +13,13 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		53C7EAFE13042575B66296C6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F0E0261F0387AC95415C66C0 /* PrivacyInfo.xcprivacy */; };
+		78E6C80E48C54516949AFCE8 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 13DB32B8E5D34235BE7B1748 /* Roboto-Black.ttf */; };
+		83B4ED43C9544A92BD07BEAF /* Roboto-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45141C80E9C5419593E4C8F3 /* Roboto-ExtraBold.ttf */; };
 		96905EF65AED1B983A6B3ABC /* libPods-HeraMobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-HeraMobile.a */; };
 		9E37B13A4B594C4CBEDBB98C /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B81ED8277744D1DA788ADA2 /* noop-file.swift */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		F59D9C02C59244818D060A79 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 74A669E7AFEC4A4A9396C0FA /* Roboto-Bold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,9 +29,12 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = HeraMobile/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = HeraMobile/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = HeraMobile/main.m; sourceTree = "<group>"; };
+		13DB32B8E5D34235BE7B1748 /* Roboto-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Black.ttf"; path = "../assets/fonts/Roboto-Black.ttf"; sourceTree = "<group>"; };
 		44817F678908421280C927DC /* HeraMobile-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "HeraMobile-Bridging-Header.h"; path = "HeraMobile/HeraMobile-Bridging-Header.h"; sourceTree = "<group>"; };
+		45141C80E9C5419593E4C8F3 /* Roboto-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-ExtraBold.ttf"; path = "../assets/fonts/Roboto-ExtraBold.ttf"; sourceTree = "<group>"; };
 		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-HeraMobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HeraMobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2E3173556A471DD304B334 /* Pods-HeraMobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HeraMobile.debug.xcconfig"; path = "Target Support Files/Pods-HeraMobile/Pods-HeraMobile.debug.xcconfig"; sourceTree = "<group>"; };
+		74A669E7AFEC4A4A9396C0FA /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../assets/fonts/Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-HeraMobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HeraMobile.release.xcconfig"; path = "Target Support Files/Pods-HeraMobile/Pods-HeraMobile.release.xcconfig"; sourceTree = "<group>"; };
 		9B81ED8277744D1DA788ADA2 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "HeraMobile/noop-file.swift"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = HeraMobile/SplashScreen.storyboard; sourceTree = "<group>"; };
@@ -72,6 +78,9 @@
 			isa = PBXGroup;
 			children = (
 				F093E5FEFE43435380596F87 /* Roboto-Medium.ttf */,
+				74A669E7AFEC4A4A9396C0FA /* Roboto-Bold.ttf */,
+				45141C80E9C5419593E4C8F3 /* Roboto-ExtraBold.ttf */,
+				13DB32B8E5D34235BE7B1748 /* Roboto-Black.ttf */,
 			);
 			name = Resources;
 			path = "";
@@ -217,6 +226,9 @@
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
 				083156AE92154CEDA77AFC31 /* Roboto-Medium.ttf in Resources */,
 				53C7EAFE13042575B66296C6 /* PrivacyInfo.xcprivacy in Resources */,
+				F59D9C02C59244818D060A79 /* Roboto-Bold.ttf in Resources */,
+				83B4ED43C9544A92BD07BEAF /* Roboto-ExtraBold.ttf in Resources */,
+				78E6C80E48C54516949AFCE8 /* Roboto-Black.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
