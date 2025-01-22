@@ -10,26 +10,41 @@ type DropDownItem = {
 }
 
 type Props = {
-  label: string;
   onItemSelectionChanged?: (key:string)=>void;
   items?: DropDownItem[];
   initialKeySelection: string;
   style?: StyleProp<ViewStyle>;
 }
 
-export default function DropDownPicker({label, items, initialKeySelection, onItemSelectionChanged, style}: Props){
+export default function DropDownPicker({items, initialKeySelection, onItemSelectionChanged, style}: Props){
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const [currentKeySelected, setCurrentKeySelected] = useState<string | null>(null);
+  const [label, setLabel] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     setCurrentKeySelected(initialKeySelection);
   }, [initialKeySelection]);
 
+  useEffect(() => {
+    if(currentKeySelected){
+      const filtered = items?.filter(i => i.key === currentKeySelected);
+      if(filtered){
+        if(filtered.length > 0){
+          setLabel(filtered[0].label);
+        } else {
+          setLabel(undefined);
+        }
+      } else {
+        setLabel(undefined);
+      }
+    }
+  }, [currentKeySelected]);
+
   return (
     <View style={style}>
       <Pressable onPress={() => setIsPickerVisible(!isPickerVisible)}>
         <View style={styles.dropDownContainer}>
-          <Text>{label}</Text>
+          <Text>{label ? label : ""}</Text>
           <AntDesign name={isPickerVisible ? "caretup" : "caretdown"} />
         </View>
       </Pressable>
@@ -52,10 +67,10 @@ export default function DropDownPicker({label, items, initialKeySelection, onIte
               <Picker
                 selectedValue={currentKeySelected}
                 onValueChange={(itemValue, itemIndex) => {
+                  setCurrentKeySelected(itemValue);
                   if(onItemSelectionChanged){
                     onItemSelectionChanged(itemValue!);
                   }
-                  setCurrentKeySelected(itemValue);
                 }}>
                   {items?.map((item, index) => (
                     <Picker.Item label={item.label} value={item.key} key={item.key} />
