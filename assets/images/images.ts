@@ -14,8 +14,20 @@ export const imgHomeSrhr = require('./home/img_home_shrh.png');
 export const imgHomeMain = require('./home/img_home_main.png');
 export const heraIcon = require('./hera_icon.png');
 
-//Login & Register Screen
+// Login & Register Screen
 export const imgLoginMain = require('./login/img_login_main.png');
+
+// User Details Screen
+export const imgUserDetailsMale = require('./registration/male.png');
+export const imgUserDetailsFemale = require('./registration/female.png');
+
+// Pregnancy info completed
+export const imgPregnancyInfoComplete = require('./pregnancy/img_pregnant_woman.png');
+
+
+// Child info
+export const imgFamily = require('./child/family.png');
+
 // export const imgHomeFeedback = require('./images/img_home_feedback.png');
 // export const imgHomeHealthRecords = require('./images/img_home_health_records.png');
 // export const imgHomeHealthTipsNews = require('./images/img_home_health_tips_news.png');

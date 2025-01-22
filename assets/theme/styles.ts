@@ -1,12 +1,13 @@
 // import {StyleSheet, TextStyle, I18nManager} from 'react-native';
 import { StyleSheet } from "react-native";
 
-// export const spacing = {
-//   small: 4,
-//   medium: 8,
-//   large: 16,
-//   big: 24,
-// };
+export const Spacing = {
+  small: 4,
+  medium: 8,
+  large: 16,
+  xlarge: 24,
+  xxlarge: 32,
+};
 
 // export const fontSize = {
 //   small: 10,
@@ -97,6 +98,26 @@ const ButtonTextDisabled = {
   fontFamily: 'Roboto-Bold',
 };
 
+const NormalText = {
+  fontFamily: 'Roboto-Medium',
+  fontSize: 18,
+  color: color.black,
+}
+
+const SubHeadingText = {
+  ...NormalText,
+  fontFamily: 'Roboto-ExtraBold',
+  fontSize: 24,
+  color: color.primary,
+}
+
+const HeadingText = {
+  ...NormalText,
+  fontFamily: 'Roboto-Black',
+  fontSize: 32,
+  color: color.primary,
+}
+
 export const GlobalStyles = StyleSheet.create({
   InputBoxStyle,
   Button,
@@ -106,6 +127,10 @@ export const GlobalStyles = StyleSheet.create({
   ButtonBasic,
   ButtonDisabled,
   ButtonTextDisabled,
+  NormalText,
+  HeadingText,
+  SubHeadingText,
+  // Spacing,
 });
 
 // const FULL = {
