@@ -61,7 +61,7 @@ export default function Login(){
           <DropDownPicker 
             items={languages}
             style={{marginTop: 8}}
-            label={languages.filter(l => l.key===selectedLanguage)[0].label} 
+            // label={languages.filter(l => l.key===selectedLanguage)[0].label} 
             initialKeySelection={selectedLanguage}
             onItemSelectionChanged={(key) => setSelectedLanguage(key)}
           />
