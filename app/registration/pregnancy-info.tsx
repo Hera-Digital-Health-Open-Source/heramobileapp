@@ -4,13 +4,17 @@ import Button, { ButtonStyles } from "@/components/Button";
 import { useState } from "react";
 import DateModalPicker from "@/components/DateModalPicker";
 import DropDownPicker from "@/components/DropDownPicker";
-
+import { router } from "expo-router";
+import { useHttpClient } from "@/context/HttpClientContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function PregnancyInfo(){
   const [pregnancyCalculationMethod, setPregnancyCalculationMethod] = useState<'lastMenstrualDate' | 'pregnancyWeek' | undefined>(undefined);
   const [lastMenstrualDate, setLastMenstrualDate] = useState<Date>(new Date());
   const [prentalVisits, setPrentalVisits] = useState<string>("");
   const [pregnancyWeek, setPregnancyWeek] = useState<string>("");
+  const {sendRequest} = useHttpClient();
+  const {session} = useAuth();
 
   const info = `Alright! Let’s fill in the details and we will assist you by adding important doctor visit dates into “My Appointments”!`;
   const enableContinue = (pregnancyCalculationMethod === 'lastMenstrualDate' && lastMenstrualDate && prentalVisits && prentalVisits !== '-1') || 
@@ -24,8 +28,29 @@ export default function PregnancyInfo(){
     setLastMenstrualDate(new Date());
   };
 
+  const handleContinue = async () => {
+    const response = await sendRequest<null>({
+      url: '/pregnancies/',
+      method: 'POST',
+      data: {
+        declared_pregnancy_week: pregnancyWeek === '' ? null : pregnancyWeek,
+        declared_date_of_last_menstrual_period: pregnancyWeek === '' ? lastMenstrualDate.toISOString().split('T')[0] : null,
+        declared_number_of_prenatal_visits: prentalVisits,
+      },
+      headers: {
+        'Accept-Language': 'en',
+        Authorization: 'Token ' + session
+    }});
+
+    if(response.error){
+      console.log(response.error)
+    } else {
+      router.push('/registration/pregnancy-info-complete')
+    }
+  }
+
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
       <View style={{flex: 1, gap: Spacing.large}}>
         <View style={styles.container}>
           <View style={{gap: Spacing.small}}>
@@ -101,9 +126,9 @@ export default function PregnancyInfo(){
           <Button
             buttonType={ enableContinue ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
             label="Continue"
-            onPress={() => {}}
+            onPress={enableContinue ? handleContinue : () => {}}
           /> 
-      </View>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -115,6 +140,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.large,
     marginTop: Spacing.xxlarge,
     gap: Spacing.xxlarge,
+    backgroundColor: '#fff',
   },
   continueButton: {
     position: 'absolute',

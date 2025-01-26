@@ -2,34 +2,8 @@ import { SafeAreaView, View , Text, ScrollView, StyleSheet} from "react-native";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import Button, { ButtonStyles } from "@/components/Button";
 import { useState } from "react";
+import { router } from "expo-router";
 
-// const PregnancyInfo = ({onSelect} : {onSelect: (isByLastMenstrualDate: boolean) => void}) => {
-//   const [pregnancyCalculationMethod, setPregnancyCalculationMethod] = useState<'lastMenstrualDate' | 'pregnancyWeek' | undefined>(undefined);
-//   const info = `Alright! Let’s fill in the details and we will assist you by adding important doctor visit dates into “My Appointments”!`;
-
-//   return (
-//     <View style={{flex: 1, gap: Spacing.large}}>
-//       <View style={{gap: Spacing.small}}>
-//         <Text style={GlobalStyles.HeadingText}>Pregnancy</Text>
-//         <Text style={GlobalStyles.NormalText}>{info}</Text>
-//       </View>
-//       <View style={{}}>
-//         <View style={{}}>
-//           <Button
-//             buttonType={ pregnancyCalculationMethod === 'lastMenstrualDate' ? ButtonStyles.FILLED : ButtonStyles.UNFILLED}
-//             label="Enter Last Menstrual Date"
-//             onPress={() => setPregnancyCalculationMethod('lastMenstrualDate')}
-//           />
-//           <Button
-//             buttonType={ pregnancyCalculationMethod === 'pregnancyWeek' ? ButtonStyles.FILLED : ButtonStyles.UNFILLED}
-//             label="Enter Pregnancy Week"
-//             onPress={() => setPregnancyCalculationMethod('pregnancyWeek')}
-//           />
-//         </View>
-//       </View>
-//     </View>
-//   );
-// }
 
 export default function PregnancyYesNo(){
   const [isPregnant, setIsPregnant] = useState<boolean | undefined>(undefined);
@@ -38,9 +12,9 @@ export default function PregnancyYesNo(){
 
   const handleIsPregnant = (isPregnant: boolean) => {
     if(isPregnant){
-      //redirect
+      router.push('/registration/pregnancy-info');
     } else {
-      // setIsPregnant(true);
+      router.push('/'); // Go to home page
     }
   }
 

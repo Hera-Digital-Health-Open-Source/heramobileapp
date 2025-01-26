@@ -3,11 +3,12 @@ import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import { imgPregnancyInfoComplete } from "@/assets/images/images";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 
 
 export default function PregnancyInfoComplete() {
   const info = `During your pregnancy, it is important to visit your doctor at least 4 times. Your appointment dates have been added in “My Appointments”!`;
-
+  
   return (
     <SafeAreaView style={{flex:1}}>
       <View style={styles.container}>
@@ -20,7 +21,7 @@ export default function PregnancyInfoComplete() {
           style={styles.continueButton}
           label="Proceed to Next Step"
           buttonType={ButtonStyles.FILLED}
-          onPress={() => {}}
+          onPress={() => router.replace('/registration/child-info')}
         />
       </View>
     </SafeAreaView>
