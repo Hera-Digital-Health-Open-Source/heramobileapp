@@ -5,6 +5,7 @@ import DateModalPicker from "@/components/DateModalPicker";
 import DropDownPicker from "@/components/DropDownPicker";
 import Checkbox from "@/components/CheckBox";
 import Button, { ButtonStyles } from "@/components/Button";
+import { router } from "expo-router";
 
 export default function ChildAdd(){
   const [childName, setChildName] = useState('');
@@ -12,10 +13,10 @@ export default function ChildAdd(){
   const [gender, setGender] = useState('');
 
   const info = `Alright! Let’s fill in the details and we will assist you by adding important doctor visit dates into “My Appointments”!`;
-  const enableContinue = true;
+  const enableContinue = childName.length > 0 && gender.length > 0;
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <View style={styles.container}>
         <View style={{gap: Spacing.large}}>
           <Text style={GlobalStyles.HeadingText}>Add a Child</Text>
@@ -63,7 +64,7 @@ export default function ChildAdd(){
         <Button
           buttonType={ enableContinue ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
           label="Continue"
-          onPress={() => {}}
+          onPress={() => router.push('/registration/children')}
         /> 
       </View>
     </SafeAreaView>
@@ -76,6 +77,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.large,
     marginTop: Spacing.xxlarge,
     gap: Spacing.xlarge,
+    backgroundColor: '#fff',
   },
   yesNoContainer: {
     flex:1,

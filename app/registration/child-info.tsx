@@ -3,6 +3,7 @@ import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import { imgFamily } from "@/assets/images/images";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 
 
 export default function ChildInfo() {
@@ -22,13 +23,13 @@ export default function ChildInfo() {
               style={{flex: 1}}
               buttonType={ButtonStyles.UNFILLED}
               label="I'm done"
-              onPress={() => {}}
+              onPress={() => router.replace('/')}
             />
             <Button
               style={{flex: 1}}
               buttonType={ButtonStyles.FILLED}
               label="Add a Child"
-              onPress={() => {}}
+              onPress={() => router.push('/registration/child-add')}
             />
           </View>
         </View> 
