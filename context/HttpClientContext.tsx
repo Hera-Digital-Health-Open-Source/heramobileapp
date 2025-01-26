@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useCallback } from "react";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { baseURL } from "@/constants";
+import { useLoading } from "./LoadingContext";
 
 export interface RequestConfig {
   url: string;
@@ -15,7 +16,6 @@ export interface ClientResponse<T> {
 }
 
 interface HttpClientContextType {
-  isWaitForServerResponse: boolean;
   // The following line defines a generic function type,
   // where T is a generic type parameter. It acts as a placeholder for the type of the response data.
   // When calling the function, you can specify what T represents, making the function flexible and type-safe for different types of responses.
@@ -25,7 +25,7 @@ interface HttpClientContextType {
 const HttpClientContext = createContext<HttpClientContextType | undefined>(undefined);
 
 export default function HttpClientProvider({children}:{children: ReactNode}){
-    const [isWaitForServerResponse, setIsWaitForServerResponse] = useState(false);
+    const {setLoading} = useLoading();
 
     const axiosInstance = axios.create({
       baseURL: baseURL,
@@ -37,7 +37,7 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
     });
 
     const sendRequest = async <T,> (requestObj: RequestConfig): Promise<ClientResponse<T>> => {
-      setIsWaitForServerResponse(true);
+      setLoading(true);
       try{
         const response = await axiosInstance({
           url: requestObj.url,
@@ -49,12 +49,12 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
       } catch(error){
         return { data: null, error};
       } finally {
-        setIsWaitForServerResponse(false);
+        setLoading(false);
       }
     };
 
     return(
-      <HttpClientContext.Provider value={{isWaitForServerResponse, sendRequest}}>
+      <HttpClientContext.Provider value={{sendRequest}}>
           {children}
       </HttpClientContext.Provider>
     );
@@ -63,7 +63,7 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
 export const useHttpClient = (): HttpClientContextType => {
   const context = useContext(HttpClientContext);
   if (!context) {
-    throw new Error('useClient must be used within a ClientProvider');
+    throw new Error('useHttpClient must be used within a HttpClientContext');
   }
   return context;
 };
