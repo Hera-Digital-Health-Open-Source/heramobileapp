@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, StyleSheet, ViewStyle, Image, StyleProp } from "react-native";
 import MainTile from "./MainTile";
 import { imgUserDetailsMale, imgUserDetailsFemale } from "@/assets/images/images";
@@ -6,10 +6,18 @@ import { color } from "@/assets/theme";
 
 type Props = {
   style?: StyleProp<ViewStyle>;
+  initialGender: 'male' | 'female' | undefined;
+  onGenderChanged: (newGender: 'male' | 'female') => void;
 }
 
-export default function GenderSwitcher({style}: Props){
-  const [selectedGender, setSelectedGender] = useState<'male' | 'female' | undefined>(undefined);
+export default function GenderSwitcher({style, initialGender, onGenderChanged}: Props){
+  const [selectedGender, setSelectedGender] = useState<'male' | 'female' | undefined>(initialGender);
+
+  useEffect(() => {
+    if(selectedGender){
+      onGenderChanged(selectedGender);
+    }
+  },[selectedGender]);
 
   return (
     <View style={[styles.container , style]}>
