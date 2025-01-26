@@ -3,9 +3,17 @@ import { GlobalStyles, Spacing } from "@/assets/theme";
 import Button, { ButtonStyles } from "@/components/Button";
 import CheckBox from "@/components/CheckBox";
 import { useState } from "react";
+import { useRegistration } from "@/context/RegistrationContext";
+import { useHttpClient } from "@/context/HttpClientContext";
+import { router } from "expo-router";
+import { useAuth } from "@/context/AuthContext";
+
 
 export default function PrivacyPolicy(){
   const [isAccept, setIsAccept] = useState(false);
+  const {name, gender, dateOfBirth, setOnBoardingProgress} = useRegistration();
+  const {sendRequest} = useHttpClient();
+  const {session} = useAuth();
 
   const privacyPolicy = `Welcome to Hera, a mobile application designed to [brief description of app's function, e.g., "track your daily fitness activities"]. By accessing or using [App Name] (the "App"), you agree to comply with and be bound by the following terms and conditions ("Terms"). If you do not agree with these Terms, please do not use the App.
 
@@ -26,8 +34,56 @@ Upload or transmit harmful or unlawful content.
 11. Governing Law These Terms shall be governed by and construed in accordance with the laws of [Jurisdiction]. Any disputes arising from or related to these Terms shall be resolved in the courts of [Jurisdiction].
 12. Contact Us If you have any questions or concerns about these Terms, please contact us at [support@email.com] or visit our website at [www.appwebsite.com].`;
 
+  const handleContinue = async () => {
+    const response = await sendRequest<{}>({
+      url: '/user_profiles/',
+      method: 'POST',
+      data: {
+        name: name,
+        gender: gender?.toUpperCase(),
+        date_of_birth: dateOfBirth!.toISOString().split("T")[0],
+        language_code: 'en',
+        agree_to_terms_at: new Date().toISOString().split("T")[0],
+      },
+      headers: {
+        'Accept-Language': 'en',
+        Authorization: 'Token ' + session!,
+      },
+    });
+
+    console.log(response.data);
+    if(response.error){
+      console.log(response.error)
+    }
+    if(response.data){
+      await updateOnboardingProgresses();
+      router.replace('/registration/pregnancy-yes-no');
+    }
+  };
+
+  const updateOnboardingProgresses = async () => {
+    const response = await sendRequest<{}>({
+      url: '/onboarding_progresses/',
+      method: 'POST',
+      data: {
+        has_filled_profile: true,
+        has_filled_pregnancy_status: true, // No need to remember if user has filled this info
+        has_filled_children_info: true, // No need to remember if user has filled this info
+      },
+      headers: {
+        'Accept-Language': 'en',
+        Authorization: 'Token ' + session!,
+      },
+    });
+
+    console.log(response.data);
+    if(response.error){
+      console.log(response.error)
+    }
+  };
+
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
       <View style={styles.container}>
         <Text style={GlobalStyles.HeadingText}>Privacy Policy</Text>
         <ScrollView>
@@ -39,6 +95,7 @@ Upload or transmit harmful or unlawful content.
           style={styles.continueButton}
           buttonType={isAccept ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
           label="Continue"
+          onPress={handleContinue}
         />
       </View>
     </SafeAreaView>
@@ -50,7 +107,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: Spacing.large,
     gap: Spacing.large,
-    marginTop: Spacing.xxlarge
+    marginTop: Spacing.xxlarge,
+    backgroundColor: '#fff',
   },
   continueButton: {
     position: 'absolute',

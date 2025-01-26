@@ -3,6 +3,7 @@ import { GlobalStyles, Spacing } from "@/assets/theme";
 import Button, { ButtonStyles } from "@/components/Button";
 import CheckBox from "@/components/CheckBox";
 import { useState } from "react";
+import { router } from "expo-router";
 
 export default function TermsOfUse(){
   const [isAccept, setIsAccept] = useState(false);
@@ -30,7 +31,7 @@ Upload or transmit harmful or unlawful content.
 12. Contact Us If you have any questions or concerns about these Terms, please contact us at [support@email.com] or visit our website at [www.appwebsite.com].`;
 
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
       <View style={styles.container}>
         <Text style={GlobalStyles.HeadingText}>Term of Use</Text>
         <ScrollView>
@@ -42,6 +43,7 @@ Upload or transmit harmful or unlawful content.
           style={styles.continueButton}
           buttonType={isAccept ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
           label="Continue"
+          onPress={() => {router.push('/registration/privacy-policy')}}
         />
       </View>
     </SafeAreaView>
@@ -53,7 +55,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: Spacing.large,
     gap: Spacing.large,
-    marginTop: Spacing.xxlarge
+    marginTop: Spacing.xxlarge,
+    backgroundColor: '#fff',
   },
   continueButton: {
     position: 'absolute',
