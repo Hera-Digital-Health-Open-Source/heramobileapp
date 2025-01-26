@@ -1,40 +1,32 @@
-import { useContext, createContext, ReactNode, useState } from 'react';
+import { useContext, createContext, ReactNode, useState, useEffect } from 'react';
 import { useStorageState } from '@/hooks/useStorageState';
 import { useHttpClient } from "@/context/HttpClientContext";
+import { useLoading } from './LoadingContext';
 
 
 interface AuthContextType {
-  requestOtp: (completeMobileNumber: string) => void;
-  validateOtp: (inputOtp: string) => void;
+  requestOtp: (completeMobileNumber: string) => Promise<boolean>;
+  validateOtp: (inputOtp: string) => Promise<boolean>;
+  errorMessage: string | undefined;
+  setErrorMessage: (errorMessage: string) => void;
   signOut: () => void;
   session?: string | null;
-  isLoading: boolean;
-  showValidateOtp: boolean;
   completePhoneNumber: string;
+  isProfileCreated: boolean | undefined;
+  setIsProfileCreated: (isProfileCreated: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// This hook can be used to access the user info.
-// export function useSession() {
-//   const value = useContext(AuthContext);
-//   if (process.env.NODE_ENV !== 'production') {
-//     if (!value) {
-//       throw new Error('useSession must be wrapped in a <SessionProvider />');
-//     }
-//   }
-
-//   return value;
-// }
-
 export function AuthProvider({ children }: {children: ReactNode}) {
-  const [[isLoading, session], setSession] = useStorageState('session');
-  const [showValidateOtp, setShowValidateOtp] = useState(false);
+  const [[isDataLoading, session], setSession] = useStorageState('session');
   const [completeMobileNumber, setCompleteMobileNumber] = useState('');
   const { sendRequest } = useHttpClient();
+  const [isProfileCreated, setIsProfileCreated] = useState<boolean | undefined>(undefined);
+  const {setLoading} = useLoading();
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
-  const requestOtp = async (completeMobileNumber: string) => {
-    console.log('I am in requestOtp');
+  const requestOtp = async (completeMobileNumber: string) : Promise<boolean> => {
     const response = await sendRequest<{phone_number: string, expires_at: string}>({
       url: '/otp_auth/request_challenge/',
       method: 'POST',
@@ -43,17 +35,16 @@ export function AuthProvider({ children }: {children: ReactNode}) {
       },
       headers: {'Accept-Language': 'en'},
     });
-    console.log('Otp is requested from the server');
-    console.log(response.error)
-    if(response.data){
-      console.log('set-show_otp')
-      setShowValidateOtp(true);
-      setCompleteMobileNumber(completeMobileNumber);
+    if(response.error){
+      console.log(response.error)
+      setErrorMessage(response.error);
+      return false;
     }
+    setCompleteMobileNumber(completeMobileNumber);
+    return true;
   };
 
-  const validateOtp = async (inputOtp: string) => {
-    console.log('In the validateOtp function');
+  const validateOtp = async (inputOtp: string): Promise<boolean> => {
     const response = await sendRequest<{token: string, is_new_user: boolean, user_id: number, user_profile: string}>({
       url: '/otp_auth/attempt_challenge/',
       method: 'POST',
@@ -63,16 +54,21 @@ export function AuthProvider({ children }: {children: ReactNode}) {
       headers: {'Accept-Language': 'en'},
     });
 
-    console.log(response.data)
     if(response.error){
-      console.log(response.error)
+      setErrorMessage(response.error);
+      return false;
     }
 
-    if(response.data){
-      setSession(response.data.token);
-      setShowValidateOtp(false);
-    }
-  }
+    console.log(`==== ${JSON.stringify(response.data)}`);
+
+    setSession(response.data!.token);
+    setIsProfileCreated(response.data!.user_profile ? true : false);
+    return true;
+  };
+
+  useEffect(() => {
+    setLoading(isDataLoading);
+  }, [isDataLoading]);
 
   return (
     <AuthContext.Provider
@@ -80,12 +76,17 @@ export function AuthProvider({ children }: {children: ReactNode}) {
         completePhoneNumber: completeMobileNumber,
         requestOtp: requestOtp,
         validateOtp: validateOtp,
+        errorMessage,
+        setErrorMessage,
         signOut: () => {
           setSession(null);
+          setCompleteMobileNumber('');
+          setErrorMessage(undefined);
+          setIsProfileCreated(undefined);
         },
         session,
-        isLoading,
-        showValidateOtp,
+        isProfileCreated,
+        setIsProfileCreated,
       }}>
       {children}
     </AuthContext.Provider>

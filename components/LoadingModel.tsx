@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Modal, ActivityIndicator, StyleSheet, Text } from 'react-native';
-import { useHttpClient } from '@/context/HttpClientContext';
+import { useLoading } from '@/context/LoadingContext';
+
 
 const LoadingModal = () => {
-  const { isWaitForServerResponse } = useHttpClient();
+  const {isLoading} = useLoading();
 
   return (
-    <Modal transparent={true} visible={isWaitForServerResponse} animationType="fade">
+    <Modal transparent={true} visible={isLoading} animationType="fade">
       <View style={styles.modalBackground}>
         <View style={styles.activityContainer}>
           <ActivityIndicator size="large" color="#0000ff" />

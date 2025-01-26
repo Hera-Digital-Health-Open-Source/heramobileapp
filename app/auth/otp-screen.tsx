@@ -5,25 +5,84 @@ import { useAuth } from '@/context/AuthContext';
 import Button, { ButtonStyles } from '@/components/Button';
 import { router } from 'expo-router';
 
+
 const OTPScreen = () => {
   const [otp, setOtp] = useState('');
-  const {validateOtp, showValidateOtp} = useAuth();
-  // const {completeMobileNumber} = useLocalSearchParams();
+  const {validateOtp, isProfileCreated, errorMessage} = useAuth();
 
   useEffect(() => {
-    if(!showValidateOtp){
-      router.replace('/auth');
+    console.log(`otp-screen.tsx: isProfileCreated: ${isProfileCreated}`);
+    if(isProfileCreated !== undefined){
+      if(isProfileCreated){
+        router.replace('/');
+      } else {
+        router.replace('/registration/user-details');
+      }
     }
-  }, [showValidateOtp]);
+  }, [isProfileCreated]);
 
   const handleResendOTP = () => {
     // Logic for resending OTP
     console.log('Resend OTP clicked');
   };
 
-  const handleSubmit = () => {
-    validateOtp(otp);
-    router.replace('/auth');
+  // const getOnBoardingProgresses = async (userId: number) => {
+  //   const response = await sendRequest<{
+  //     has_filled_children_info: boolean,
+  //     has_filled_pregnancy_status: boolean,
+  //     has_filled_profile: boolean
+  //   }>({
+  //     url: '/onboarding_progresses/' + userId + '/',
+  //     method: 'GET',
+  //     headers: {
+  //       'Accept-Language': 'en',
+  //       Authorization: 'Token ' + session!,
+  //     },
+  //   });
+  //   if (onboardingRes.data.has_filled_children_info === true) {
+  //     yield call(saveString, 'onboardingprogress', '3');
+  //     yield put(
+  //       VerifyOtpActions.verifyOtpSuccess({
+  //         userId,
+  //         onboardingProgress: 3,
+  //         authToken: res.data.token,
+  //       }),
+  //     );
+  //   } else if (onboardingRes.data.has_filled_pregnancy_status === true) {
+  //     yield call(saveString, 'onboardingprogress', '2');
+  //     yield put(
+  //       VerifyOtpActions.verifyOtpSuccess({
+  //         userId,
+  //         onboardingProgress: 2,
+  //         authToken: res.data.token,
+  //       }),
+  //     );
+  //   } else if (onboardingRes.data.has_filled_profile === true) {
+  //     yield call(saveString, 'onboardingprogress', '1');
+  //     yield put(
+  //       VerifyOtpActions.verifyOtpSuccess({
+  //         userId,
+  //         onboardingProgress: 1,
+  //         authToken: res.data.token,
+  //       }),
+  //     );
+  //   } else {
+  //     yield put(
+  //       VerifyOtpActions.verifyOtpSuccess({
+  //         userId,
+  //         onboardingProgress: 0,
+  //         authToken: res.data.token,
+  //       }),
+  //     );
+  //   }
+  // };
+
+  const handleSubmit = async () => {
+    const response = await validateOtp(otp);
+    if(!response){
+      // show error message
+      console.log(`otp-screen.tsx: Error when validating OTP: ${errorMessage}`);
+    }
   };
 
   return (

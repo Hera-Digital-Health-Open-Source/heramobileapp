@@ -24,8 +24,12 @@ import {
   keySrhr
 } from "@/constants";
 import HomeHeraLegend from "@/components/HomeHeraLegend";
+import { useAuth } from "@/context/AuthContext";
+
 
 export default function Index() {
+  const {signOut} = useAuth();
+
   const mainTiles = [
     {title: "My Appointments", tileKey: keyAppointments, image: imgHomeAppointments, textColor: color.primary, backgroundColor: "#fff", requireSignedIn: true},
     {title: "My Translator", tileKey: keyTranslator, image: imgHomeTranslator, textColor: color.primary, backgroundColor: "#fff", requireSignedIn: false},
@@ -84,7 +88,8 @@ export default function Index() {
               textColor={item.textColor}
               backgroundColor={item.backgroundColor}
               requireSignedIn={item.requireSignedIn}
-              key={item.tileKey}/>
+              key={item.tileKey}
+              onPress={signOut}/>
           ))}
         </View>
       </View>
