@@ -1,6 +1,6 @@
 import {Image, type ImageSource } from "expo-image";
 import { View, StyleSheet, Pressable, Text} from "react-native";
-import { color } from "@/assets/theme";
+import { color, Spacing } from "@/assets/theme";
 
 type Props = {
   title: string;
@@ -58,12 +58,13 @@ const styles = StyleSheet.create({
     margin:0,
   },
   tileImage: {
-    height: 36,
-    width: 36,
+    height: 50,
+    width: 50,
   },
   tileText: {
     fontSize: 11,
     fontFamily: 'Roboto-Medium',
     textAlign: 'center',
+    marginTop: Spacing.large,
   }
 });
