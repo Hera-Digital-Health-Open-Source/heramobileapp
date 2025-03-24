@@ -5,7 +5,7 @@ import { useLoading } from "./LoadingContext";
 
 export interface RequestConfig {
   url: string;
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   data?: any; // Payload for POST/PUT requests
   headers?: Record<string, string>;
 }
@@ -20,6 +20,7 @@ interface HttpClientContextType {
   // where T is a generic type parameter. It acts as a placeholder for the type of the response data.
   // When calling the function, you can specify what T represents, making the function flexible and type-safe for different types of responses.
   sendRequest: <T>(requestObj: RequestConfig) => Promise<ClientResponse<T>>;
+  sendRequestFetch: <T>(requestObj: RequestConfig) => Promise<ClientResponse<T>>;
 }
 
 const HttpClientContext = createContext<HttpClientContextType | undefined>(undefined);
@@ -36,6 +37,25 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
       },
     });
 
+    const sendRequestFetch = async <T,> (requestObj: RequestConfig): Promise<ClientResponse<T>> => {
+      setLoading(true);
+      try{
+        const requestOptions = {
+          method: requestObj.method || 'GET',
+          headers: requestObj.headers || {},
+          body: JSON.stringify(requestObj.data),
+        };
+        const response = await fetch(baseURL + requestObj.url, requestOptions);
+        const data = await response.json();
+        return {data: data, error: null};
+      } catch(error){
+        console.log(JSON.parse(JSON.stringify(error)));
+        return { data: null, error};
+      } finally {
+        setLoading(false);
+      }
+    };
+
     const sendRequest = async <T,> (requestObj: RequestConfig): Promise<ClientResponse<T>> => {
       setLoading(true);
       try{
@@ -47,6 +67,7 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
         });
         return { data: response.data, error: null };
       } catch(error){
+        console.log(JSON.parse(JSON.stringify(error)))
         return { data: null, error};
       } finally {
         setLoading(false);
@@ -54,7 +75,7 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
     };
 
     return(
-      <HttpClientContext.Provider value={{sendRequest}}>
+      <HttpClientContext.Provider value={{sendRequest, sendRequestFetch}}>
           {children}
       </HttpClientContext.Provider>
     );

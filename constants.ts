@@ -22,6 +22,7 @@ export const keyPregnancy = 'pregnancy';
 export const keyHealthRecords = 'healthrecords';
 export const keyShrh = 'shrh';
 export const keySrhr = 'srhr';
+export const doctorAppointment = 'doctorappointment';
 export const keyChildren = 'children';
 export const keyHealthCenters = 'healthcenters';
 export const keyEmergencyCall = 'emergencycall';

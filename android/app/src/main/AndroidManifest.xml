@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
@@ -26,6 +26,15 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
         <data android:scheme="com.anonymous.HeraMobile"/>
+      </intent-filter>
+    </activity>
+    <activity android:name="com.auth0.android.provider.RedirectActivity" tools:node="replace" android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="com.anonymous.HeraMobile.auth0" android:host="dev-apc5lc1lhv0fk5hp.us.auth0.com"/>
+        <data android:scheme="com.anonymous.HeraMobile.auth0" android:host="dev-apc5lc1lhv0fk5hp.us.auth0.com"/>
       </intent-filter>
     </activity>
   </application>

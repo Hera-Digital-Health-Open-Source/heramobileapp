@@ -1,11 +1,13 @@
 import { StyleSheet, View, Text, Pressable, StyleProp, ViewStyle, TextStyle } from "react-native";
-import { GlobalStyles } from "@/assets/theme";
+import { GlobalStyles, Spacing } from "@/assets/theme";
+import { color } from "@/assets/theme";
 
 export enum ButtonStyles{
   FILLED = 1,
   UNFILLED = 2,
   PLAIN = 3,
   DISABLED = 4,
+  FLAT = 5
 }
 
 type Props = {
@@ -30,7 +32,10 @@ export default function Button({style, label, buttonType, onPress}: Props){
   } else if(buttonType == ButtonStyles.DISABLED){
     buttonStyle = GlobalStyles.ButtonDisabled;
     textStyle = GlobalStyles.ButtonTextDisabled;
-  } else {
+  } else if(buttonType == ButtonStyles.FLAT){
+    buttonStyle = {...GlobalStyles.ButtonBasic, borderColor: color.primary, borderWidth: 1, borderRadius: Spacing.medium };
+    textStyle = GlobalStyles.ButtonTextALT;
+  }else {
     buttonStyle = GlobalStyles.Button;
     textStyle = GlobalStyles.ButtonText;
   }
