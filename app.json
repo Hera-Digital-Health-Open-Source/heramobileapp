@@ -46,6 +46,12 @@
           ]
         }
       ],
+      [
+        "react-native-auth0",
+        {
+          "domain": "dev-apc5lc1lhv0fk5hp.us.auth0.com"
+        }
+      ],
       "expo-secure-store"
     ],
     "experiments": {
