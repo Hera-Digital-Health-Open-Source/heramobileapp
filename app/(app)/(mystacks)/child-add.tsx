@@ -1,0 +1,52 @@
+import ChildView from "@/components/children/ChildView";
+import Child from "@/models/Child";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+import { useHttpClient } from "@/context/HttpClientContext";
+import { useAuth } from "@/context/AuthContext";
+
+
+export default function ChildAdd(){
+  const { childId } = useLocalSearchParams();
+  const [child, setChild] = useState<Child | undefined>(undefined);
+  const { sendRequestFetch } = useHttpClient();
+  const { session } = useAuth();
+  
+  const id = childId ? Number(childId) : undefined;
+
+  
+  const getChild = async (childId: number) => {
+    // setRefreshing(true);
+    let result = await sendRequestFetch<Child[]>({
+      url: `/children/`,
+      method: 'GET',
+      headers: {
+        'Accept-Language': 'en',
+        Authorization: 'Token ' + session,
+      },
+    });
+
+    const data = result.data!;
+    let children = data.filter(c => c.id === childId);
+    if(children.length > 0){
+      const child = children[0];
+      setChild(child);
+    } else {
+      setChild(undefined);
+    }
+    
+    // setRefreshing(false);
+  };
+
+  useEffect(() => {
+    if(id){
+      getChild(id);
+    }
+  }, [id]);
+
+  if(child){
+    return (<ChildView introduceText="Edit a child" child={child}/>);
+  } else {
+    return (<ChildView introduceText="Add a child"/>);
+  }
+}
