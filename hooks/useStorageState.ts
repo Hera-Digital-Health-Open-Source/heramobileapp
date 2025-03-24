@@ -14,6 +14,7 @@ function useAsyncState<T>(
 }
 
 export async function setStorageItemAsync(key: string, value: string | null) {
+  console.log(`A request to set data: key=${key}, value=${value}`);
   if (Platform.OS === 'web') {
     try {
       if (value === null) {
@@ -28,7 +29,7 @@ export async function setStorageItemAsync(key: string, value: string | null) {
     if (value == null) {
       await SecureStore.deleteItemAsync(key);
     } else {
-      await SecureStore.setItemAsync(key, value);
+      await SecureStore.setItemAsync(key, value,{keychainAccessible: SecureStore.AFTER_FIRST_UNLOCK});
     }
   }
 }
@@ -48,7 +49,9 @@ export function useStorageState(key: string): UseStateHook<string> {
         console.error('Local storage is unavailable:', e);
       }
     } else {
+      console.log(`A request to read data: key=${key}`);
       SecureStore.getItemAsync(key).then(value => {
+        console.log(`I read the ${key}'s data: ${value}`)
         setState(value);
       });
     }

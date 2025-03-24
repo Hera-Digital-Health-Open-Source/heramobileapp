@@ -10,6 +10,8 @@ import Button, {ButtonStyles} from "@/components/Button";
 import { useAuth } from "@/context/AuthContext";
 import { router } from "expo-router";
 import { Platform } from "react-native";
+import { useAuth0 } from 'react-native-auth0';
+import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
 
 export default function Login(){
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
@@ -17,7 +19,9 @@ export default function Login(){
   const [mobileNumber, setMobileNumber] = useState<string | undefined>(undefined);
   const [completeMobileNumber, setCompleteMobileNumber] = useState<string | undefined>(undefined);
   const [isRegisterMode, setIsRegisterMode] = useState(true);
-  const { requestOtp, errorMessage } = useAuth();
+  const { requestOtp, validateOtp, errorMessage, isProfileCreated, setCompletePhoneNumber: setCPhoneNumber } = useAuth();
+  const { authorize, user, error } = useAuth0();
+  const [showCaptcha, setShowCaptcha] = useState(false);
 
   const languages = [
     {label: 'Arabic', key: 'ar'},
@@ -31,17 +35,42 @@ export default function Login(){
     }
   }, [selectedCountryCallingCode, mobileNumber]);
 
-  // useEffect(() => {
-  //   console.log(`In useEffect, showValidateOtp: ${showValidateOtp}`);
-  //   if(showValidateOtp){
-  //     // router.replace({pathname: '/otp-screen', params: {completeMobileNumber: completeMobileNumber}});
-  //     router.replace('/auth');
-  //   }
-  // }, [showValidateOtp]);
+  useEffect(() => {
+    if(error){
+      console.log('login.tsx: Error in logging in: ', error);
+    }
+  }, [error]);
 
-  const handleRequestOtp = async () => {
+  useEffect(() => {
+    console.log(`login.tsx: isProfileCreated: ${isProfileCreated}`);
+    if(isProfileCreated !== undefined){
+      if(isProfileCreated){
+        router.replace('/');
+      } else {
+        router.replace('/registration/user-details');
+      }
+    }
+  }, [isProfileCreated]);
+
+  useEffect(() => {
+    if(user){
+      console.log('login.tsx: User is logged in: ', user);
+      const uid = user.sub!.split('|')[1]; //The format of user.sub is: provider|uid
+      setCPhoneNumber(`${user.email}|${uid}`);
+      validateOtp(process.env.EXPO_PUBLIC_GLOBAL_OTP_AUTH!)
+      .then((response) => {
+        router.push('/');
+      })
+      .catch((error) => {
+        console.log('login.tsx: Error in validating OTP: ', error);
+      });
+    }    
+  }, [user]);
+
+
+  const handleRequestOtp = async (captchaToken: string) => {
     if(completeMobileNumber){
-      const response = await requestOtp(completeMobileNumber);
+      const response = await requestOtp(completeMobileNumber, captchaToken);
       if(response){
         console.log('login.tsx: Requested OTP successfully');
         router.push('/auth/otp-screen');
@@ -49,6 +78,14 @@ export default function Login(){
         //Show error message
         console.log('login.tsx: Error in requesting OTP: ', errorMessage);
       }
+    }
+  }
+
+  const handleOtherMethods = async() => {
+    try {
+      await authorize();
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -92,21 +129,29 @@ export default function Login(){
             <View style={styles.loginButtonsContainer}>
               <Button
                 label={isRegisterMode ? "Register" : "Login"}
-                onPress={handleRequestOtp}
+                onPress={() => setShowCaptcha(true)}
               />
               <Text style={{width:'100%', textAlign: 'center', marginTop: 12, marginBottom: 12}}>-- OR --</Text>
               <Button
-                label={"Login with Google"}
-                onPress={()=>{}}
+                label={"Try another methods"}
+                onPress={handleOtherMethods}
+                buttonType={ButtonStyles.UNFILLED}
               />
-              <Button
+              {/* <Button
                 label={"Login with Apple"}
                 onPress={()=>{}}
-              />
+              /> */}
             </View>
           </View>
         </View>
       </KeyboardAvoidingView>
+      <CloudflareTurnstile
+        show={showCaptcha}
+        setIsShow={setShowCaptcha}
+        successFn={async (token) => {
+          await handleRequestOtp(token);
+        }}
+      />
     </SafeAreaView>
   );
 }

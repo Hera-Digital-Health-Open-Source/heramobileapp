@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Modal, ActivityIndicator, StyleSheet, Text } from 'react-native';
 import { useLoading } from '@/context/LoadingContext';
+import { color } from '@/assets/theme';
 
 
 const LoadingModal = () => {
@@ -10,7 +11,7 @@ const LoadingModal = () => {
     <Modal transparent={true} visible={isLoading} animationType="fade">
       <View style={styles.modalBackground}>
         <View style={styles.activityContainer}>
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color={color.primary} />
           <Text style={styles.loadingText}>Loading...</Text>
         </View>
       </View>
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 10,
     fontSize: 16,
+    color: color.primary,
   },
 });
 

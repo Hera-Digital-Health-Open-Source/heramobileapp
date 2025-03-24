@@ -11,6 +11,8 @@ export const imgHomeChildren = require('./home/img_home_children.png');
 export const imgHomePregnancy = require('./home/img_home_pregnancy.png');
 export const imgHomeWhatsappHotline = require('./home/img_home_whatsapp_hotline.png');
 export const imgHomeSrhr = require('./home/img_home_shrh.png');
+export const imgHomeDoctorAppointment = require('./home/img_home_doctor_appointment.png');
+export const imgDoctorAppointmentMain = require('./doctor-appointment/img_doctor_appointment_main.png');
 export const imgHomeMain = require('./home/img_home_main.png');
 export const heraIcon = require('./hera_icon.png');
 

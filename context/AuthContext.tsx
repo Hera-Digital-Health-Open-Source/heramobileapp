@@ -5,13 +5,15 @@ import { useLoading } from './LoadingContext';
 
 
 interface AuthContextType {
-  requestOtp: (completeMobileNumber: string) => Promise<boolean>;
+  requestOtp: (completeMobileNumber: string, captchToken: string) => Promise<boolean>;
   validateOtp: (inputOtp: string) => Promise<boolean>;
   errorMessage: string | undefined;
   setErrorMessage: (errorMessage: string) => void;
   signOut: () => void;
   session?: string | null;
+  preparingStorageData: boolean;
   completePhoneNumber: string;
+  setCompletePhoneNumber: (completePhoneNumber: string) => void;
   isProfileCreated: boolean | undefined;
   setIsProfileCreated: (isProfileCreated: boolean) => void;
 }
@@ -19,19 +21,19 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: {children: ReactNode}) {
-  const [[isDataLoading, session], setSession] = useStorageState('session');
+  const [[preparingStorageData, session], setSession] = useStorageState('session');
   const [completeMobileNumber, setCompleteMobileNumber] = useState('');
   const { sendRequest } = useHttpClient();
   const [isProfileCreated, setIsProfileCreated] = useState<boolean | undefined>(undefined);
   const {setLoading} = useLoading();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
-  const requestOtp = async (completeMobileNumber: string) : Promise<boolean> => {
+  const requestOtp = async (completeMobileNumber: string, captchToken: string) : Promise<boolean> => {
     const response = await sendRequest<{phone_number: string, expires_at: string}>({
       url: '/otp_auth/request_challenge/',
       method: 'POST',
       data: {
-        phone_number: completeMobileNumber, token: 'DO_BYPASSYuo1@3309u3#!21$'
+        phone_number: completeMobileNumber, token: captchToken
       },
       headers: {'Accept-Language': 'en'},
     });
@@ -67,13 +69,14 @@ export function AuthProvider({ children }: {children: ReactNode}) {
   };
 
   useEffect(() => {
-    setLoading(isDataLoading);
-  }, [isDataLoading]);
+    setLoading(preparingStorageData);
+  }, [preparingStorageData]);
 
   return (
     <AuthContext.Provider
       value={{
         completePhoneNumber: completeMobileNumber,
+        setCompletePhoneNumber: setCompleteMobileNumber,
         requestOtp: requestOtp,
         validateOtp: validateOtp,
         errorMessage,
@@ -85,6 +88,7 @@ export function AuthProvider({ children }: {children: ReactNode}) {
           setIsProfileCreated(undefined);
         },
         session,
+        preparingStorageData,
         isProfileCreated,
         setIsProfileCreated,
       }}>

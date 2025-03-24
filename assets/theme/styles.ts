@@ -118,6 +118,18 @@ const HeadingText = {
   color: color.primary,
 }
 
+
+const WhiteContainerNoHorizontalPadding = {
+  backgroundColor: color.white,
+  flex: 1,
+};
+
+const WhiteContainer = {
+  backgroundColor: color.white,
+  flex: 1,
+  paddingHorizontal: 16,
+};
+
 export const GlobalStyles = StyleSheet.create({
   InputBoxStyle,
   Button,
@@ -130,6 +142,9 @@ export const GlobalStyles = StyleSheet.create({
   NormalText,
   HeadingText,
   SubHeadingText,
+  WhiteContainerNoHorizontalPadding,
+  WhiteContainer,
+  ButtonTextBasic,
   // Spacing,
 });
 
@@ -163,16 +178,8 @@ export const GlobalStyles = StyleSheet.create({
 //   paddingVertical: 32,
 // };
 
-// const WHITE_CONTAINER = {
-//   backgroundColor: color.white,
-//   flex: 1,
-//   paddingHorizontal: 16,
-// };
 
-// const WHITE_CONTAINER_NO_HORIZONTAL_PADDING = {
-//   backgroundColor: color.white,
-//   flex: 1,
-// };
+
 
 // const HOME_CONTAINER = {
 //   backgroundColor: color.background,
