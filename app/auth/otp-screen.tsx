@@ -26,57 +26,6 @@ const OTPScreen = () => {
     console.log('Resend OTP clicked');
   };
 
-  // const getOnBoardingProgresses = async (userId: number) => {
-  //   const response = await sendRequest<{
-  //     has_filled_children_info: boolean,
-  //     has_filled_pregnancy_status: boolean,
-  //     has_filled_profile: boolean
-  //   }>({
-  //     url: '/onboarding_progresses/' + userId + '/',
-  //     method: 'GET',
-  //     headers: {
-  //       'Accept-Language': 'en',
-  //       Authorization: 'Token ' + session!,
-  //     },
-  //   });
-  //   if (onboardingRes.data.has_filled_children_info === true) {
-  //     yield call(saveString, 'onboardingprogress', '3');
-  //     yield put(
-  //       VerifyOtpActions.verifyOtpSuccess({
-  //         userId,
-  //         onboardingProgress: 3,
-  //         authToken: res.data.token,
-  //       }),
-  //     );
-  //   } else if (onboardingRes.data.has_filled_pregnancy_status === true) {
-  //     yield call(saveString, 'onboardingprogress', '2');
-  //     yield put(
-  //       VerifyOtpActions.verifyOtpSuccess({
-  //         userId,
-  //         onboardingProgress: 2,
-  //         authToken: res.data.token,
-  //       }),
-  //     );
-  //   } else if (onboardingRes.data.has_filled_profile === true) {
-  //     yield call(saveString, 'onboardingprogress', '1');
-  //     yield put(
-  //       VerifyOtpActions.verifyOtpSuccess({
-  //         userId,
-  //         onboardingProgress: 1,
-  //         authToken: res.data.token,
-  //       }),
-  //     );
-  //   } else {
-  //     yield put(
-  //       VerifyOtpActions.verifyOtpSuccess({
-  //         userId,
-  //         onboardingProgress: 0,
-  //         authToken: res.data.token,
-  //       }),
-  //     );
-  //   }
-  // };
-
   const handleSubmit = async () => {
     const response = await validateOtp(otp);
     if(!response){
