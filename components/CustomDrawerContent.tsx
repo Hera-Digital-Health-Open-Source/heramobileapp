@@ -1,10 +1,11 @@
-import { DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
+import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Pressable, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { useAuth } from "@/context/AuthContext";
 import { useAuth0 } from "react-native-auth0";
+import { router } from "expo-router";
 
 export default function CustomDrawerContent(props: any) {
   const { bottom, top } = useSafeAreaInsets();
@@ -16,6 +17,7 @@ export default function CustomDrawerContent(props: any) {
   const handleSignOut = async () => {
     await clearSession();
     signOut();
+    router.replace('/auth/login');
   };
 
   return(
