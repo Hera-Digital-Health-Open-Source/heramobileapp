@@ -4,22 +4,14 @@ import {OtpInput} from 'react-native-otp-entry';
 import { useAuth } from '@/context/AuthContext';
 import Button, { ButtonStyles } from '@/components/Button';
 import { router } from 'expo-router';
+import Auth0 from 'react-native-auth0';
+import { useHttpClient } from '@/context/HttpClientContext';
 
 
 const OTPScreen = () => {
   const [otp, setOtp] = useState('');
-  const {validateOtp, isProfileCreated, errorMessage} = useAuth();
-
-  useEffect(() => {
-    console.log(`otp-screen.tsx: isProfileCreated: ${isProfileCreated}`);
-    if(isProfileCreated !== undefined){
-      if(isProfileCreated){
-        router.replace('/');
-      } else {
-        router.replace('/registration/user-details');
-      }
-    }
-  }, [isProfileCreated]);
+  const {completePhoneNumber, setSession, setIsProfileCreated} = useAuth();
+  const {sendRequestFetch} = useHttpClient();
 
   const handleResendOTP = () => {
     // Logic for resending OTP
@@ -27,10 +19,45 @@ const OTPScreen = () => {
   };
 
   const handleSubmit = async () => {
-    const response = await validateOtp(otp);
-    if(!response){
-      // show error message
-      console.log(`otp-screen.tsx: Error when validating OTP: ${errorMessage}`);
+    const auth0 = new Auth0({
+      domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN!,
+      clientId: process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID!,
+    });
+    
+    const credentials = await auth0.auth.loginWithSMS({
+      phoneNumber: completePhoneNumber, // The same phone number used in the previous step
+      code: otp,              // The OTP entered by the user
+    });
+
+    if(credentials && credentials.idToken){
+      const response = await sendRequestFetch<{token: string, is_new_user: boolean, user_id: number, user_profile: string}>({
+        url: '/otp_auth/auth0_authentication/',
+        method: 'POST',
+        data: {
+          phone_number: completePhoneNumber,
+        },
+        headers: {
+          'Accept-Language': 'en',
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + credentials.idToken,
+        },
+      })
+      if(response.error){
+        console.log('login.tsx: Error in fetching user profile: ', response.error);
+        return;
+      }
+      if(response.data){
+        setSession(response.data.token);
+        if(response.data.user_profile){
+          setIsProfileCreated(true);
+          router.replace('/');
+        } else if(response.data.is_new_user) {
+          setIsProfileCreated(false);
+          router.replace('/registration/user-details');
+        } else {
+          return;
+        }
+      }
     }
   };
 
