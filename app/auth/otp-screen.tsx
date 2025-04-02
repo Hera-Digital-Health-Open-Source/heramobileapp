@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import {OtpInput} from 'react-native-otp-entry';
 import { useAuth } from '@/context/AuthContext';
