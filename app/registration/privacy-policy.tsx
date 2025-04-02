@@ -12,7 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 export default function PrivacyPolicy(){
   const [isAccept, setIsAccept] = useState(false);
   const {name, gender, dateOfBirth, setOnBoardingProgress} = useRegistration();
-  const {sendRequest} = useHttpClient();
+  const {sendRequestFetch} = useHttpClient();
   const {session} = useAuth();
 
   const privacyPolicy = `Welcome to Hera, a mobile application designed to [brief description of app's function, e.g., "track your daily fitness activities"]. By accessing or using [App Name] (the "App"), you agree to comply with and be bound by the following terms and conditions ("Terms"). If you do not agree with these Terms, please do not use the App.
@@ -35,7 +35,7 @@ Upload or transmit harmful or unlawful content.
 12. Contact Us If you have any questions or concerns about these Terms, please contact us at [support@email.com] or visit our website at [www.appwebsite.com].`;
 
   const handleContinue = async () => {
-    const response = await sendRequest<{}>({
+    const response = await sendRequestFetch<{}>({
       url: '/user_profiles/',
       method: 'POST',
       data: {
@@ -47,11 +47,12 @@ Upload or transmit harmful or unlawful content.
       },
       headers: {
         'Accept-Language': 'en',
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
         Authorization: 'Token ' + session!,
       },
     });
 
-    console.log(response.data);
     if(response.error){
       console.log(response.error)
     }
@@ -62,7 +63,7 @@ Upload or transmit harmful or unlawful content.
   };
 
   const updateOnboardingProgresses = async () => {
-    const response = await sendRequest<{}>({
+    const response = await sendRequestFetch<{}>({
       url: '/onboarding_progresses/',
       method: 'POST',
       data: {
