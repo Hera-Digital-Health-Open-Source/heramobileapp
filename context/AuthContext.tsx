@@ -6,7 +6,7 @@ import { useLoading } from './LoadingContext';
 
 interface AuthContextType {
   requestOtp: (completeMobileNumber: string, captchToken: string) => Promise<boolean>;
-  validateOtp: (inputOtp: string) => Promise<boolean>;
+  validateOtp: (inputOtp: string, phoneNumber?: string) => Promise<boolean>;
   errorMessage: string | undefined;
   setErrorMessage: (errorMessage: string) => void;
   signOut: () => void;
@@ -47,12 +47,12 @@ export function AuthProvider({ children }: {children: ReactNode}) {
     return true;
   };
 
-  const validateOtp = async (inputOtp: string): Promise<boolean> => {
+  const validateOtp = async (inputOtp: string, phoneNumber?: string): Promise<boolean> => {
     const response = await sendRequest<{token: string, is_new_user: boolean, user_id: number, user_profile: string}>({
       url: '/otp_auth/attempt_challenge/',
       method: 'POST',
       data: {
-        phone_number: completeMobileNumber, secret: inputOtp
+        phone_number: phoneNumber, secret: inputOtp
       },
       headers: {'Accept-Language': 'en'},
     });
