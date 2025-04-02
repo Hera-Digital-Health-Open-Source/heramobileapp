@@ -12,6 +12,7 @@ import Appointment from '@/models/IAppointment';
 import MarkAsDoneModal from '@/components/appointments-screen/MarkAsDoneModal';
 import Vaccine from '@/models/Vaccine';
 import Child from '@/models/Child';
+import { useRouter } from 'expo-router';
 
 interface DateObject {
   dateString: string;
@@ -45,6 +46,7 @@ export default function Appointments() {
   const [refreshing, setRefreshing] = useState(false);
   const [children, setChildren] = useState<Child[]>([]);
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
+  const router = useRouter();
 
   const getVaccines = async () => {
     setRefreshing(true);
@@ -95,9 +97,15 @@ export default function Appointments() {
       },
     });
 
+    if(result.isTokenExpired){
+      setRefreshing(false);
+      throw new Error('Token expired');
+    }
     const s = result.data!;
     setAppointments(s);
 
+    setRefreshing(false);
+    return;
     result = await sendRequestFetch<[]>({
       url: '/children/',
       method: 'GET',
@@ -133,10 +141,15 @@ export default function Appointments() {
   };
 
   useEffect(() => {
-    getAppointments().then(() => {
+    getAppointments()
+    .then(() => {
       getVaccines().then(() => {
         getChildren();
       });
+    })
+    .catch((e) => {
+      console.log(e);
+      router.replace('/auth/login');
     });
   }, []);
 
