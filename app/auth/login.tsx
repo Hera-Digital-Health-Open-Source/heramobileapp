@@ -10,8 +10,10 @@ import Button, {ButtonStyles} from "@/components/Button";
 import { useAuth } from "@/context/AuthContext";
 import { router } from "expo-router";
 import { Platform } from "react-native";
-import { useAuth0 } from 'react-native-auth0';
+import Auth0, { useAuth0, User } from 'react-native-auth0';
 import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
+import { useHttpClient } from "@/context/HttpClientContext";
+
 
 export default function Login(){
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
@@ -19,9 +21,10 @@ export default function Login(){
   const [mobileNumber, setMobileNumber] = useState<string | undefined>(undefined);
   const [completeMobileNumber, setCompleteMobileNumber] = useState<string | undefined>(undefined);
   const [isRegisterMode, setIsRegisterMode] = useState(true);
-  const { requestOtp, validateOtp, errorMessage, isProfileCreated, setCompletePhoneNumber: setCPhoneNumber } = useAuth();
-  const { authorize, user, error } = useAuth0();
+  const {setSession, setIsProfileCreated, setCompletePhoneNumber: setCPhoneNumber, session } = useAuth();
+  const { authorize, user, error, getCredentials } = useAuth0();
   const [showCaptcha, setShowCaptcha] = useState(false);
+  const {sendRequestFetch} = useHttpClient();
 
   const languages = [
     {label: 'Arabic', key: 'ar'},
