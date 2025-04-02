@@ -41,16 +41,20 @@ export default function Login(){
     }
   }, [error]);
 
-  useEffect(() => {
-    console.log(`login.tsx: isProfileCreated: ${isProfileCreated}`);
-    if(isProfileCreated !== undefined){
-      if(isProfileCreated){
-        router.replace('/');
-      } else {
-        router.replace('/registration/user-details');
-      }
+  const extractProvider = (user: User) => {
+    const provider = user.sub!.split('|')[0];
+    const uid = user.sub!.split('|')[1]; //The format of user.sub is: provider|uid
+    if(provider.toLowerCase() === 'sms'){
+      return `${user.name}`;
+    } else if(provider.toLowerCase().indexOf('google') > -1){
+      return `${user.email}|${uid}`;
+    } else if(  provider.toLowerCase().indexOf('apple') > -1){
+      return `apple|${uid}`;
+    } else {
+      console.log('login.tsx: Unknown provider: ', provider);
+      return undefined;
     }
-  }, [isProfileCreated]);
+  }
 
   useEffect(() => {
     if(user){
