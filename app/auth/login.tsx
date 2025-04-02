@@ -54,17 +54,50 @@ export default function Login(){
 
   useEffect(() => {
     if(user){
-      console.log('login.tsx: User is logged in: ', user);
-      const uid = user.sub!.split('|')[1]; //The format of user.sub is: provider|uid
-      setCPhoneNumber(`${user.email}|${uid}`);
-      validateOtp(process.env.EXPO_PUBLIC_GLOBAL_OTP_AUTH!)
-      .then((response) => {
-        router.push('/');
-      })
-      .catch((error) => {
-        console.log('login.tsx: Error in validating OTP: ', error);
-      });
-    }    
+      const handleUser = async () => {
+        const userCredentials = await getCredentials();
+        if(!userCredentials){
+          return;
+        }
+        const accessToken = userCredentials.idToken;
+
+        const user_identifier = extractProvider(user);
+        if(!user_identifier){
+          return;
+        }
+        setCPhoneNumber(user_identifier);
+        const response = await sendRequestFetch<{token: string, is_new_user: boolean, user_id: number, user_profile: string}>({
+          url: '/otp_auth/auth0_authentication/',
+          method: 'POST',
+          data: {
+            phone_number: user_identifier,
+          },
+          headers: {
+            'Accept-Language': 'en',
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + accessToken,
+          },
+        })
+        if(response.error){
+          console.log('login.tsx: Error in fetching user profile: ', response.error);
+          return;
+        }
+        if(response.data){
+          setSession(response.data.token);
+          if(response.data.user_profile){
+            setIsProfileCreated(true);
+            router.replace('/');
+          } else if(response.data.is_new_user) {
+            setIsProfileCreated(false);
+            router.replace('/registration/user-details');
+          } else {
+            return;
+          }
+        }
+      }
+
+      handleUser();
+    }
   }, [user]);
 
 
