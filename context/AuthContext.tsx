@@ -88,6 +88,7 @@ export function AuthProvider({ children }: {children: ReactNode}) {
           setIsProfileCreated(undefined);
         },
         session,
+        setSession,
         preparingStorageData,
         isProfileCreated,
         setIsProfileCreated,
