@@ -70,14 +70,15 @@ export default function Login(){
 
   const handleRequestOtp = async (captchaToken: string) => {
     if(completeMobileNumber){
-      const response = await requestOtp(completeMobileNumber, captchaToken);
-      if(response){
-        console.log('login.tsx: Requested OTP successfully');
-        router.push('/auth/otp-screen');
-      } else {
-        //Show error message
-        console.log('login.tsx: Error in requesting OTP: ', errorMessage);
-      }
+      setCPhoneNumber(completeMobileNumber);
+      const auth0 = new Auth0({
+        domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN!,
+        clientId: process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID!,
+      });
+      await auth0.auth.passwordlessWithSMS({
+        phoneNumber: completeMobileNumber, 
+      });
+      router.push('/auth/otp-screen');
     }
   }
 
