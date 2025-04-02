@@ -13,6 +13,7 @@ export interface RequestConfig {
 export interface ClientResponse<T> {
   data: T | null;
   error: any | null;
+  isTokenExpired?: boolean;
 }
 
 interface HttpClientContextType {
@@ -47,9 +48,12 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
         };
         const response = await fetch(baseURL + requestObj.url, requestOptions);
         const data = await response.json();
+        if(response.status >= 400 && response.status < 500){
+          return { data: null, isTokenExpired: true, error: null};
+        }
         return {data: data, error: null};
       } catch(error){
-        console.log(JSON.parse(JSON.stringify(error)));
+        console.log(`Error: ${error}`);
         return { data: null, error};
       } finally {
         setLoading(false);
