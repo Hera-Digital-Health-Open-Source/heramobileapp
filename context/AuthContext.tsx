@@ -11,6 +11,7 @@ interface AuthContextType {
   setErrorMessage: (errorMessage: string) => void;
   signOut: () => void;
   session?: string | null;
+  setSession: (session: string | null) => void;
   preparingStorageData: boolean;
   completePhoneNumber: string;
   setCompletePhoneNumber: (completePhoneNumber: string) => void;
