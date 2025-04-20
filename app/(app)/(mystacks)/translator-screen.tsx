@@ -1,0 +1,280 @@
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
+import {
+  ExpoSpeechRecognitionModule,
+  useSpeechRecognitionEvent,
+} from "expo-speech-recognition";
+import { useEffect, useState } from "react";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Octicons from "@expo/vector-icons/Octicons";
+import DropDownPicker from "@/components/DropDownPicker";
+import { useHttpClient } from "@/context/HttpClientContext";
+import { useAuth } from "@/context/AuthContext";
+
+export default function TranslatorScreen() {
+  const [recognizing, setRecognizing] = useState(false);
+  const [transcript, setTranscript] = useState("");
+  const [displayText, setDisplayText] = useState("");
+  const [translating, setTranslating] = useState(false);
+  const [translation, setTranslation] = useState("");
+  const [fromLanguageCode, setFromLanguageCode] = useState("ar-SY");
+  const [toLanguageCode, setToLanguageCode] = useState("tr-TR");
+  const {sendRequestFetch} = useHttpClient();
+  const { session } = useAuth();
+
+  const supportedLanguages = [
+    {"label": "Arabic", "key": "ar-SY"},
+    {"label": "English", "key": "en-US"},
+    {"label": "Turkish", "key": "tr-TR"},
+  ];
+
+  useSpeechRecognitionEvent("start", () => setRecognizing(true));
+  useSpeechRecognitionEvent("end", () => setRecognizing(false));
+  useSpeechRecognitionEvent("result", (event) => {
+    setDisplayText(transcript + " " + event.results[0]?.transcript);
+    const usefullText = event.results
+      .filter((r) => r.confidence > 0)
+      .map((r) => r.transcript)
+      .join(" ");
+    if (usefullText !== "") {
+      setTranscript((old) => old + " " + usefullText);
+    }
+  });
+  useSpeechRecognitionEvent("error", (event) => {
+    console.log("error code:", event.error, "error message:", event.message);
+  });
+
+  useEffect(() => {
+    if(!recognizing && transcript !== ''){
+      setTranslating(true);
+      sendRequestFetch<{result: string}>({
+        url: '/translation_glossary/translatev2/',
+        method: 'POST',
+        headers: {
+          'Accept-Language': 'en',
+          'Content-Type': 'application/json',
+          Authorization: 'Token ' + session,
+        },
+        data: {
+          source_text: transcript,
+          dest_language: toLanguageCode
+        }
+      }).then(r => {
+        setTranslation(r.data?.result!);
+      }).catch(err => {
+        console.log(err);
+      }).finally(() => {
+        setTranslating(false);
+      })
+    }
+  }, [recognizing]);
+
+  const handleStart = async () => {
+    const permission = await ExpoSpeechRecognitionModule.getPermissionsAsync();
+    if (!permission.granted) {
+      if (permission.canAskAgain) {
+        const result =
+          await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+        if (!result.granted) {
+          console.warn("Permissions not granted", result);
+          return;
+        }
+      } else {
+        console.warn(
+          "You have to allow accessing the microphone from settings"
+        );
+        return;
+      }
+    }
+
+    setTranscript("");
+    setTranslation("");
+    ExpoSpeechRecognitionModule.start({
+      lang: fromLanguageCode,
+      interimResults: true,
+      maxAlternatives: 1,
+      continuous: true,
+      requiresOnDeviceRecognition: false,
+      addsPunctuation: false,
+      contextualStrings: [],
+    });
+  };
+
+  let whenTranslationWillAppear = "";
+  if(recognizing){
+    whenTranslationWillAppear = "Translation will appear here when you press the stop button.";
+  } else if(!recognizing && !translating){
+    whenTranslationWillAppear = "Translation will appear when you record something";
+  } else if(translating){
+    whenTranslationWillAppear = "Preparing the translation for you";
+  } else {
+    whenTranslationWillAppear = "";
+  }
+
+  const setLanguageCode = (source: 'from' | 'to', code: string) => {
+    if(source === 'from' && code === toLanguageCode) {
+      setToLanguageCode(fromLanguageCode);
+      setFromLanguageCode(code);
+      return;
+    }
+
+    if(source === 'to' && code === fromLanguageCode) {
+      setFromLanguageCode(toLanguageCode);
+      setToLanguageCode(code);
+      return;
+    }
+
+    if(source === 'from'){
+      setFromLanguageCode(code);
+      return;
+    }
+
+    if(source === 'to'){
+      setToLanguageCode(code);
+      return;
+    }
+  };
+
+  return (
+    <View style={{ alignItems: "center", padding: 16, gap: 16 }}>
+      <View style={styles.languagesContainer}>
+        <View style={styles.singleLanguageContainer}>
+          <Text style={{ fontSize: 10 }}>{"From"}</Text>
+          {/* I put this view here because the Picker component inside DropDownPicker component doesn't support alignItems to be center in the parent container, so I isolate the Picker container in this way */}
+          <View style={{width: '100%'}}>
+            <DropDownPicker
+              items={supportedLanguages}
+              style={{marginTop: 8}}
+              initialKeySelection={fromLanguageCode}
+              onItemSelectionChanged={(key) => setLanguageCode('from', key)}
+            />
+          </View>
+        </View>
+        <Pressable style={{marginTop: 24}}>
+          <Octicons name="arrow-switch" size={16} color="blue" />
+        </Pressable>
+        <View style={styles.singleLanguageContainer}>
+          <Text style={{ fontSize: 10 }}>{"To"}</Text>
+          <View style={{width: '100%'}}>
+            <DropDownPicker
+              items={supportedLanguages}
+              style={{marginTop: 8}}
+              initialKeySelection={toLanguageCode}
+              onItemSelectionChanged={(key) => setLanguageCode('to', key)}
+            />
+          </View>
+        </View>
+      </View>
+
+      {recognizing && (
+        <Pressable
+          style={[styles.microphoneButton, { backgroundColor: "red" }]}
+          onPress={() => {
+            ExpoSpeechRecognitionModule.stop();
+            setDisplayText(transcript);
+          }}
+        >
+          <FontAwesome name="stop" size={32} color="white" />
+        </Pressable>
+      )}
+
+      {translating && (
+        <View
+          style={[styles.microphoneButton, { backgroundColor: "#fff" }]}
+        >
+          <ActivityIndicator size={32} color={"#00f"}></ActivityIndicator>
+        </View>
+      )}
+
+      {!translating && !recognizing && (
+        <Pressable
+          style={[styles.microphoneButton, { backgroundColor: "green" }]}
+          onPress={handleStart}
+        >
+          <FontAwesome name="microphone" size={40} color="white" />
+        </Pressable>
+      )}
+
+      <View style={styles.textContainer}>
+        <Text style={{ textAlign: "right", fontSize: 16 }}>{displayText}</Text>
+
+        <Text
+          style={{
+            textAlign: "left",
+            marginTop: 16,
+            marginBottom: 8,
+            fontSize: 16,
+          }}
+        >
+          {"Translation"}
+        </Text>
+        {
+          translation === "" && whenTranslationWillAppear !== "" && 
+          <Text
+            style={{
+              textAlign: "left",
+              fontSize: 14,
+              fontStyle: "italic",
+              color: "grey",
+            }}
+          >
+            { whenTranslationWillAppear }
+          </Text>
+        }
+        {
+          translation !== "" && 
+          <Text
+            style={{
+              textAlign: "left",
+              fontSize: 16,
+              fontStyle: "normal",
+              color: "blue",
+            }}
+          >
+            {translation}
+          </Text>
+        }
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  microphoneButton: {
+    width: 75,
+    height: 75,
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  languagesContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    // justifyContent: "space-between",
+    borderRadius: 8,
+    backgroundColor: "white",
+    width: "100%",
+    paddingVertical: 8,
+    gap: 8,
+  },
+  singleLanguageContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    flex:1,
+    gap: 4,
+  },
+  textContainer: {
+    borderRadius: 8,
+    backgroundColor: "white",
+    width: "100%",
+    padding: 12
+  },
+});
