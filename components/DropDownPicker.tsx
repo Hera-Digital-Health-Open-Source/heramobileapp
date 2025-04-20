@@ -3,6 +3,7 @@ import {AntDesign} from "@expo/vector-icons";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {Picker} from '@react-native-picker/picker';
 import { useEffect, useState } from "react";
+import { Platform } from "react-native";
 
 type DropDownItem = {
   label: string;
@@ -40,50 +41,69 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
     }
   }, [currentKeySelected]);
 
-  return (
-    <View style={style}>
-      <Pressable onPress={() => setIsPickerVisible(!isPickerVisible)}>
-        <View style={styles.dropDownContainer}>
-          <Text>{label ? label : ""}</Text>
-          <AntDesign name={isPickerVisible ? "caretup" : "caretdown"} />
-        </View>
-      </Pressable>
-
-      <Modal animationType="slide" transparent={true} visible={isPickerVisible}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalTitleContainer}>
-            {/* <Text style={styles.title}>Choose an option</Text> */}
-            <Pressable onPress={() => setIsPickerVisible(false)}>
-              <MaterialIcons name="close" color="#fff" size={22}/>
-            </Pressable>
+  if(Platform.OS === 'android'){
+    return (
+      <View style={style}>
+        <Picker
+          selectedValue={currentKeySelected}
+          onValueChange={(itemValue, itemIndex) => {
+            setCurrentKeySelected(itemValue);
+            if(onItemSelectionChanged){
+              onItemSelectionChanged(itemValue!);
+            }
+          }}>
+            {items?.map((item, index) => (
+              <Picker.Item label={item.label} value={item.key} key={item.key} />
+            ))}
+        </Picker>
+      </View>
+    );
+  } else {
+    return (
+      <View style={style}>
+        <Pressable onPress={() => setIsPickerVisible(!isPickerVisible)}>
+          <View style={styles.dropDownContainer}>
+            <Text>{label ? label : ""}</Text>
+            <AntDesign name={isPickerVisible ? "caretup" : "caretdown"} />
           </View>
-          <View style={styles.modalBodyContainer}>
-            {!items && (
-              <Text style={{textAlign: 'center'}}>
-                No items are available
-              </Text>
-            )}
-            {items && (
-              <Picker
-                selectedValue={currentKeySelected}
-                onValueChange={(itemValue, itemIndex) => {
-                  setCurrentKeySelected(itemValue);
-                  if(onItemSelectionChanged){
-                    onItemSelectionChanged(itemValue!);
-                  }
-                }}>
-                  {items?.map((item, index) => (
-                    <Picker.Item label={item.label} value={item.key} key={item.key} />
-                  ))}
-              </Picker>
-            )}
+        </Pressable>
+  
+        <Modal animationType="slide" transparent={true} visible={isPickerVisible}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalTitleContainer}>
+              {/* <Text style={styles.title}>Choose an option</Text> */}
+              <Pressable onPress={() => setIsPickerVisible(false)}>
+                <MaterialIcons name="close" color="#fff" size={22}/>
+              </Pressable>
+            </View>
+            <View style={styles.modalBodyContainer}>
+              {!items && (
+                <Text style={{textAlign: 'center'}}>
+                  No items are available
+                </Text>
+              )}
+              {items && (
+                <Picker
+                  selectedValue={currentKeySelected}
+                  onValueChange={(itemValue, itemIndex) => {
+                    setCurrentKeySelected(itemValue);
+                    if(onItemSelectionChanged){
+                      onItemSelectionChanged(itemValue!);
+                    }
+                  }}>
+                    {items?.map((item, index) => (
+                      <Picker.Item label={item.label} value={item.key} key={item.key} />
+                    ))}
+                </Picker>
+              )}
+            </View>
           </View>
-        </View>
-      </Modal>
-    </View>
-
-    
-  );
+        </Modal>
+      </View>
+  
+      
+    );
+  }
 }
 
 const styles = StyleSheet.create({
