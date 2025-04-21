@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "HeraMobile",
-    "slug": "HeraMobile",
+    "name": "Hera Digital Health",
+    "slug": "hera-digital-health",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,14 +10,14 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.HeraMobile"
+      "bundleIdentifier": "com.heradigitalhealth.ios"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.HeraMobile",
+      "package": "com.heradigitalhealth.android",
       "config": {
         "googleMaps": {
           "apiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
