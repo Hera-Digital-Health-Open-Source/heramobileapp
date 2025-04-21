@@ -72,7 +72,7 @@ export default function Index() {
       textColor: color.primary,
       backgroundColor: "#fff",
       requireSignedIn: false,
-      onPressHandler: () => {},
+      onPressHandler: () => router.push('/near-health-centers-screen'),
     },
     {
       title: "My Children",
