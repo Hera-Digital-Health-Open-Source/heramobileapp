@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import { Image } from "expo-image";
 import { 
   imgHomeAppointments,
@@ -31,15 +31,17 @@ import { router } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function Index() {
   // const {signOut} = useAuth();
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   const mainTiles = [
     {
-      title: "My Appointments",
+      // title: "My Appointments",
+      title: t('home_screen_my_appointments_title'),
       tileKey: keyAppointments,
       image: imgHomeAppointments,
       textColor: color.primary,
@@ -48,7 +50,8 @@ export default function Index() {
       onPressHandler: () => router.push('/appointments'),
     },
     {
-      title: "My Translator",
+      // title: "My Translator",
+      title: t('home_screen_translator_title'),
       tileKey: keyTranslator,
       image: imgHomeTranslator,
       textColor: color.primary,
@@ -57,7 +60,8 @@ export default function Index() {
       onPressHandler: () => router.push('/translator-screen'),
     },
     {
-      title: "Emergency Call",
+      // title: "Emergency Call",
+      title: t('home_screen_emergency_call_title'),
       tileKey: keyEmergencyCall,
       image: imgHomeEmergencyCall,
       textColor: color.red,
@@ -66,7 +70,8 @@ export default function Index() {
       onPressHandler: () => {},
     },
     {
-      title: "Nearby Health Centers",
+      // title: "Nearby Health Centers",
+      title: t('home_screen_nearby_health_centers_title'),
       tileKey: keyHealthCenters,
       image: imgHomeNearbyHealthCenters,
       textColor: color.primary,
@@ -75,7 +80,8 @@ export default function Index() {
       onPressHandler: () => router.push('/near-health-centers-screen'),
     },
     {
-      title: "My Children",
+      // title: "My Children",
+      title: t('home_screen_my_children_title'),
       tileKey: keyChildren,
       image: imgHomeChildren,
       textColor: color.primary,
@@ -84,7 +90,8 @@ export default function Index() {
       onPressHandler: () => {router.push('/children')},
     },
     {
-      title: "My Pregnancy",
+      // title: "My Pregnancy",
+      title: t('home_screen_my_pregnancy_title'),
       tileKey: keyPregnancy,
       image: imgHomePregnancy,
       textColor: color.primary,
@@ -93,7 +100,8 @@ export default function Index() {
       onPressHandler: () => {},
     },
     {
-      title: "Free Advice Online",
+      // title: "Free Advice Online",
+      title: t('home_screen_whatsapp_hotline_title'),
       tileKey: keyWhatsappHotline,
       image: imgHomeWhatsappHotline,
       textColor: color.green,
@@ -102,7 +110,7 @@ export default function Index() {
       onPressHandler: () => {},
     },
     {
-      title: "Sexual Reproductive Health",
+      title: t('home_screen_shrh_title'),
       tileKey: keySrhr,
       image: imgHomeSrhr,
       textColor: color.primary,
@@ -111,7 +119,7 @@ export default function Index() {
       onPressHandler: () => {router.push('/srhr')},
     },
     {
-      title: "Make Doctor's Appointment",
+      title: t('home_screen_doctor_appointment'),
       tileKey: doctorAppointment,
       image: imgHomeDoctorAppointment,
       textColor: color.primary,
