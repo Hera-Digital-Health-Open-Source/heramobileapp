@@ -4,6 +4,13 @@ import { useHttpClient } from "@/context/HttpClientContext";
 import { useLoading } from './LoadingContext';
 
 
+interface UserProfile {
+  name: string;
+  gender: 'MALE' | 'FEMALE';
+  date_of_birth: string;
+  language_code: 'en' | 'ar' | 'tr';
+  time_zone: string;
+}
 interface AuthContextType {
   requestOtp: (completeMobileNumber: string, captchToken: string) => Promise<boolean>;
   validateOtp: (inputOtp: string, phoneNumber?: string) => Promise<boolean>;
@@ -17,6 +24,8 @@ interface AuthContextType {
   setCompletePhoneNumber: (completePhoneNumber: string) => void;
   isProfileCreated: boolean | undefined;
   setIsProfileCreated: (isProfileCreated: boolean) => void;
+  profile: UserProfile | undefined;
+  setProfile: (userProfile: UserProfile) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,6 +37,7 @@ export function AuthProvider({ children }: {children: ReactNode}) {
   const [isProfileCreated, setIsProfileCreated] = useState<boolean | undefined>(undefined);
   const {setLoading} = useLoading();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+  const [profile, setProfile] = useState<UserProfile | undefined>(undefined);
 
   const requestOtp = async (completeMobileNumber: string, captchToken: string) : Promise<boolean> => {
     const response = await sendRequest<{phone_number: string, expires_at: string}>({
@@ -48,7 +58,7 @@ export function AuthProvider({ children }: {children: ReactNode}) {
   };
 
   const validateOtp = async (inputOtp: string, phoneNumber?: string): Promise<boolean> => {
-    const response = await sendRequest<{token: string, is_new_user: boolean, user_id: number, user_profile: string}>({
+    const response = await sendRequest<{token: string, is_new_user: boolean, user_id: number, user_profile: UserProfile}>({
       url: '/otp_auth/attempt_challenge/',
       method: 'POST',
       data: {
@@ -66,6 +76,15 @@ export function AuthProvider({ children }: {children: ReactNode}) {
 
     setSession(response.data!.token);
     setIsProfileCreated(response.data!.user_profile ? true : false);
+    if(response.data!.user_profile){
+      setProfile({
+        name: response.data!.user_profile.name as string,
+        gender: response.data!.user_profile.gender as 'MALE' | 'FEMALE',
+        date_of_birth: response.data!.user_profile.date_of_birth as string,
+        language_code: response.data!.user_profile.language_code as 'ar' | 'en' | 'tr',
+        time_zone: response.data!.user_profile.time_zone as string
+      })
+    }
     return true;
   };
 
@@ -87,12 +106,15 @@ export function AuthProvider({ children }: {children: ReactNode}) {
           setCompleteMobileNumber('');
           setErrorMessage(undefined);
           setIsProfileCreated(undefined);
+          setProfile(undefined);
         },
         session,
         setSession,
         preparingStorageData,
         isProfileCreated,
         setIsProfileCreated,
+        profile,
+        setProfile
       }}>
       {children}
     </AuthContext.Provider>

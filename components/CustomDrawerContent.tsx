@@ -2,20 +2,16 @@ import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Pressable, Text, View } from "react-native";
-import { Image } from "expo-image";
 import { useAuth } from "@/context/AuthContext";
-import { useAuth0 } from "react-native-auth0";
 import { router } from "expo-router";
 
 export default function CustomDrawerContent(props: any) {
   const { bottom, top } = useSafeAreaInsets();
-  const { signOut } = useAuth();
-  const { clearSession } = useAuth0();
+  const { signOut, profile } = useAuth();
 
-  const sample = require('@/assets/images/sample-person.png');
+  // const sample = require('@/assets/images/sample-person.png');
 
   const handleSignOut = async () => {
-    await clearSession();
     signOut();
     router.replace('/auth/login');
   };
@@ -28,16 +24,16 @@ export default function CustomDrawerContent(props: any) {
         contentContainerStyle={{paddingTop: top, paddingBottom: bottom}}
       >
         <View style={{alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: "#dde3fe", gap: 8}}>
-          <Image source={sample} style={{width: 100, height: 100, borderRadius: 35, marginHorizontal: 'auto'}} />
-          <Text>Ahmet Yilmaz</Text>
+          {/* <Image source={sample} style={{width: 100, height: 100, borderRadius: 35, marginHorizontal: 'auto'}} /> */}
+          <View style={{height: 100, padding: 4}}></View>
+          <Text style={{fontSize: 24, fontWeight: 'semibold'}}>{profile?.name}</Text>
         </View>
-        {/* <DrawerItemList {...props} /> */}
-        <DrawerItem 
+        {/* <DrawerItem 
           icon={({ color, size }) => (
             <Ionicons name="person-outline" size={size} color={color} />
           )}
           label={"Profile"} onPress={() => alert("Logout Pressed!")} 
-        />
+        /> */}
         <DrawerItem 
           icon={({ color, size }) => (
             <Ionicons name="newspaper-outline" size={size} color={color} />
@@ -50,18 +46,18 @@ export default function CustomDrawerContent(props: any) {
           )}
           label={"Facebook Group"} onPress={() => alert("Logout Pressed!")} 
         />
-        <DrawerItem 
+        {/* <DrawerItem 
           icon={({ color, size }) => (
             <Ionicons name="language-outline" size={size} color={color} />
           )}
           label={"Change Language"} onPress={() => alert("Logout Pressed!")} 
-        />
-        <DrawerItem 
+        /> */}
+        {/* <DrawerItem 
           icon={({ color, size }) => (
             <Ionicons name="settings-outline" size={size} color={color} />
           )}
           label={"Settings"} onPress={() => alert("Logout Pressed!")} 
-        />
+        /> */}
         <DrawerItem 
           icon={({ color, size }) => (
             <Ionicons name="chatbox-ellipses-outline" size={size} color={color} />
