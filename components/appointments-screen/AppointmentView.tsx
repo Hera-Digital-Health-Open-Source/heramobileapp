@@ -2,7 +2,7 @@ import { color, GlobalStyles, Spacing } from "@/assets/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { ReactNode } from "react";
 import { StyleProp, View, ViewStyle, Text, Pressable } from "react-native";
-
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function AppointmentView({style, children} : {children: ReactNode, style: StyleProp<ViewStyle>}){
   return (
@@ -17,20 +17,22 @@ export function AppointmentView({style, children} : {children: ReactNode, style:
 }
 
 export function PregnancyAppointmentView({style}: {style: StyleProp<ViewStyle>}){
+  const {t} = useTranslation();
   return (
     <AppointmentView style={style}>
       <Text style={[GlobalStyles.NormalText, {color: color.primary}]}>
-        {'Pregnancy Check'}
+        {t('my_appointments_pregnancy_check')}
       </Text>
       <Text>
         {''}
       </Text>
-      <FindHealthCenterView label="You can get this checkup for free. Find out where." />
+      <FindHealthCenterView label={t('my_appointments_screen_description_3')} />
     </AppointmentView>
   );
 }
 
 export function VaccineAppointmentView({style, person_name, vaccine_names}: {person_name: string, vaccine_names: string[], style: StyleProp<ViewStyle>}){
+  const {t} = useTranslation();
   return (
     <AppointmentView style={style}>
       <Text style={[GlobalStyles.NormalText, {color: color.primary}]}>
@@ -39,15 +41,16 @@ export function VaccineAppointmentView({style, person_name, vaccine_names}: {per
       <Text>
         {`Recommended vaccines: ${vaccine_names}`}
       </Text>
-      <FindHealthCenterView label="Your child can get this vaccine for free. Find out where." />
+      <FindHealthCenterView label={t('my_appointments_screen_description_4')} />
     </AppointmentView>
   );
 }
 
 export function NoAppointmentView({style}: {style: StyleProp<ViewStyle>}){
+  const {t} = useTranslation();
   return (
     <AppointmentView style={[style, {alignItems: 'center', justifyContent: 'center', flex: 1}]}>
-      <Text>No appointments are scheduled for today</Text>
+      <Text>{t('my_appointments_screen_description_1')}</Text>
     </AppointmentView>
   );
 }

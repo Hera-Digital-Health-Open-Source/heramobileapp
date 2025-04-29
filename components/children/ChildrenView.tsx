@@ -8,13 +8,13 @@ import { useHttpClient } from "@/context/HttpClientContext";
 import Child from "@/models/Child";
 import { useAuth } from "@/context/AuthContext";
 import { ScrollView } from "react-native-gesture-handler";
-
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function ChildrenView({showIamDone}: { showIamDone: boolean}) {
-  const info = `Enter your child’s information and we will add their recommended vaccination dates on your calendar!`;
   const { sendRequestFetch } = useHttpClient();
   const [children, setChildren] = useState<Child[]>([]);
   const { session } = useAuth();
+  const {t} = useTranslation();
 
   // I use useFocusEffect instead of useEffect, because I need to re-fetch 
   // children again when navigating back from a Child view.
@@ -45,8 +45,8 @@ export default function ChildrenView({showIamDone}: { showIamDone: boolean}) {
     <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
       <View style={styles.container}>
         <View style={{flex:1, gap: Spacing.large}}>
-          <Text style={GlobalStyles.HeadingText}>Children</Text>
-          <Text style={GlobalStyles.NormalText}>{info}</Text>
+          <Text style={GlobalStyles.HeadingText}>{t('children_info_screen_toolbar_title')}</Text>
+          <Text style={GlobalStyles.NormalText}>{t('children_info_screen_description')}</Text>
           <ScrollView style={{flex:1}}>
             {children.map((c, index) => (
               <ChildPlaceHolder
@@ -71,7 +71,7 @@ export default function ChildrenView({showIamDone}: { showIamDone: boolean}) {
           <Button
             style={{flex: 1}}
             buttonType={ButtonStyles.FILLED}
-            label="Add a Child"
+            label={t('add_a_child_screen_toolbar_title')}
             onPress={() => router.push('/child-add')}
           />
         </View>

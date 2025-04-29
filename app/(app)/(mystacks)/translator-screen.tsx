@@ -16,6 +16,7 @@ import Octicons from "@expo/vector-icons/Octicons";
 import DropDownPicker from "@/components/DropDownPicker";
 import { useHttpClient } from "@/context/HttpClientContext";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function TranslatorScreen() {
   const [recognizing, setRecognizing] = useState(false);
@@ -27,11 +28,12 @@ export default function TranslatorScreen() {
   const [toLanguageCode, setToLanguageCode] = useState("tr-TR");
   const {sendRequestFetch} = useHttpClient();
   const { session } = useAuth();
+  const {t} = useTranslation();
 
   const supportedLanguages = [
-    {"label": "Arabic", "key": "ar-SY"},
-    {"label": "English", "key": "en-US"},
-    {"label": "Turkish", "key": "tr-TR"},
+    {"label": t('language_dropdown_arabic_text'), "key": "ar-SY"},
+    {"label": t('language_dropdown_english_text'), "key": "en-US"},
+    {"label": t('language_dropdown_turkish_text'), "key": "tr-TR"},
   ];
 
   useSpeechRecognitionEvent("start", () => setRecognizing(true));
@@ -108,11 +110,11 @@ export default function TranslatorScreen() {
 
   let whenTranslationWillAppear = "";
   if(recognizing){
-    whenTranslationWillAppear = "Translation will appear here when you press the stop button.";
+    whenTranslationWillAppear = t('translator_screen_translation_hint1');
   } else if(!recognizing && !translating){
-    whenTranslationWillAppear = "Translation will appear when you record something";
+    whenTranslationWillAppear = t('translator_screen_translation_hint2');
   } else if(translating){
-    whenTranslationWillAppear = "Preparing the translation for you";
+    whenTranslationWillAppear = t('translator_screen_translation_hint3');
   } else {
     whenTranslationWillAppear = "";
   }
@@ -145,7 +147,7 @@ export default function TranslatorScreen() {
     <View style={{ alignItems: "center", padding: 16, gap: 16 }}>
       <View style={styles.languagesContainer}>
         <View style={styles.singleLanguageContainer}>
-          <Text style={{ fontSize: 10 }}>{"From"}</Text>
+          <Text style={{ fontSize: 10 }}>{t('translator_screen_translate_from_text')}</Text>
           {/* I put this view here because the Picker component inside DropDownPicker component doesn't support alignItems to be center in the parent container, so I isolate the Picker container in this way */}
           <View style={{width: '100%'}}>
             <DropDownPicker
@@ -160,7 +162,7 @@ export default function TranslatorScreen() {
           <Octicons name="arrow-switch" size={16} color="blue" />
         </Pressable>
         <View style={styles.singleLanguageContainer}>
-          <Text style={{ fontSize: 10 }}>{"To"}</Text>
+          <Text style={{ fontSize: 10 }}>{t('translator_screen_translate_to_text')}</Text>
           <View style={{width: '100%'}}>
             <DropDownPicker
               items={supportedLanguages}
@@ -212,7 +214,7 @@ export default function TranslatorScreen() {
             fontSize: 16,
           }}
         >
-          {"Translation"}
+          {t('translator_screen_translation')}
         </Text>
         {
           translation === "" && whenTranslationWillAppear !== "" && 

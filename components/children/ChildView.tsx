@@ -10,6 +10,7 @@ import Child from "@/models/Child";
 import Vaccine from "@/models/Vaccine";
 import { useHttpClient } from "@/context/HttpClientContext";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslation } from "@/hooks/useTranslation";
 
 function getVaccineId(vaccines: Vaccine[], vaccineName: string) {
   if (vaccines) {
@@ -26,10 +27,11 @@ export default function ChildView({introduceText, child} : {introduceText: strin
   const { sendRequestFetch } = useHttpClient();
   const { session } = useAuth();
   const [takenVaccines, setTakenVaccines] = useState<string[]>([]);
+  const {t} = useTranslation();
 
   const info = !introduceText ? `Alright! Let’s fill in the details and we will assist you by adding important doctor visit dates into “My Appointments”!`: '';
   const enableActionButton = childName.length > 0 && gender.length > 0 && (gender === 'MALE' || gender == 'FEMALE');
-  const title = child ? "Edit a Child" : "Add a Child";
+  const title = child ? t('edit_a_child_screen_toolbar_title') : t('add_a_child_screen_toolbar_title');
 
   const addSaveChild = async () => {
     const takenVaccineIds = takenVaccines.map(v => getVaccineId(vaccines, v)!);
@@ -135,7 +137,7 @@ export default function ChildView({introduceText, child} : {introduceText: strin
 
         <View style={{gap: Spacing.xlarge, flex: 1}}>
           <View style={{gap: Spacing.medium}}>
-            <Text style={GlobalStyles.NormalText}>Child Name</Text>
+            <Text style={GlobalStyles.NormalText}>{t('add_a_child_screen_name_hint')}</Text>
             <TextInput
               style={GlobalStyles.InputBoxStyle}
               onChangeText={(t) => setChildName(t)}
@@ -145,23 +147,23 @@ export default function ChildView({introduceText, child} : {introduceText: strin
             />
           </View>
           <View style={{gap: Spacing.medium}}>
-            <Text style={GlobalStyles.NormalText}>Date of Birth</Text>
+            <Text style={GlobalStyles.NormalText}>{t('add_a_child_screen_date_of_birth_hint')}</Text>
             <DateModalPicker initialDate={childBrithDate} onDateSelected={(date)=>setChildBirthDate(date)} />
           </View>
           <View style={{gap: Spacing.medium}}>
-            <Text style={GlobalStyles.NormalText}>Gender</Text>
+            <Text style={GlobalStyles.NormalText}>{t('edit_a_child_screen_toolbar_gender_title')}</Text>
             <DropDownPicker 
               items={[
                 {key: 'n/a', label: ''},
-                {key: 'MALE', label: 'Male'},
-                {key: 'FEMALE', label: 'Female'}
+                {key: 'MALE', label: t('gender_dropdown_male_text')},
+                {key: 'FEMALE', label: t('gender_dropdown_female_text')}
               ]}
               initialKeySelection={gender}
               onItemSelectionChanged={(key) => setGender(key)} 
             />
           </View>
           <View style={{flex: 1}}>
-            <Text style={GlobalStyles.NormalText}>Past Vaccinations</Text>
+            <Text style={GlobalStyles.NormalText}>{t('add_a_child_screen_past_vaccinations_title')}</Text>
             <ScrollView style={{height: '100%'}}>
               {child && vaccines.map( (vaccine, index) => (
                 <Checkbox

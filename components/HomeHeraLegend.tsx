@@ -1,15 +1,18 @@
 import { View, StyleSheet, Text } from "react-native";
 import { Image } from "expo-image";
 import { heraIcon } from "@/assets/images/images";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function HomeHeraLegend(){
+  const { t } = useTranslation();
+
   return (
     <View style={styles.legendContainer}>
       <View style={styles.headerContainer}>
         <Image source={heraIcon} style={{width: 38, height: 35, marginRight: 10}} />
-        <Text style={styles.headerText}>HERA</Text>
+        <Text style={styles.headerText}>{t('visit_hera_web_screen_toolbar_title')}</Text>
       </View>
-      <Text style={styles.bodyText}>Helping individuals in Turkey navigate their journey to a healthy family!</Text>
+      <Text style={styles.bodyText}>{t('home_screen_legend')}</Text>
     </View>
   );
 }
