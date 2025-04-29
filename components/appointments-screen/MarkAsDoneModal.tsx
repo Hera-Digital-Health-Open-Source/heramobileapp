@@ -1,11 +1,12 @@
 import { StyleSheet, View, Text, Pressable, Modal, StyleProp, ViewStyle, ScrollView } from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Appointment from "@/models/IAppointment";
 import MarkAsDoneButton from "./MarkAsDoneButton";
 import Checkbox from "../CheckBox";
 import Button, { ButtonStyles } from "../Button";
 import { Spacing } from "@/assets/theme";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type Props = {
   onItemSelectionChanged?: (key:string)=>void;
@@ -18,6 +19,7 @@ type Props = {
 export default function MarkAsDoneModal({appointment, onSave, style, initTakenVaccines}: Props){
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const [takenVaccines, setTakenVaccines] = useState<string[]>(initTakenVaccines);
+  const {t} = useTranslation();
 
   const handleTakeVaccine = (vaccine_name: string, is_taken: boolean) => {
     if(is_taken){
@@ -34,7 +36,7 @@ export default function MarkAsDoneModal({appointment, onSave, style, initTakenVa
 
   return (
     <View style={style}>
-      <MarkAsDoneButton style={{paddingHorizontal: 4}} label={"Mark as Done"} onPress={() => setIsPickerVisible(!isPickerVisible)} />
+      <MarkAsDoneButton style={{paddingHorizontal: 4}} label={t('my_appointments_screen_mark_as_done_btn')} onPress={() => setIsPickerVisible(!isPickerVisible)} />
 
       <Modal animationType="fade" transparent={true} visible={isPickerVisible}>
         <View style={styles.modalContainer}>
@@ -62,8 +64,8 @@ export default function MarkAsDoneModal({appointment, onSave, style, initTakenVa
                     />
                   ))}
                 </ScrollView>
-                <Button buttonType={ButtonStyles.FILLED} label="Save" onPress={handleOnSave}/>
-                <Button buttonType={ButtonStyles.UNFILLED} label="Cancel" onPress={() => setIsPickerVisible(!isPickerVisible)} />
+                <Button buttonType={ButtonStyles.FILLED} label={t('child_info_screen_save_button')} onPress={handleOnSave}/>
+                <Button buttonType={ButtonStyles.UNFILLED} label={t('child_info_screen_remove_button')} onPress={() => setIsPickerVisible(!isPickerVisible)} />
               </View>
             )}
           </View>
