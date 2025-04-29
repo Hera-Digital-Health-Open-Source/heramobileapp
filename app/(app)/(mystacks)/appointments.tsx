@@ -1,6 +1,6 @@
 import React, { useEffect, ReactNode } from 'react';
 import { View, Text, FlatList, StyleSheet, SafeAreaView, useWindowDimensions, StyleProp, ViewStyle, RefreshControl } from 'react-native';
-import { CalendarList } from 'react-native-calendars';
+import { Calendar, CalendarList } from 'react-native-calendars';
 import { color, GlobalStyles, Spacing } from '@/assets/theme';
 import { useState } from 'react';
 import Button, { ButtonStyles } from '@/components/Button';
@@ -13,6 +13,8 @@ import MarkAsDoneModal from '@/components/appointments-screen/MarkAsDoneModal';
 import Vaccine from '@/models/Vaccine';
 import Child from '@/models/Child';
 import { useRouter } from 'expo-router';
+import { useTranslation } from '@/hooks/useTranslation';
+import { I18nManager } from 'react-native';
 
 interface DateObject {
   dateString: string;
@@ -47,6 +49,7 @@ export default function Appointments() {
   const [children, setChildren] = useState<Child[]>([]);
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
   const router = useRouter();
+  const {t} = useTranslation();
 
   const getVaccines = async () => {
     setRefreshing(true);
@@ -168,7 +171,7 @@ export default function Appointments() {
       <View style={[styles.item, {flexDirection: 'row', gap: Spacing.large, alignItems: 'center'}]}>
         <View style={{flex: 4, gap: Spacing.medium}}>
           <Text style={GlobalStyles.SubHeadingText}>{item.date}</Text>
-          <Text style={styles.title}>{isVaccination ? item.person_name : 'Pregnancy Check'}</Text>
+          <Text style={styles.title}>{isVaccination ? item.person_name : t('my_appointments_pregnancy_check')}</Text>
           <Text style={{}}>{isVaccination ? item.vaccine_names : ''}</Text>
         </View>
         <MarkAsDoneModal
@@ -240,10 +243,10 @@ export default function Appointments() {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <View style={styles.container}>
-      <Text style={[GlobalStyles.SubHeadingText, {textAlign: 'center'}]}>My Appointments</Text>
+      <Text style={[GlobalStyles.SubHeadingText, {textAlign: 'center'}]}>{t('home_screen_my_appointments_title')}</Text>
       <View style={{ flexDirection: 'row', gap: 10, width: '75%', marginLeft: Spacing.medium }}>
-        <Button style={{flex: 3}} buttonType={isCalendarView ? ButtonStyles.FILLED : ButtonStyles.UNFILLED} label="Calendar View" onPress={() => setIsCalendarView(true)} />
-        <Button style={{flex: 2}}  buttonType={isCalendarView ? ButtonStyles.UNFILLED : ButtonStyles.FILLED} label="List View" onPress={() => setIsCalendarView(false)} />
+        <Button style={{flex: 3}} buttonType={isCalendarView ? ButtonStyles.FILLED : ButtonStyles.UNFILLED} label={t('my_appointments_screen_calender_view')} onPress={() => setIsCalendarView(true)} />
+        <Button style={{flex: 2}}  buttonType={isCalendarView ? ButtonStyles.UNFILLED : ButtonStyles.FILLED} label={t('my_appointments_screen_list_view')} onPress={() => setIsCalendarView(false)} />
       </View>
       {isCalendarView && (
         <View style={{flex: 1}}>
@@ -256,19 +259,20 @@ export default function Appointments() {
               />
             }
           >
-            <CalendarList
+             <Calendar
               markedDates={markedDates}
               onDayPress={(day: DateObject) => {
-                console.log('selected day', day);
                 setSelectedAppointments(appointments.filter(a => a.date === day.dateString));
                 setSelectedDay(day.dateString);
               }}
-              horizontal={true} // Enable horizontal scrolling
-              current={currentMonth} // Set the current month
-              pagingEnabled={true} // Optional: Enable paging
-              // pastScrollRange={0} // Show only the current month
-              // futureScrollRange={0} // Show only the current month
-              markingType={'custom'} // Use custom marking type
+              current={currentMonth}
+              markingType={'custom'}
+              // onMonthChange={(month) => {
+              //   setCurrentMonth(month.dateString);
+              // }}
+              // Enable these props for better navigation experience
+              enableSwipeMonths={true}
+              // The Calendar component handles RTL properly
             />
             <View style={{marginHorizontal: Spacing.medium}}>
               {selectedAppointments.length > 0 
