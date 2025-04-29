@@ -13,10 +13,11 @@ import { Platform } from "react-native";
 import Auth0, { useAuth0, User } from 'react-native-auth0';
 import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
 import { useHttpClient } from "@/context/HttpClientContext";
-
+import { useTranslation } from "@/hooks/useTranslation";
+import { useI18n } from "@/context/I18nContext";
 
 export default function Login(){
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
+  // const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
   const [selectedCountryCallingCode, setSelectedCountryCallingCode] = useState<string | null>("+90");
   const [mobileNumber, setMobileNumber] = useState<string | undefined>(undefined);
   const [completeMobileNumber, setCompleteMobileNumber] = useState<string | undefined>(undefined);
@@ -25,12 +26,18 @@ export default function Login(){
   const { authorize, user, error, getCredentials } = useAuth0();
   const [showCaptcha, setShowCaptcha] = useState(false);
   const {sendRequestFetch} = useHttpClient();
+  const { t } = useTranslation();
+  const { setAppLanguage } = useI18n();
 
   const languages = [
-    {label: 'Arabic', key: 'ar'},
-    {label: 'English', key: 'en'},
-    {label: 'Turkish', key: 'tr'},
+    {label: t('language_dropdown_arabic_text'), key: 'ar'},
+    {label: t('language_dropdown_english_text'), key: 'en'},
+    {label: t('language_dropdown_turkish_text'), key: 'tr'},
   ];
+
+  const setCurrentLanguage = async (language: string) => {
+    await setAppLanguage(language as 'ar' | 'en' | 'tr');
+  }
 
   useEffect(() => {
     if(selectedCountryCallingCode && mobileNumber){
@@ -136,22 +143,22 @@ export default function Login(){
         <View style={{alignItems: 'flex-end', padding: 16}}>
           <Button 
             buttonType={ButtonStyles.PLAIN}
-            label={isRegisterMode ? "Login" : "Register"}
+            label={isRegisterMode ? t('login_screen_login_button') : t('login_screen_signup_button')}
             onPress={()=>setIsRegisterMode((prev) => !prev)}
           />
         </View>
         <View style={styles.loginContainer}>
           <Image source={imgLoginMain} style={{width: 93, height:86}} />
           <View style={styles.loginInputsContainer}>
-            <Text>Language</Text>
+            <Text>{t('login_screen_select_language_dropdown_hint')}</Text>
             <DropDownPicker 
               items={languages}
               style={{marginTop: 8}}
               // label={languages.filter(l => l.key===selectedLanguage)[0].label} 
-              initialKeySelection={selectedLanguage}
-              onItemSelectionChanged={(key) => setSelectedLanguage(key)}
+              initialKeySelection={'en'}
+              onItemSelectionChanged={(key) => setCurrentLanguage(key)}
             />
-            <Text style={{marginTop: 16}}>Contact Number</Text>
+            <Text style={{marginTop: 16}}>{t('login_screen_phone_number_hint')}</Text>
             <View style={{flexDirection: 'row', gap: 8 , alignContent: 'space-between', marginTop: 8}}>
               <CountryModalPicker
                 style={{width:75}}
@@ -163,18 +170,18 @@ export default function Login(){
                 style={[GlobalStyles.InputBoxStyle, {flex:1}]}
                 onChangeText={(t) => setMobileNumber(t)}
                 value={mobileNumber}
-                placeholder="Phone Number"
+                placeholder={t('login_screen_phone_number_hint')}
                 keyboardType="number-pad"
               />
             </View>
             <View style={styles.loginButtonsContainer}>
               <Button
-                label={isRegisterMode ? "Register" : "Login"}
+                label={isRegisterMode ? t('login_screen_signup_button') : t('login_screen_login_button')}
                 onPress={() => setShowCaptcha(true)}
               />
-              <Text style={{width:'100%', textAlign: 'center', marginTop: 12, marginBottom: 12}}>-- OR --</Text>
+              <Text style={{width:'100%', textAlign: 'center', marginTop: 12, marginBottom: 12}}>-- {t('login_screen_or_word')} --</Text>
               <Button
-                label={"Try another methods"}
+                label={t('login_screen_try_another_methods')}
                 onPress={handleOtherMethods}
                 buttonType={ButtonStyles.UNFILLED}
               />
