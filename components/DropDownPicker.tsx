@@ -28,7 +28,7 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
 
   useEffect(() => {
     if(currentKeySelected){
-      const filtered = items?.filter(i => i.key === currentKeySelected);
+      const filtered = items?.filter(i => i.key === `${currentKeySelected}`);
       if(filtered){
         if(filtered.length > 0){
           setLabel(filtered[0].label);
@@ -45,7 +45,7 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
     return (
       <View style={style}>
         <Picker
-          selectedValue={currentKeySelected}
+          selectedValue={`${currentKeySelected}`}
           onValueChange={(itemValue, itemIndex) => {
             setCurrentKeySelected(itemValue);
             if(onItemSelectionChanged){
@@ -84,7 +84,7 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
               )}
               {items && (
                 <Picker
-                  selectedValue={currentKeySelected}
+                  selectedValue={`${currentKeySelected}`}
                   onValueChange={(itemValue, itemIndex) => {
                     setCurrentKeySelected(itemValue);
                     if(onItemSelectionChanged){

@@ -26,7 +26,7 @@ export default function MainTile(
       <Pressable style={[styles.tileOuterContainer, {backgroundColor: backgroundColor}]} onPress={() => onPress ? onPress(tileKey, requireSignedIn) : () => {}}>
         <View >
             <View style={styles.tileInnerContainer}>
-              <Image source={image} style={styles.tileImage}/>
+              <Image source={image} style={styles.tileImage} contentFit="contain"/>
               <Text style={[styles.tileText, {color: textColor}]}>{title}</Text>
             </View>
         </View>
