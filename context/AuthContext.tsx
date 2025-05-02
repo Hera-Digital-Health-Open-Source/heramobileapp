@@ -22,10 +22,10 @@ interface AuthContextType {
   preparingStorageData: boolean;
   completePhoneNumber: string;
   setCompletePhoneNumber: (completePhoneNumber: string) => void;
-  isProfileCreated: boolean | undefined;
-  setIsProfileCreated: (isProfileCreated: boolean) => void;
+  // isProfileCreated: boolean | undefined;
+  // setIsProfileCreated: (isProfileCreated: boolean) => void;
   profile: UserProfile | undefined;
-  setProfile: (userProfile: UserProfile) => void;
+  setProfile: (profile: UserProfile) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,9 +34,10 @@ export function AuthProvider({ children }: {children: ReactNode}) {
   const [[preparingStorageData, session], setSession] = useStorageState('session');
   const [completeMobileNumber, setCompleteMobileNumber] = useState('');
   const { sendRequest } = useHttpClient();
-  const [isProfileCreated, setIsProfileCreated] = useState<boolean | undefined>(undefined);
+  // const [isProfileCreated, setIsProfileCreated] = useState<boolean | undefined>(undefined);
   const {setLoading} = useLoading();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+  const [[preparingRawProfile, rawProfile], setRawProfile] = useStorageState('profile');
   const [profile, setProfile] = useState<UserProfile | undefined>(undefined);
 
   const requestOtp = async (completeMobileNumber: string, captchToken: string) : Promise<boolean> => {
@@ -75,8 +76,9 @@ export function AuthProvider({ children }: {children: ReactNode}) {
     console.log(`==== ${JSON.stringify(response.data)}`);
 
     setSession(response.data!.token);
-    setIsProfileCreated(response.data!.user_profile ? true : false);
+    // setIsProfileCreated(response.data!.user_profile ? true : false);
     if(response.data!.user_profile){
+      setRawProfile(JSON.stringify(response.data!.user_profile))
       setProfile({
         name: response.data!.user_profile.name as string,
         gender: response.data!.user_profile.gender as 'MALE' | 'FEMALE',
@@ -89,8 +91,14 @@ export function AuthProvider({ children }: {children: ReactNode}) {
   };
 
   useEffect(() => {
-    setLoading(preparingStorageData);
-  }, [preparingStorageData]);
+    setLoading(preparingStorageData || preparingRawProfile);
+  }, [preparingStorageData, preparingRawProfile]);
+
+  useEffect(() => {
+    if(!preparingRawProfile){
+      setProfile(JSON.parse(rawProfile!));
+    }
+  }, [preparingRawProfile]);
 
   return (
     <AuthContext.Provider
@@ -105,16 +113,20 @@ export function AuthProvider({ children }: {children: ReactNode}) {
           setSession(null);
           setCompleteMobileNumber('');
           setErrorMessage(undefined);
-          setIsProfileCreated(undefined);
+          // setIsProfileCreated(undefined);
           setProfile(undefined);
+          setRawProfile(null);
         },
         session,
         setSession,
         preparingStorageData,
-        isProfileCreated,
-        setIsProfileCreated,
+        // isProfileCreated,
+        // setIsProfileCreated,
         profile,
-        setProfile
+        setProfile: (profile: UserProfile) => {
+          setProfile(profile);
+          setRawProfile(JSON.stringify(profile));
+        }
       }}>
       {children}
     </AuthContext.Provider>

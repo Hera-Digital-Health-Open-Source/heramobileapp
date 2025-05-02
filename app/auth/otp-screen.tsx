@@ -8,7 +8,7 @@ import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
 
 const OTPScreen = () => {
   const [otp, setOtp] = useState('');
-  const {completePhoneNumber, requestOtp, validateOtp} = useAuth();
+  const {completePhoneNumber, requestOtp, validateOtp, profile} = useAuth();
   const [showCaptcha, setShowCaptcha] = useState(false);
 
   const handleResendOTP = async (captchaToken: string) => {
@@ -26,7 +26,11 @@ const OTPScreen = () => {
   const handleSubmit = async () => {
     const result  = await validateOtp(otp, completePhoneNumber);
     if (result){
-      router.replace('/');
+      if(profile){
+        router.replace('/');
+      } else {
+        router.replace('/registration/(profile)/user-details');
+      }
     } else {
       Alert.alert("OTP Validation", "Failed! Please, request another OTP and try again.");
       // console.error('otp-screen: somthing went wrong! could not validate the OTP code!');
