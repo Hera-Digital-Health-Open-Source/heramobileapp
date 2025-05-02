@@ -4,18 +4,18 @@ import { useAuth } from '@/context/AuthContext';
 import { Redirect } from 'expo-router';
 
 const Protected = ({ children }: { children: React.ReactNode }) => {
-  const { session, preparingStorageData } = useAuth();
+  const { session, preparingStorageData, profile } = useAuth();
   const [flag, setFlag] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
     if(!preparingStorageData){
-      setFlag(!session)
+      if(!(session && profile)){
+        setFlag(true);
+      } else {
+        setFlag(false);
+      }
     }
   }, [preparingStorageData]);
-
-  // if (!session) {
-  //   return <Redirect href="/auth/login" />;
-  // }
 
   if (flag) {
     return <Redirect href="/auth/login" />;
