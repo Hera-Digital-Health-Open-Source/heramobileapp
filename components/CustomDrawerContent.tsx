@@ -1,7 +1,7 @@
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, View, Linking, Platform } from "react-native";
 import { useAuth } from "@/context/AuthContext";
 import { router } from "expo-router";
 
@@ -15,6 +15,17 @@ export default function CustomDrawerContent(props: any) {
     signOut();
     router.replace('/auth/login');
   };
+
+  const handleOpenFacebookGroup = async () => {
+    let url = Platform.OS === 'ios' ? 'fb://group?id=327710368767013' : 'fb://group/327710368767013';
+
+    try {
+      await Linking.openURL(url);
+    } catch {
+      await Linking.openURL('https://www.facebook.com/groups/327710368767013');
+    }
+  };
+
 
   return(
     <View style={{flex: 1}}>
@@ -36,15 +47,21 @@ export default function CustomDrawerContent(props: any) {
         /> */}
         <DrawerItem 
           icon={({ color, size }) => (
+            <Ionicons name="globe-outline" size={size} color={color} />
+          )}
+          label={"Visit Hera Website"} onPress={() => router.push('/hera-website-secreen')} 
+        />
+        <DrawerItem 
+          icon={({ color, size }) => (
             <Ionicons name="newspaper-outline" size={size} color={color} />
           )}
-          label={"Health Tips / News"} onPress={() => alert("Logout Pressed!")} 
+          label={"Health Tips / News"} onPress={() => router.push('/health-tips-news-screen')} 
         />
         <DrawerItem 
           icon={({ color, size }) => (
             <Ionicons name="logo-facebook" size={size} color={color} />
           )}
-          label={"Facebook Group"} onPress={() => alert("Logout Pressed!")} 
+          label={"Facebook Group"} onPress={() => handleOpenFacebookGroup()} 
         />
         {/* <DrawerItem 
           icon={({ color, size }) => (
@@ -60,9 +77,33 @@ export default function CustomDrawerContent(props: any) {
         /> */}
         <DrawerItem 
           icon={({ color, size }) => (
+            <Ionicons name="help-circle-outline" size={size} color={color} />
+          )}
+          label={"FAQs"} onPress={() => router.push('/feedback-screen')}
+        />
+        <DrawerItem 
+          icon={({ color, size }) => (
+            <Ionicons name="people-outline" size={size} color={color} />
+          )}
+          label={"Protection of Personal Data (KVKK)"} onPress={() => router.push('/personal-data-protection-screen')}
+        />
+        <DrawerItem 
+          icon={({ color, size }) => (
+            <Ionicons name="document-text-outline" size={size} color={color} />
+          )}
+          label={"User Agreement"} onPress={() => router.push('/user-agreement-screen')}
+        />
+        <DrawerItem 
+          icon={({ color, size }) => (
             <Ionicons name="chatbox-ellipses-outline" size={size} color={color} />
           )}
-          label={"Feedback"} onPress={() => alert("Logout Pressed!")} 
+          label={"Feedback"} onPress={() => router.push('/feedback-screen')}
+        />
+        <DrawerItem 
+          icon={({ color, size }) => (
+            <Ionicons name="mail-outline" size={size} color={color} />
+          )}
+          label={"Contact Us"} onPress={() => router.push('/contactus-screen')}
         />
       </DrawerContentScrollView>
       <View style={{padding: 20, borderTopWidth: 1, borderTopColor: "#dde3fe", paddingBottom: 20 + bottom}}>
