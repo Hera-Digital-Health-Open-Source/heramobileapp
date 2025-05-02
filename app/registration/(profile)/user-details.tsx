@@ -9,8 +9,12 @@ import { useRegistration } from "@/context/RegistrationContext";
 
 
 export default function UserDetails(){
+  const now = new Date();
+  const date18YearsAgo = new Date();
+  date18YearsAgo.setFullYear(now.getFullYear() - 18);
+
   const [selectedName, setSelectedName] = useState('');
-  const [selectedDateOfBirth, setSelectedDateOfBirth] = useState(new Date());
+  const [selectedDateOfBirth, setSelectedDateOfBirth] = useState(date18YearsAgo);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedGender, setSelectedGender] = useState<'male' | 'female' | undefined>(undefined);
   const {setGender, setName, setDateOfBirth} = useRegistration();

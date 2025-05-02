@@ -43,7 +43,7 @@ Upload or transmit harmful or unlawful content.
           style={styles.continueButton}
           buttonType={isAccept ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
           label="Continue"
-          onPress={() => {router.push('/registration/privacy-policy')}}
+          onPress={isAccept ? () => {router.push('/registration/privacy-policy')} : () => {}}
         />
       </View>
     </SafeAreaView>

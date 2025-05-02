@@ -13,7 +13,7 @@ export default function PrivacyPolicy(){
   const [isAccept, setIsAccept] = useState(false);
   const {name, gender, dateOfBirth, setOnBoardingProgress} = useRegistration();
   const {sendRequestFetch} = useHttpClient();
-  const {session} = useAuth();
+  const {session, setProfile} = useAuth();
 
   const privacyPolicy = `Welcome to Hera, a mobile application designed to [brief description of app's function, e.g., "track your daily fitness activities"]. By accessing or using [App Name] (the "App"), you agree to comply with and be bound by the following terms and conditions ("Terms"). If you do not agree with these Terms, please do not use the App.
 
@@ -58,6 +58,13 @@ Upload or transmit harmful or unlawful content.
     }
     if(response.data){
       await updateOnboardingProgresses();
+      setProfile({
+        name: name!,
+        gender: gender?.toUpperCase() as 'MALE' | 'FEMALE',
+        date_of_birth: dateOfBirth!.toISOString().split("T")[0],
+        language_code: 'en',
+        time_zone: 'UTC',
+      });
       router.replace('/registration/pregnancy-yes-no');
     }
   };
@@ -96,7 +103,7 @@ Upload or transmit harmful or unlawful content.
           style={styles.continueButton}
           buttonType={isAccept ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
           label="Continue"
-          onPress={handleContinue}
+          onPress={isAccept ? () => handleContinue() : () => {}}
         />
       </View>
     </SafeAreaView>
