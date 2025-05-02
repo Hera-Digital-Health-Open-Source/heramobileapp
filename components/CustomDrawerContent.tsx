@@ -4,6 +4,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Pressable, Text, View, Linking, Platform } from "react-native";
 import { useAuth } from "@/context/AuthContext";
 import { router } from "expo-router";
+import { Image } from "expo-image";
+import { icoHeraIcon } from "@/assets/images/images";
 
 export default function CustomDrawerContent(props: any) {
   const { bottom, top } = useSafeAreaInsets();
@@ -35,9 +37,8 @@ export default function CustomDrawerContent(props: any) {
         contentContainerStyle={{paddingTop: top, paddingBottom: bottom}}
       >
         <View style={{alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: "#dde3fe", gap: 8}}>
-          {/* <Image source={sample} style={{width: 100, height: 100, borderRadius: 35, marginHorizontal: 'auto'}} /> */}
-          <View style={{height: 100, padding: 4}}></View>
-          <Text style={{fontSize: 24, fontWeight: 'semibold'}}>{profile?.name}</Text>
+          <Image source={icoHeraIcon} style={{width: 100, height: 100, borderRadius: 35, marginHorizontal: 'auto'}} />
+          <Text style={{fontSize: 18, fontWeight: 'semibold'}}>{profile?.name}</Text>
         </View>
         {/* <DrawerItem 
           icon={({ color, size }) => (

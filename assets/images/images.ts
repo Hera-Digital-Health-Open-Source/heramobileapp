@@ -33,6 +33,9 @@ export const imgFamily = require('./child/family.png');
 // Near Health Centers
 export const icoCurrentLocation = require('./near-health-centers/current_location.png');
 
+// Drawer
+export const icoHeraIcon = require('./hera_icon_new.png');
+
 // export const imgHomeFeedback = require('./images/img_home_feedback.png');
 // export const imgHomeHealthRecords = require('./images/img_home_health_records.png');
 // export const imgHomeHealthTipsNews = require('./images/img_home_health_tips_news.png');
