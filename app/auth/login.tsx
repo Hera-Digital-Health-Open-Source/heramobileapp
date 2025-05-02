@@ -20,7 +20,7 @@ export default function Login(){
   const [mobileNumber, setMobileNumber] = useState<string | undefined>(undefined);
   const [completeMobileNumber, setCompleteMobileNumber] = useState<string | undefined>(undefined);
   const [isRegisterMode, setIsRegisterMode] = useState(true);
-  const {setSession, setIsProfileCreated, setCompletePhoneNumber: setCPhoneNumber, session, requestOtp } = useAuth();
+  const {setSession, setCompletePhoneNumber: setCPhoneNumber, session, requestOtp } = useAuth();
   const [showCaptcha, setShowCaptcha] = useState(false);
   const {sendRequestFetch} = useHttpClient();
   const { t } = useTranslation();
@@ -41,61 +41,6 @@ export default function Login(){
       setCompleteMobileNumber(`${selectedCountryCallingCode}${mobileNumber}`);
     }
   }, [selectedCountryCallingCode, mobileNumber]);
-
-  // useEffect(() => {
-  //   if(error){
-  //     console.log('login.tsx: Error in logging in: ', error);
-  //   }
-  // }, [error]);
-
-  // useEffect(() => {
-  //   if(user){
-  //     const handleUser = async () => {
-  //       const userCredentials = await getCredentials();
-  //       if(!userCredentials){
-  //         return;
-  //       }
-  //       const accessToken = userCredentials.idToken;
-
-  //       const user_identifier = extractProvider(user);
-  //       if(!user_identifier){
-  //         return;
-  //       }
-  //       setCPhoneNumber(user_identifier);
-  //       const response = await sendRequestFetch<{token: string, is_new_user: boolean, user_id: number, user_profile: string}>({
-  //         url: '/otp_auth/auth0_authentication/',
-  //         method: 'POST',
-  //         data: {
-  //           phone_number: user_identifier,
-  //         },
-  //         headers: {
-  //           'Accept-Language': 'en',
-  //           'Content-Type': 'application/json',
-  //           Authorization: 'Bearer ' + accessToken,
-  //         },
-  //       })
-  //       if(response.error){
-  //         console.log('login.tsx: Error in fetching user profile: ', response.error);
-  //         return;
-  //       }
-  //       if(response.data){
-  //         setSession(response.data.token);
-  //         if(response.data.user_profile){
-  //           setIsProfileCreated(true);
-  //           router.replace('/');
-  //         } else if(response.data.is_new_user) {
-  //           setIsProfileCreated(false);
-  //           router.replace('/registration/user-details');
-  //         } else {
-  //           return;
-  //         }
-  //       }
-  //     }
-
-  //     handleUser();
-  //   }
-  // }, [user]);
-
 
   const handleRequestOtp = async (captchaToken: string) => {
     if(completeMobileNumber){
