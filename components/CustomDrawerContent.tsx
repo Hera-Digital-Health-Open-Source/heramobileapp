@@ -47,22 +47,22 @@ export default function CustomDrawerContent(props: any) {
           label={"Profile"} onPress={() => alert("Logout Pressed!")} 
         /> */}
         <DrawerItem 
-          icon={({ color, size }) => (
+          icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="globe-outline" size={size} color={color} />
           )}
-          label={"Visit Hera Website"} onPress={() => router.push('/hera-website-secreen')} 
+          label={t('settings_screen_visit_hera_web_title')} onPress={() => router.push('/hera-website-secreen')} 
         />
         <DrawerItem 
-          icon={({ color, size }) => (
+          icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="newspaper-outline" size={size} color={color} />
           )}
-          label={"Health Tips / News"} onPress={() => router.push('/health-tips-news-screen')} 
+          label={t('home_screen_health_tips_news_title')} onPress={() => router.push('/health-tips-news-screen')} 
         />
         <DrawerItem 
-          icon={({ color, size }) => (
+          icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="logo-facebook" size={size} color={color} />
           )}
-          label={"Facebook Group"} onPress={() => handleOpenFacebookGroup()} 
+          label={t('home_screen_facebook_group_title')} onPress={() => handleOpenFacebookGroup()} 
         />
         {/* <DrawerItem 
           icon={({ color, size }) => (
@@ -77,41 +77,41 @@ export default function CustomDrawerContent(props: any) {
           label={"Settings"} onPress={() => alert("Logout Pressed!")} 
         /> */}
         <DrawerItem 
-          icon={({ color, size }) => (
+          icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="help-circle-outline" size={size} color={color} />
           )}
-          label={"FAQs"} onPress={() => router.push('/feedback-screen')}
+          label={t('settings_screen_faq_title')} onPress={() => router.push('/feedback-screen')}
         />
         <DrawerItem 
-          icon={({ color, size }) => (
+          icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="people-outline" size={size} color={color} />
           )}
-          label={"Protection of Personal Data (KVKK)"} onPress={() => router.push('/personal-data-protection-screen')}
+          label={t('settings_screen_kvkk_title')} onPress={() => router.push('/personal-data-protection-screen')}
         />
         <DrawerItem 
-          icon={({ color, size }) => (
+          icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="document-text-outline" size={size} color={color} />
           )}
-          label={"User Agreement"} onPress={() => router.push('/user-agreement-screen')}
+          label={t('settings_screen_user_agreement_title')} onPress={() => router.push('/user-agreement-screen')}
         />
         <DrawerItem 
-          icon={({ color, size }) => (
+          icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="chatbox-ellipses-outline" size={size} color={color} />
           )}
-          label={"Feedback"} onPress={() => router.push('/feedback-screen')}
+          label={t('feedback_screen_toolbar_title')} onPress={() => router.push('/feedback-screen')}
         />
         <DrawerItem 
-          icon={({ color, size }) => (
+          icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="mail-outline" size={size} color={color} />
           )}
-          label={"Contact Us"} onPress={() => router.push('/contactus-screen')}
+          label={t('settings_screen_contact_us_title')} onPress={() => router.push('/contactus-screen')}
         />
       </DrawerContentScrollView>
       <View style={{padding: 20, borderTopWidth: 1, borderTopColor: "#dde3fe", paddingBottom: 20 + bottom}}>
         <View style={{flexDirection: "row", alignItems: "center", gap: 8, marginLeft: 4}}>
           <Ionicons name="log-out-outline" size={32} color={'#f00'} />
           <Pressable onPress={handleSignOut}>
-            <Text style={{color: '#f00'}}>Logout</Text>
+            <Text style={{color: '#f00'}}>{t('settings_screen_logout_button')}</Text>
           </Pressable>
         </View>
       </View>
