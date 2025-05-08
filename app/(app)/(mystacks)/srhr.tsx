@@ -166,16 +166,6 @@ export default function SrhrScreen() {
           </Text>
         </View>
       )}
-      {/* {loading && (
-        <View style={{justifyContent: 'center', flex: 1}}>
-          <View style={{alignSelf: 'center'}}>
-            <Image
-              source={gifLoading}
-              style={{width: 100, height: 100, borderRadius: 20}}
-            />
-          </View>
-        </View>
-      )} */}
     </SafeAreaView>
   );
 }
@@ -198,7 +188,7 @@ function Section({section}:{section: ISection}) {
       onPress={() => onPress(0, section.name)}>
         {/* activeOpacity={1} */}
       <View style={localStyles.sectionHeaderContainer}>
-        <Text style={localStyles.sectionHeaderText}>{section.name}</Text>
+        <Text numberOfLines={2} style={localStyles.sectionHeaderText}>{section.name}</Text>
         <View style={{flex: 5}} />
         <View
           style={{
@@ -214,8 +204,8 @@ function Section({section}:{section: ISection}) {
           </Text>
         </View>
       </View>
-      {open && (
-        <View>
+      {open && section.articles.length > 0 && (
+        <ScrollView style={{height: 300}}>
           {section.articles.map((s, index) => (
             <Pressable
               onPress={() => onPress(s.id, s.title)}
@@ -227,7 +217,7 @@ function Section({section}:{section: ISection}) {
               </View>
             </Pressable>
           ))}
-        </View>
+        </ScrollView>
       )}
     </Pressable>
   );
@@ -263,7 +253,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingVertical: 16
   },
   section: {
     width: '100%',
