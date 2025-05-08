@@ -20,11 +20,11 @@ export default function Login(){
   const [mobileNumber, setMobileNumber] = useState<string | undefined>(undefined);
   const [completeMobileNumber, setCompleteMobileNumber] = useState<string | undefined>(undefined);
   const [isRegisterMode, setIsRegisterMode] = useState(true);
-  const {setSession, setCompletePhoneNumber: setCPhoneNumber, session, requestOtp } = useAuth();
+  const { setCompletePhoneNumber: setCPhoneNumber, session, requestOtp } = useAuth();
   const [showCaptcha, setShowCaptcha] = useState(false);
   const {sendRequestFetch} = useHttpClient();
   const { t } = useTranslation();
-  const { setAppLanguage } = useI18n();
+  const { setAppLanguage, locale } = useI18n();
 
   const languages = [
     {label: t('language_dropdown_arabic_text'), key: 'ar'},
@@ -73,7 +73,7 @@ export default function Login(){
               items={languages}
               style={{marginTop: 8}}
               // label={languages.filter(l => l.key===selectedLanguage)[0].label} 
-              initialKeySelection={'en'}
+              initialKeySelection={locale}
               onItemSelectionChanged={(key) => setCurrentLanguage(key)}
             />
             <Text style={{marginTop: 16}}>{t('login_screen_phone_number_hint')}</Text>
