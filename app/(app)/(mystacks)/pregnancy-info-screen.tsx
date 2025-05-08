@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import IPregnancy from "@/models/IPregnancy";
 import PregnancyView from "@/components/pregnancy/PregnancyView";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function PregnancyInfoScreen() {
   const {sendRequestFetch} = useHttpClient();
   const { session } = useAuth();
   const [pregnancy, setPregnancy] = useState<IPregnancy | undefined>(undefined);
-
+  const {t} = useTranslation();
+  
   useEffect(() => {
     sendRequestFetch<IPregnancy[]>({
       url: '/pregnancies/',
@@ -27,6 +29,6 @@ export default function PregnancyInfoScreen() {
   }, []);
 
   return(
-    <PregnancyView introduceText={"Update your pregnancy info"} pregnancy={pregnancy} isInRegistrationProcess={false}/>
+    <PregnancyView introduceText={t('your_pregnancy_screen_description_5')} pregnancy={pregnancy} isInRegistrationProcess={false}/>
   );
 }

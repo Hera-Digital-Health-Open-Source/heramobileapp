@@ -29,7 +29,7 @@ export default function ChildView({introduceText, child} : {introduceText: strin
   const [takenVaccines, setTakenVaccines] = useState<string[]>([]);
   const {t} = useTranslation();
 
-  const info = !introduceText ? `Alright! Let’s fill in the details and we will assist you by adding important doctor visit dates into “My Appointments”!`: '';
+  const info = !introduceText ? t('child_info_screen_description'): '';
   const enableActionButton = childName.length > 0 && gender.length > 0 && (gender === 'MALE' || gender == 'FEMALE');
   const title = child ? t('edit_a_child_screen_toolbar_title') : t('add_a_child_screen_toolbar_title');
 
@@ -142,7 +142,6 @@ export default function ChildView({introduceText, child} : {introduceText: strin
               style={GlobalStyles.InputBoxStyle}
               onChangeText={(t) => setChildName(t)}
               value={childName}
-              placeholder="Child name"
               keyboardType="default"
             />
           </View>
@@ -186,7 +185,7 @@ export default function ChildView({introduceText, child} : {introduceText: strin
         </View>
         <Button
           buttonType={ enableActionButton ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
-          label={child ? "Save" : "Add"}
+          label={child ? t('general_save_button') : t('general_add_button')}
           onPress={() => handleAddSaveChild()}
         /> 
       </View>

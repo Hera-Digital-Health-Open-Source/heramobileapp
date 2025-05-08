@@ -8,6 +8,7 @@ import { router } from "expo-router";
 import { RequestConfig, useHttpClient } from "@/context/HttpClientContext";
 import { useAuth } from "@/context/AuthContext";
 import IPregnancy from "@/models/IPregnancy";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function PregnancyView({introduceText, pregnancy, isInRegistrationProcess} : {introduceText: string, pregnancy? : IPregnancy, isInRegistrationProcess: boolean}){
   const [pregnancyCalculationMethod, setPregnancyCalculationMethod] = useState<'lastMenstrualDate' | 'pregnancyWeek' | undefined>(undefined);
@@ -16,8 +17,9 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
   const [pregnancyWeek, setPregnancyWeek] = useState<string>("");
   const {sendRequestFetch} = useHttpClient();
   const {session} = useAuth();
+  const {t} = useTranslation();
 
-  const info = !introduceText ? `Alright! Let’s fill in the details and we will assist you by adding important doctor visit dates into “My Appointments”!` : introduceText;
+  const info = !introduceText ? t('your_pregnancy_screen_description_1') : introduceText;
   const enableContinue = (pregnancyCalculationMethod === 'lastMenstrualDate' && lastMenstrualDate && prentalVisits && prentalVisits !== '-1') || 
                           (pregnancyCalculationMethod === 'pregnancyWeek' && pregnancyWeek && pregnancyWeek !== '-1' && prentalVisits && prentalVisits !== '-1')
   const pregnancyWeekItems = [{key: '-1', label: ''}, ...Array.from({ length: 42 }, (_, i) => i + 1).map(i => ({key: String(i), label: String(i)}))];
@@ -83,19 +85,19 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
       <View style={{flex: 1, gap: Spacing.large}}>
         <View style={styles.container}>
           <View style={{gap: Spacing.small}}>
-            <Text style={GlobalStyles.HeadingText}>Pregnancy</Text>
+            <Text style={GlobalStyles.HeadingText}>{t('my_pregnancy_screen_toolbar_title')}</Text>
             <Text style={GlobalStyles.NormalText}>{info}</Text>
           </View>
           <View style={{flex: 1}}>
             <View style={{}}>
               <Button
                 buttonType={ pregnancyCalculationMethod === 'lastMenstrualDate' ? ButtonStyles.FILLED : ButtonStyles.UNFILLED}
-                label="Enter Last Menstrual Date"
+                label={t('my_pregnancy_screen_menstrual_title')}
                 onPress={() => flipPregnancyCalculationMethod('lastMenstrualDate')}
               />
               <Button
                 buttonType={ pregnancyCalculationMethod === 'pregnancyWeek' ? ButtonStyles.FILLED : ButtonStyles.UNFILLED}
-                label="Enter Pregnancy Week"
+                label={t('my_pregnancy_screen_pregnancy_week_title')}
                 onPress={() => flipPregnancyCalculationMethod('pregnancyWeek')}
               />
             </View>
@@ -103,7 +105,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
               {pregnancyCalculationMethod === 'lastMenstrualDate' && (
                 <View style={{marginTop: Spacing.xlarge, gap: Spacing.xlarge}}>
                   <View style={{gap: Spacing.medium}}>
-                    <Text style={GlobalStyles.NormalText}>Select Menstrual Period</Text>
+                    <Text style={GlobalStyles.NormalText}>{t('my_pregnancy_screen_menstrual_title')}</Text>
                     <DateModalPicker
                       initialDate={lastMenstrualDate}
                       onDateSelected={(date)=> {
@@ -113,7 +115,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
                     />
                   </View>
                   <View style={{gap: Spacing.medium}}>
-                    <Text style={GlobalStyles.NormalText}>How many prenatal visits have you done?</Text>
+                    <Text style={GlobalStyles.NormalText}>{t('your_pregnancy_screen_prenatal_visits_title')}</Text>
                     <DropDownPicker
                       initialKeySelection={prentalVisits}
                       items={[
@@ -132,7 +134,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
               {pregnancyCalculationMethod === 'pregnancyWeek' && (
                 <View style={{marginTop: Spacing.xlarge, gap: Spacing.xlarge}}>
                   <View style={{gap: Spacing.medium}}>
-                    <Text style={GlobalStyles.NormalText}>Select Pregnancy Week</Text>
+                    <Text style={GlobalStyles.NormalText}>{t('my_pregnancy_screen_pregnancy_week_title')}</Text>
                     <DropDownPicker
                       initialKeySelection={pregnancyWeek}
                       items={pregnancyWeekItems}
@@ -143,7 +145,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
                     />
                   </View>
                   <View style={{gap: Spacing.medium}}>
-                    <Text style={GlobalStyles.NormalText}>How many prenatal visits have you done?</Text>
+                    <Text style={GlobalStyles.NormalText}>{t('your_pregnancy_screen_prenatal_visits_title')}</Text>
                     <DropDownPicker
                       initialKeySelection={prentalVisits}
                       items={[
@@ -164,14 +166,14 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
           {(pregnancy || !isInRegistrationProcess) && (
             <Button
               buttonType={ enableContinue ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
-              label={"Save"}
+              label={t('general_save_button')}
               onPress={enableContinue ? addSavePregnancy : () => {}}
             /> 
           )}
           {isInRegistrationProcess && (
             <Button
               buttonType={ enableContinue ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
-              label={"Continue"}
+              label={t('otp_screen_continue_button')}
               onPress={enableContinue ? addSavePregnancy : () => {}}
             /> 
           )}
