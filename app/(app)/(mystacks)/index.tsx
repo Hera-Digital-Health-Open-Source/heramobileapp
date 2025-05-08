@@ -26,17 +26,31 @@ import {
   doctorAppointment
 } from "@/constants";
 import HomeHeraLegend from "@/components/HomeHeraLegend";
-import { useAuth } from "@/context/AuthContext";
 import { router } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "@/hooks/useTranslation";
+import numbers from "@/assets/data/phonenumbers.json";
+import * as Localization from 'expo-localization';
 
 export default function Index() {
-  // const {signOut} = useAuth();
   const navigation = useNavigation();
   const { t } = useTranslation();
+
+  const emergencyCall = () => {
+    const locals = Localization.getLocales();
+    const result = locals[0].regionCode;
+
+    numbers.data.forEach(element => {
+      if (
+        element.Country.ISOCode.toLowerCase() ===
+        result?.toLowerCase()
+      ) {
+        Linking.openURL('tel:' + element.Ambulance.All[0]);
+      }
+    });
+  }
 
   const mainTiles = [
     {
@@ -64,7 +78,7 @@ export default function Index() {
       textColor: color.red,
       backgroundColor: color.emergencyred,
       requireSignedIn: false,
-      onPressHandler: () => {},
+      onPressHandler: () => emergencyCall(),
     },
     {
       title: t('home_screen_nearby_health_centers_title'),
