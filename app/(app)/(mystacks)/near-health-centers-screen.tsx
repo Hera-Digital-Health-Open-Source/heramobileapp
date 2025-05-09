@@ -58,7 +58,8 @@ export default function NearHealthCentersScreen() {
 
   const {sendRequestFetch} = useHttpClient();
   const [markers, setMarkers] = useState<HealthCenter[]>([]);
-  const [region, setRegion] = useState<RegionGeolocation>();
+  const [region, setRegion] = useState<RegionGeolocation | undefined>(undefined);
+
   const INITIAL_REGION: RegionGeolocation = {
     latitude: 41.0082,
     longitude: 28.9784,
@@ -184,12 +185,7 @@ export default function NearHealthCentersScreen() {
           );
         })}
       </MapView>
-      {/* <Toast position="bottom" text2NumberOfLines={2} /> */}
-      {/* <Modal transparent={false} animationType={'fade'} visible={showModal} onRequestClose={() => setShowModal(false)}>
-        <Pressable onPress={() => setShowModal(false)}>
-          <CalloutContent name={tappedMarkerAndroid?.name!} address={tappedMarkerAndroid?.address!} />
-        </Pressable>
-      </Modal> */}
+    
     </SafeAreaView>
   );
 };
@@ -197,7 +193,7 @@ export default function NearHealthCentersScreen() {
 const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
-    height: Dimensions.get('window').height,
+    height: Dimensions.get('window').height-80,
   },
   mapMarkerPopup: {
     backgroundColor: '#fff',
