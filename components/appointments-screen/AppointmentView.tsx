@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { ReactNode } from "react";
 import { StyleProp, View, ViewStyle, Text, Pressable } from "react-native";
 import { useTranslation } from "@/hooks/useTranslation";
+import { router } from "expo-router";
 
 export function AppointmentView({style, children} : {children: ReactNode, style: StyleProp<ViewStyle>}){
   return (
@@ -57,7 +58,7 @@ export function NoAppointmentView({style}: {style: StyleProp<ViewStyle>}){
 
 function FindHealthCenterView({label}: {label: string}) {
   return (
-    <Pressable onPress={() => alert('helllo')}>
+    <Pressable onPress={() => router.push('/near-health-centers-screen')}>
       <View style={{
         gap: Spacing.large,
         borderRadius: Spacing.medium,
