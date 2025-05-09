@@ -2,16 +2,46 @@ import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Pressable, Text, View, Linking, Platform } from "react-native";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth, UserProfile } from "@/context/AuthContext";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { icoHeraIcon } from "@/assets/images/images";
+import { useTranslation } from "@/hooks/useTranslation";
+import { useEffect, useState } from "react";
+import DropDownPicker from "@/components/DropDownPicker"; 
+import { useI18n } from "@/context/I18nContext";
 
 export default function CustomDrawerContent(props: any) {
   const { bottom, top } = useSafeAreaInsets();
-  const { signOut, profile } = useAuth();
+  const { signOut, profile, preparingProfile, profileIsRead } = useAuth();
+  const { t } = useTranslation();
+  const { setAppLanguage, locale } = useI18n();
+  
+  const [profilObj, setProfileObj] = useState<UserProfile>();
 
-  // const sample = require('@/assets/images/sample-person.png');
+  useEffect(() => {
+    if(profileIsRead){
+      const parsed = JSON.parse(profile!);
+      if(parsed === null) return;
+      setProfileObj({
+        name: parsed.name as string,
+        gender: parsed.gender as 'MALE' | 'FEMALE',
+        date_of_birth: parsed.date_of_birth as string,
+        language_code: parsed.language_code as 'ar' | 'en' | 'tr',
+        time_zone: parsed.time_zone as string
+      });
+    }
+  }, [profileIsRead]);
+  
+  const languages = [
+    {label: t('language_dropdown_arabic_text'), key: 'ar'},
+    {label: t('language_dropdown_english_text'), key: 'en'},
+    {label: t('language_dropdown_turkish_text'), key: 'tr'},
+  ];
+
+  const setCurrentLanguage = async (language: string) => {
+    await setAppLanguage(language as 'ar' | 'en' | 'tr');
+  }
 
   const handleSignOut = async () => {
     signOut();
@@ -38,7 +68,7 @@ export default function CustomDrawerContent(props: any) {
       >
         <View style={{alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: "#dde3fe", gap: 8}}>
           <Image source={icoHeraIcon} style={{width: 100, height: 100, borderRadius: 35, marginHorizontal: 'auto'}} />
-          <Text style={{fontSize: 18, fontWeight: 'semibold'}}>{profile?.name}</Text>
+          <Text style={{fontSize: 18, fontWeight: 'semibold'}}>{profilObj?.name}</Text>
         </View>
         {/* <DrawerItem 
           icon={({ color, size }) => (
@@ -50,13 +80,19 @@ export default function CustomDrawerContent(props: any) {
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="globe-outline" size={size} color={color} />
           )}
-          label={t('settings_screen_visit_hera_web_title')} onPress={() => router.push('/hera-website-secreen')} 
+          label={t('settings_screen_visit_hera_web_title')} onPress={() => router.push({
+            pathname: '/web-view-screen',
+            params: { uri: `https://heradigitalhealth.org/${locale}` },
+          })} 
         />
         <DrawerItem 
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="newspaper-outline" size={size} color={color} />
           )}
-          label={t('home_screen_health_tips_news_title')} onPress={() => router.push('/health-tips-news-screen')} 
+          label={t('home_screen_health_tips_news_title')} onPress={() => router.push({
+            pathname: '/web-view-screen',
+            params: { uri: `https://heradigitalhealth.org/${locale}/blog/` },
+          })} 
         />
         <DrawerItem 
           icon={({ color, size }: {color: any, size: any}) => (
@@ -80,33 +116,55 @@ export default function CustomDrawerContent(props: any) {
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="help-circle-outline" size={size} color={color} />
           )}
-          label={t('settings_screen_faq_title')} onPress={() => router.push('/feedback-screen')}
+          label={t('settings_screen_faq_title')} onPress={() => router.push({
+            pathname: '/web-view-screen',
+            params: { uri: `https://heradigitalhealth.org/${locale}/frequently-asked-questions/` },
+          })}
         />
         <DrawerItem 
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="people-outline" size={size} color={color} />
           )}
-          label={t('settings_screen_kvkk_title')} onPress={() => router.push('/personal-data-protection-screen')}
+          label={t('settings_screen_kvkk_title')} onPress={() => router.push({
+            pathname: '/web-view-screen',
+            params: { uri: `https://heradigitalhealth.org/${locale}/data-protection-policy/` },
+          })}
         />
         <DrawerItem 
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="document-text-outline" size={size} color={color} />
           )}
-          label={t('settings_screen_user_agreement_title')} onPress={() => router.push('/user-agreement-screen')}
+          label={t('settings_screen_user_agreement_title')} onPress={() => router.push({
+            pathname: '/web-view-screen',
+            params: { uri: `https://heradigitalhealth.org/${locale}/terms-and-conditions/` },
+          })}
         />
         <DrawerItem 
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="chatbox-ellipses-outline" size={size} color={color} />
           )}
-          label={t('feedback_screen_toolbar_title')} onPress={() => router.push('/feedback-screen')}
+          label={t('feedback_screen_toolbar_title')} onPress={() => router.push({
+            pathname: '/web-view-screen',
+            params: { uri: `https://heradigitalhealth.org/${locale}/frequently-asked-questions/` },
+          })}
         />
         <DrawerItem 
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="mail-outline" size={size} color={color} />
           )}
-          label={t('settings_screen_contact_us_title')} onPress={() => router.push('/contactus-screen')}
+          label={t('settings_screen_contact_us_title')} onPress={() => router.push({
+            pathname: '/web-view-screen',
+            params: { uri: `https://heradigitalhealth.org/${locale}/contact/` },
+          })}
         />
       </DrawerContentScrollView>
+      <DropDownPicker 
+        items={languages}
+        style={{padding: 20}}
+        // label={languages.filter(l => l.key===selectedLanguage)[0].label} 
+        initialKeySelection={locale}
+        onItemSelectionChanged={(key) => setCurrentLanguage(key)}
+      />
       <View style={{padding: 20, borderTopWidth: 1, borderTopColor: "#dde3fe", paddingBottom: 20 + bottom}}>
         <View style={{flexDirection: "row", alignItems: "center", gap: 8, marginLeft: 4}}>
           <Ionicons name="log-out-outline" size={32} color={'#f00'} />
