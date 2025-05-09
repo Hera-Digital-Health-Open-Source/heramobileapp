@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import {OtpInput} from 'react-native-otp-entry';
 import { useAuth } from '@/context/AuthContext';
 import Button, { ButtonStyles } from '@/components/Button';
 import { router } from 'expo-router';
 import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
+import { useTranslation } from '@/hooks/useTranslation';
 
 const OTPScreen = () => {
   const [otp, setOtp] = useState('');
-  const {completePhoneNumber, requestOtp, validateOtp, profile} = useAuth();
+  const {completePhoneNumber, requestOtp, validateOtp, profile, preparingProfile, profileIsRead} = useAuth();
   const [showCaptcha, setShowCaptcha] = useState(false);
+  const [flag, setFlag] = useState(false);
+  const {t} = useTranslation();
 
   const handleResendOTP = async (captchaToken: string) => {
     if(completePhoneNumber){
@@ -23,18 +26,34 @@ const OTPScreen = () => {
     }
   }
 
-  const handleSubmit = async () => {
-    const result  = await validateOtp(otp, completePhoneNumber);
-    if (result){
+  useEffect(() => {
+    if(!flag) return;
+    if(profileIsRead){
       if(profile){
         router.replace('/');
       } else {
         router.replace('/registration/(profile)/user-details');
       }
-    } else {
-      Alert.alert("OTP Validation", "Failed! Please, request another OTP and try again.");
-      // console.error('otp-screen: somthing went wrong! could not validate the OTP code!');
     }
+  }, [flag, profileIsRead]);
+
+  const handleSubmit = async () => {
+    const result  = await validateOtp(otp, completePhoneNumber);
+    if(!result){
+      Alert.alert(t('otp_screen_alert_title'), t('otp_screen_incorrect_code_text'));
+    } else {
+      setFlag(true);
+    }
+    // if (result){
+    //   if(profile){
+    //     router.replace('/');
+    //   } else {
+    //     router.replace('/registration/(profile)/user-details');
+    //   }
+    // } else {
+    //   Alert.alert("OTP Validation", "Failed! Please, request another OTP and try again.");
+    //   // console.error('otp-screen: somthing went wrong! could not validate the OTP code!');
+    // }
   }
 
   // const handleSubmit = async () => {
@@ -85,8 +104,8 @@ const OTPScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <Text style={styles.title}>OTP</Text>
-      <Text style={styles.subtitle}>Type in the OTP we sent on your mobile number!</Text>
+      <Text style={styles.title}>{t('otp_screen_toolbar_title')}</Text>
+      <Text style={styles.subtitle}>{t('otp_screen_enter_code_description')}</Text>
       
       <OtpInput numberOfDigits={6} onTextChange={setOtp} />
 
@@ -94,13 +113,13 @@ const OTPScreen = () => {
         <Button
           style={{flex: 1}}
           buttonType={ButtonStyles.UNFILLED}
-          label={'Resend OTP'}
+          label={t('otp_screen_resend_otp_button')}
           onPress={handleSubmit}
         />
         <Button 
           style={{flex: 1}}
           buttonType={otp.length < 6 ? ButtonStyles.DISABLED : ButtonStyles.FILLED}
-          label={'Enter Pin'}
+          label={t('phone_number_verification_enter_otp_hint')}
           onPress={otp.length < 6 ? () => {} : () => handleSubmit()}
         />
       </View>

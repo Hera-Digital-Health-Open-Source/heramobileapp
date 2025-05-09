@@ -4,13 +4,14 @@ import { useHttpClient } from "@/context/HttpClientContext";
 import { useLoading } from './LoadingContext';
 
 
-interface UserProfile {
+export interface UserProfile {
   name: string;
   gender: 'MALE' | 'FEMALE';
   date_of_birth: string;
   language_code: 'en' | 'ar' | 'tr';
   time_zone: string;
 }
+
 interface AuthContextType {
   requestOtp: (completeMobileNumber: string, captchToken: string) => Promise<boolean>;
   validateOtp: (inputOtp: string, phoneNumber?: string) => Promise<boolean>;
@@ -18,27 +19,29 @@ interface AuthContextType {
   setErrorMessage: (errorMessage: string) => void;
   signOut: () => void;
   session?: string | null;
-  setSession: (session: string | null) => void;
-  preparingStorageData: boolean;
+  // setSession: (session: string | undefined) => void;
   completePhoneNumber: string;
   setCompletePhoneNumber: (completePhoneNumber: string) => void;
   // isProfileCreated: boolean | undefined;
   // setIsProfileCreated: (isProfileCreated: boolean) => void;
-  profile: UserProfile | undefined;
-  setProfile: (profile: UserProfile) => void;
+  profile: string | null;
+  setProfile: (profile: string | null) => void;
+  preparingProfile: boolean,
+  preparingSession: boolean,
+  profileIsRead: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: {children: ReactNode}) {
-  const [[preparingStorageData, session], setSession] = useStorageState('session');
+  const [[preparingSession, session], setSession] = useStorageState('session');
   const [completeMobileNumber, setCompleteMobileNumber] = useState('');
   const { sendRequest } = useHttpClient();
-  // const [isProfileCreated, setIsProfileCreated] = useState<boolean | undefined>(undefined);
   const {setLoading} = useLoading();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
-  const [[preparingRawProfile, rawProfile], setRawProfile] = useStorageState('profile');
-  const [profile, setProfile] = useState<UserProfile | undefined>(undefined);
+  const [[preparingProfile, profile], setProfile] = useStorageState('profile');
+  const [profileIsRead, setProfileIsRead] = useState(false);
+  const [last, setLast] = useState(false);
 
   const requestOtp = async (completeMobileNumber: string, captchToken: string) : Promise<boolean> => {
     const response = await sendRequest<{phone_number: string, expires_at: string}>({
@@ -78,27 +81,45 @@ export function AuthProvider({ children }: {children: ReactNode}) {
     setSession(response.data!.token);
     // setIsProfileCreated(response.data!.user_profile ? true : false);
     if(response.data!.user_profile){
-      setRawProfile(JSON.stringify(response.data!.user_profile))
-      setProfile({
-        name: response.data!.user_profile.name as string,
-        gender: response.data!.user_profile.gender as 'MALE' | 'FEMALE',
-        date_of_birth: response.data!.user_profile.date_of_birth as string,
-        language_code: response.data!.user_profile.language_code as 'ar' | 'en' | 'tr',
-        time_zone: response.data!.user_profile.time_zone as string
-      })
+      setProfile(JSON.stringify(response.data!.user_profile))
+      // setProfile({
+      //   name: response.data!.user_profile.name as string,
+      //   gender: response.data!.user_profile.gender as 'MALE' | 'FEMALE',
+      //   date_of_birth: response.data!.user_profile.date_of_birth as string,
+      //   language_code: response.data!.user_profile.language_code as 'ar' | 'en' | 'tr',
+      //   time_zone: response.data!.user_profile.time_zone as string
+      // })
     }
     return true;
   };
 
   useEffect(() => {
-    setLoading(preparingStorageData || preparingRawProfile);
-  }, [preparingStorageData, preparingRawProfile]);
+    setLoading(preparingSession || preparingProfile);
+  }, [preparingSession, preparingProfile]);
 
   useEffect(() => {
-    if(!preparingRawProfile){
-      setProfile(JSON.parse(rawProfile!));
+    console.log('.'.repeat(100));
+    console.log(`Inside AuthContext - preparingProfile:`, preparingProfile)
+    if(preparingProfile){
+      setLast(true);
+      setProfileIsRead(false);
+    } else {
+      if(last){
+        setLast(false);
+        setProfileIsRead(true);
+      }
     }
-  }, [preparingRawProfile]);
+  }, [preparingProfile]);
+
+  // useEffect(() => {
+  //   if(!preparingProfile){
+  //     if(profile === null){
+  //       setProfile(null);
+  //     } else {
+  //       setProfile(JSON.parse(profile!));
+  //     }
+  //   }
+  // }, [preparingProfile]);
 
   return (
     <AuthContext.Provider
@@ -114,19 +135,15 @@ export function AuthProvider({ children }: {children: ReactNode}) {
           setCompleteMobileNumber('');
           setErrorMessage(undefined);
           // setIsProfileCreated(undefined);
-          setProfile(undefined);
-          setRawProfile(null);
+          setProfile(null);
         },
         session,
-        setSession,
-        preparingStorageData,
-        // isProfileCreated,
-        // setIsProfileCreated,
-        profile,
-        setProfile: (profile: UserProfile) => {
-          setProfile(profile);
-          setRawProfile(JSON.stringify(profile));
-        }
+        // setSession,
+        profile: profile,
+        setProfile: setProfile,
+        preparingProfile: preparingProfile,
+        preparingSession: preparingSession,
+        profileIsRead: profileIsRead
       }}>
       {children}
     </AuthContext.Provider>

@@ -22,7 +22,6 @@ export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
   const {setLoading} = useLoading();
 
   useEffect(() => {
-    console.log(`===> ${preparingStorageData}`)
     setLoading(preparingStorageData);
     if(!preparingStorageData){
       const currentLocale = locale ? locale as 'en' | 'ar' | 'tr' : 'en';
@@ -32,19 +31,17 @@ export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
 
   const setAppLanguage = async (lang: 'en' | 'ar' | 'tr') => {
     const shouldBeRTL = lang === 'ar';
-  
-    console.log('@'.repeat(20));
+
     if (I18nManager.isRTL !== shouldBeRTL) {
-      console.log(`The layout is switched to support: ${shouldBeRTL ? "RTL": "LTR"}`);
       // Change layout direction and reload app
       I18nManager.allowRTL(shouldBeRTL);
       I18nManager.forceRTL(shouldBeRTL);
+      i18n.locale = lang;
       setLocale(lang);
       await Updates.reloadAsync();
       return;
     }
   
-    console.log(`The current language is : ${lang}`);
     // Otherwise just change the language normally
     i18n.locale = lang;
     setLocale(lang);
@@ -52,7 +49,7 @@ export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <I18nContext.Provider value={{ locale: locale ? locale : 'en', setAppLanguage }}>
-      {children}
+      {!preparingStorageData && (children)}
     </I18nContext.Provider>
   );
 };
