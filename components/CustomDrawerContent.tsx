@@ -8,14 +8,13 @@ import { Image } from "expo-image";
 import { icoHeraIcon } from "@/assets/images/images";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useEffect, useState } from "react";
-import DropDownPicker from "@/components/DropDownPicker"; 
 import { useI18n } from "@/context/I18nContext";
 
 export default function CustomDrawerContent(props: any) {
   const { bottom, top } = useSafeAreaInsets();
-  const { signOut, profile, preparingProfile, profileIsRead } = useAuth();
+  const { signOut, profile, profileIsRead } = useAuth();
   const { t } = useTranslation();
-  const { setAppLanguage, locale } = useI18n();
+  const { locale } = useI18n();
   
   const [profilObj, setProfileObj] = useState<UserProfile>();
 
@@ -32,16 +31,6 @@ export default function CustomDrawerContent(props: any) {
       });
     }
   }, [profileIsRead]);
-  
-  const languages = [
-    {label: t('language_dropdown_arabic_text'), key: 'ar'},
-    {label: t('language_dropdown_english_text'), key: 'en'},
-    {label: t('language_dropdown_turkish_text'), key: 'tr'},
-  ];
-
-  const setCurrentLanguage = async (language: string) => {
-    await setAppLanguage(language as 'ar' | 'en' | 'tr');
-  }
 
   const handleSignOut = async () => {
     signOut();
@@ -157,14 +146,13 @@ export default function CustomDrawerContent(props: any) {
             params: { uri: `https://heradigitalhealth.org/${locale}/contact/` },
           })}
         />
+        <DrawerItem 
+          icon={({ color, size }: {color: any, size: any}) => (
+            <Ionicons name="person-outline" size={size} color={color} />
+          )}
+          label={t('my_profile_screen_toolbar_title')} onPress={() => router.push('/my-profile-screen')}
+        />
       </DrawerContentScrollView>
-      <DropDownPicker 
-        items={languages}
-        style={{padding: 20}}
-        // label={languages.filter(l => l.key===selectedLanguage)[0].label} 
-        initialKeySelection={locale}
-        onItemSelectionChanged={(key) => setCurrentLanguage(key)}
-      />
       <View style={{padding: 20, borderTopWidth: 1, borderTopColor: "#dde3fe", paddingBottom: 20 + bottom}}>
         <View style={{flexDirection: "row", alignItems: "center", gap: 8, marginLeft: 4}}>
           <Ionicons name="log-out-outline" size={32} color={'#f00'} />

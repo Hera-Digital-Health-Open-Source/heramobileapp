@@ -19,11 +19,13 @@ interface AuthContextType {
   setErrorMessage: (errorMessage: string) => void;
   signOut: () => void;
   session?: string | null;
+  userId?: string | null;
   // setSession: (session: string | undefined) => void;
   completePhoneNumber: string;
   setCompletePhoneNumber: (completePhoneNumber: string) => void;
   // isProfileCreated: boolean | undefined;
   // setIsProfileCreated: (isProfileCreated: boolean) => void;
+  profile1: string | null;
   profile: string | null;
   setProfile: (profile: string | null) => void;
   preparingProfile: boolean,
@@ -35,6 +37,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: {children: ReactNode}) {
   const [[preparingSession, session], setSession] = useStorageState('session');
+  const [actualSession, setActualSession] = useState("");
+  const [[preparingUserId, userId], setUserId] = useStorageState('user_id');
+  const [actualUserId, setActualUserId] = useState("");
+  const [[preparingProfile1, profile1], setProfile1] = useStorageState('profile');
+  const [actualProfile, setActualProfile] = useState("");
+
   const [completeMobileNumber, setCompleteMobileNumber] = useState('');
   const { sendRequest } = useHttpClient();
   const {setLoading} = useLoading();
@@ -76,8 +84,7 @@ export function AuthProvider({ children }: {children: ReactNode}) {
       return false;
     }
 
-    console.log(`==== ${JSON.stringify(response.data)}`);
-
+    setUserId(String(response.data!.user_id));
     setSession(response.data!.token);
     // setIsProfileCreated(response.data!.user_profile ? true : false);
     if(response.data!.user_profile){
@@ -94,12 +101,28 @@ export function AuthProvider({ children }: {children: ReactNode}) {
   };
 
   useEffect(() => {
-    setLoading(preparingSession || preparingProfile);
-  }, [preparingSession, preparingProfile]);
+    setLoading(preparingSession || preparingProfile || preparingUserId);
+  }, [preparingSession, preparingProfile, preparingUserId]);
 
   useEffect(() => {
-    console.log('.'.repeat(100));
-    console.log(`Inside AuthContext - preparingProfile:`, preparingProfile)
+    if(!preparingProfile1 && profile1){
+      setActualProfile(profile1);
+    }
+  }, [preparingProfile1, profile1]);
+
+  useEffect(() => {
+    if(!preparingSession && session){
+      setActualSession(session);
+    }
+  }, [preparingSession, session]);
+
+  useEffect(() => {
+    if(!preparingUserId && userId){
+      setActualUserId(userId);
+    }
+  }, [preparingUserId, userId]);
+
+  useEffect(() => {
     if(preparingProfile){
       setLast(true);
       setProfileIsRead(false);
@@ -131,13 +154,19 @@ export function AuthProvider({ children }: {children: ReactNode}) {
         errorMessage,
         setErrorMessage,
         signOut: () => {
+          setActualProfile("");
+          setActualSession("");
+          setActualUserId("");
           setSession(null);
           setCompleteMobileNumber('');
           setErrorMessage(undefined);
           // setIsProfileCreated(undefined);
           setProfile(null);
+          setUserId(null);
         },
-        session,
+        session: actualSession,
+        userId: actualUserId,
+        profile1: actualProfile,
         // setSession,
         profile: profile,
         setProfile: setProfile,

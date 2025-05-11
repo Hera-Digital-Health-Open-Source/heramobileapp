@@ -143,6 +143,7 @@ export default {
   my_profile_screen_date_of_birth_hint: "Date of Birth",
   my_profile_screen_update_button: "Update",
   my_profile_screen_whatsapp_opt_in: "Subscribe to WhatsApp notifications",
+  my_profile_screen_gender_title: "Gender",
   contact_us_screen_toolbar_title: "Contact",
   visit_hera_web_screen_toolbar_title: "HERA",
   faq_screen_toolbar_title: "FAQs",

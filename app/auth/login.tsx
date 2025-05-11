@@ -20,7 +20,7 @@ export default function Login(){
   const [mobileNumber, setMobileNumber] = useState<string | undefined>(undefined);
   const [completeMobileNumber, setCompleteMobileNumber] = useState<string | undefined>(undefined);
   const [isRegisterMode, setIsRegisterMode] = useState(true);
-  const { setCompletePhoneNumber: setCPhoneNumber, session, requestOtp } = useAuth();
+  const { setCompletePhoneNumber: setCPhoneNumber, session, profile1, requestOtp } = useAuth();
   const [showCaptcha, setShowCaptcha] = useState(false);
   const {sendRequestFetch} = useHttpClient();
   const { t } = useTranslation();
@@ -35,6 +35,12 @@ export default function Login(){
   const setCurrentLanguage = async (language: string) => {
     await setAppLanguage(language as 'ar' | 'en' | 'tr');
   }
+
+  useEffect(() => {
+    if(session && profile1){
+      router.replace('/');
+    }
+  }, [session, profile1]);
 
   useEffect(() => {
     if(selectedCountryCallingCode && mobileNumber){

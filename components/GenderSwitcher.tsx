@@ -6,12 +6,18 @@ import { color } from "@/assets/theme";
 
 type Props = {
   style?: StyleProp<ViewStyle>;
-  initialGender: 'male' | 'female' | undefined;
-  onGenderChanged: (newGender: 'male' | 'female') => void;
+  initialGender: 'MALE' | 'FEMALE' | undefined;
+  onGenderChanged: (newGender: 'MALE' | 'FEMALE') => void;
 }
 
 export default function GenderSwitcher({style, initialGender, onGenderChanged}: Props){
-  const [selectedGender, setSelectedGender] = useState<'male' | 'female' | undefined>(initialGender);
+  const [selectedGender, setSelectedGender] = useState<'MALE' | 'FEMALE' | undefined>(undefined);
+
+  useEffect(() => {
+    if(initialGender){
+        setSelectedGender(initialGender);
+    }
+  }, [initialGender]);
 
   useEffect(() => {
     if(selectedGender){
@@ -27,16 +33,16 @@ export default function GenderSwitcher({style, initialGender, onGenderChanged}: 
         textColor="#000"
         title="Female"
         tileKey="female"
-        backgroundColor={selectedGender === 'female' ?  color.background : '#fff'}
-        onPress={() => setSelectedGender('female')}/>
+        backgroundColor={selectedGender === 'FEMALE' ?  color.background : '#fff'}
+        onPress={() => setSelectedGender('FEMALE')}/>
       <MainTile
         image={imgUserDetailsMale}
         requireSignedIn={false}
         textColor="#000"
         title="Male"
         tileKey="male"
-        backgroundColor={selectedGender === 'male' ? color.background : '#fff'}
-        onPress={() => setSelectedGender('male')}/>
+        backgroundColor={selectedGender === 'MALE' ? color.background : '#fff'}
+        onPress={() => setSelectedGender('MALE')}/>
     </View>
   );
 }
