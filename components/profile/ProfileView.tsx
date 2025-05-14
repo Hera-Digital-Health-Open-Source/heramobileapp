@@ -92,8 +92,8 @@ export default function ProfileView({profile} : { profile? : UserProfile}){
   return (
     <View style={styles.container}>
       <View style={{gap: Spacing.small}}>
-        <Text style={GlobalStyles.HeadingText}>Your Details</Text>
-        <Text style={GlobalStyles.NormalText}>Great! Please fill up your remaining details.</Text>
+        <Text style={GlobalStyles.HeadingText}>{t('my_profile_screen_toolbar_title')}</Text>
+        <Text style={GlobalStyles.NormalText}>{profile ? t('my_profile_screen_toolbar_description2') : t('my_profile_screen_toolbar_description1')}</Text>
       </View>
       <View style={{gap: Spacing.medium}}>
         <Text style={GlobalStyles.NormalText}>{t('my_profile_screen_gender_title')}</Text>
