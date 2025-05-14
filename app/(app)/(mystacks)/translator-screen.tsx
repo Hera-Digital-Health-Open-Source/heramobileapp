@@ -5,6 +5,7 @@ import {
   ScrollView,
   Pressable,
   ActivityIndicator,
+  Alert
 } from "react-native";
 import {
   ExpoSpeechRecognitionModule,
@@ -49,7 +50,7 @@ export default function TranslatorScreen() {
     }
   });
   useSpeechRecognitionEvent("error", (event) => {
-    console.log("error code:", event.error, "error message:", event.message);
+    Alert.alert("Voice Recognition", JSON.stringify(event));
   });
 
   useEffect(() => {
@@ -70,12 +71,13 @@ export default function TranslatorScreen() {
       }).then(r => {
         setTranslation(r.data?.result!);
       }).catch(err => {
+        Alert.alert(t('translator_screen_failed_alert_title'), t('translator_screen_failed_alert_message'))
         console.log(err);
       }).finally(() => {
         setTranslating(false);
       })
     }
-  }, [recognizing]);
+  }, [recognizing, transcript]);
 
   const handleStart = async () => {
     const permission = await ExpoSpeechRecognitionModule.getPermissionsAsync();
@@ -84,16 +86,19 @@ export default function TranslatorScreen() {
         const result =
           await ExpoSpeechRecognitionModule.requestPermissionsAsync();
         if (!result.granted) {
+          Alert.alert(t('general_permissions_title'), t('general_permissions_not_granted_message'));
           console.warn("Permissions not granted", result);
           return;
         }
       } else {
+        Alert.alert(t('general_permissions_title'), t('translator_screen_microphone_permission_required'));
         console.warn(
           "You have to allow accessing the microphone from settings"
         );
         return;
       }
     }
+
 
     setTranscript("");
     setTranslation("");
@@ -143,6 +148,12 @@ export default function TranslatorScreen() {
     }
   };
 
+  const flipLanguages = () => {
+    const tmp = fromLanguageCode;
+    setFromLanguageCode(toLanguageCode);
+    setToLanguageCode(tmp);
+  };
+
   return (
     <View style={{ alignItems: "center", padding: 16, gap: 16 }}>
       <View style={styles.languagesContainer}>
@@ -158,7 +169,7 @@ export default function TranslatorScreen() {
             />
           </View>
         </View>
-        <Pressable style={{marginTop: 24}}>
+        <Pressable style={{marginTop: 24}} onPress={() => flipLanguages()}>
           <Octicons name="arrow-switch" size={16} color="blue" />
         </Pressable>
         <View style={styles.singleLanguageContainer}>
