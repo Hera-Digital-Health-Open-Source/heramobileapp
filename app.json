@@ -1,0 +1,8 @@
+{
+  "android": {
+    "package": "com.husam1979.heramobile"
+  },
+  "ios": {
+    "bundleIdentifier": "com.husam1979.heramobile"
+  }
+}

@@ -20,7 +20,7 @@ export default () => ({
       }
     },
     android: {
-      versionCode: 7,
+      versionCode: 11,
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff"
