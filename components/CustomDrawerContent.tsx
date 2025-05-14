@@ -71,7 +71,7 @@ export default function CustomDrawerContent(props: any) {
           )}
           label={t('settings_screen_visit_hera_web_title')} onPress={() => router.push({
             pathname: '/web-view-screen',
-            params: { uri: `https://heradigitalhealth.org/${locale}` },
+            params: { uri: locale === 'en' ? `https://heradigitalhealth.org/` : `https://heradigitalhealth.org/${locale}` },
           })} 
         />
         <DrawerItem 
