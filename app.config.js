@@ -4,23 +4,32 @@ export default () => ({
   expo: {
     name: "Hera Digital Health",
     slug: "hera-digital-health",
-    version: "1.0.0",
+    version: "1.0.32",
     orientation: "portrait",
     icon: "./assets/images/adaptive-icon.png",
     scheme: "myapp",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
+    // updates: {
+    //   enabled: true,
+    //   url: 'https://localhost'
+    // },
+    // runtimeVersion: {
+    //   policy: "appVersion"
+    // },
     ios: {
-      buildNumber: "1.0.0",
+      buildNumber: "2",
       supportsTablet: true,
       bundleIdentifier: "com.heradigitalhealth.ios",
       infoPlist: {
         NSSpeechRecognitionUsageDescription: "Allow $(PRODUCT_NAME) to use speech recognition.",
-        NSMicrophoneUsageDescription: "Allow $(PRODUCT_NAME) to use the microphone."
+        NSMicrophoneUsageDescription: "Allow $(PRODUCT_NAME) to use the microphone.",
+        NSPhotoLibraryUsageDescription: "Some features may require access to your photo library, even if unused directly.",
+        NSLocationWhenInUseUsageDescription: "Allow $(PRODUCT_NAME) to access your location while using the app.",
       }
     },
     android: {
-      versionCode: 11,
+      versionCode: 13,
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff"
