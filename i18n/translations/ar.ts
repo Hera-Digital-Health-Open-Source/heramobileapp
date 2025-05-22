@@ -1,4 +1,5 @@
 export default {
+  general_loading_title: "تحميل",
   general_permissions_title: "السماحيات",
   general_permissions_not_granted_message: "لم تُمنح السماحيات المطلوبة",
   general_save_button: "حفظ",

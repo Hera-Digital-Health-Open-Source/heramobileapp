@@ -1,4 +1,5 @@
 export default {
+  general_loading_title: "Loading",
   general_permissions_title: "Permissions",
   general_permissions_not_granted_message: "Permissions not granted!",
   general_save_button: "Save",
