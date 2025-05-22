@@ -30,6 +30,7 @@ export default function TranslatorScreen() {
   const {sendRequestFetch} = useHttpClient();
   const { session } = useAuth();
   const {t} = useTranslation();
+  const [hideRedButton, setHideRedButton] = useState(false);
 
   const supportedLanguages = [
     {"label": t('language_dropdown_arabic_text'), "key": "ar-SY"},
@@ -38,7 +39,7 @@ export default function TranslatorScreen() {
   ];
 
   useSpeechRecognitionEvent("start", () => setRecognizing(true));
-  useSpeechRecognitionEvent("end", () => setRecognizing(false));
+  useSpeechRecognitionEvent("end", () => {setRecognizing(false); setHideRedButton(false)});
   useSpeechRecognitionEvent("result", (event) => {
     setDisplayText(transcript + " " + event.results[0]?.transcript);
     const usefullText = event.results
@@ -185,10 +186,11 @@ export default function TranslatorScreen() {
         </View>
       </View>
 
-      {recognizing && (
+      {recognizing && !hideRedButton && (
         <Pressable
           style={[styles.microphoneButton, { backgroundColor: "red" }]}
           onPress={() => {
+            setHideRedButton(true);
             ExpoSpeechRecognitionModule.stop();
             setDisplayText(transcript);
           }}
@@ -197,7 +199,7 @@ export default function TranslatorScreen() {
         </Pressable>
       )}
 
-      {translating && (
+      {(translating || hideRedButton) && (
         <View
           style={[styles.microphoneButton, { backgroundColor: "#fff" }]}
         >
