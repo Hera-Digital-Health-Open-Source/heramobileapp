@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { I18nManager } from 'react-native';
-import * as Updates from 'expo-updates';
 import i18n from '@/i18n/config';
 import { useStorageState } from '@/hooks/useStorageState';
 import { useLoading } from './LoadingContext';
+import RNRestart from 'react-native-restart';
 
 const I18N_KEY = 'app_locale';
 
@@ -38,7 +38,7 @@ export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
       I18nManager.forceRTL(shouldBeRTL);
       i18n.locale = lang;
       setLocale(lang);
-      await Updates.reloadAsync();
+      RNRestart.Restart();
       return;
     }
   
