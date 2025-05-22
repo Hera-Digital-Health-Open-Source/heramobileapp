@@ -87,8 +87,11 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
                   selectedValue={`${currentKeySelected}`}
                   onValueChange={(itemValue, itemIndex) => {
                     setCurrentKeySelected(itemValue);
+                    setIsPickerVisible(false);
                     if(onItemSelectionChanged){
-                      onItemSelectionChanged(itemValue!);
+                      setTimeout(() => {
+                        onItemSelectionChanged(itemValue!);
+                      }, 500);
                     }
                   }}>
                     {items?.map((item, index) => (
