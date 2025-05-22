@@ -3,6 +3,7 @@ import { View, StyleSheet, ViewStyle, Image, StyleProp } from "react-native";
 import MainTile from "./MainTile";
 import { imgUserDetailsMale, imgUserDetailsFemale } from "@/assets/images/images";
 import { color } from "@/assets/theme";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type Props = {
   style?: StyleProp<ViewStyle>;
@@ -12,6 +13,7 @@ type Props = {
 
 export default function GenderSwitcher({style, initialGender, onGenderChanged}: Props){
   const [selectedGender, setSelectedGender] = useState<'MALE' | 'FEMALE' | undefined>(undefined);
+  const {t} = useTranslation();
 
   useEffect(() => {
     if(initialGender){
@@ -31,7 +33,7 @@ export default function GenderSwitcher({style, initialGender, onGenderChanged}: 
         image={imgUserDetailsFemale}
         requireSignedIn={false}
         textColor="#000"
-        title="Female"
+        title={t('gender_dropdown_female_text')}
         tileKey="female"
         backgroundColor={selectedGender === 'FEMALE' ?  color.background : '#fff'}
         onPress={() => setSelectedGender('FEMALE')}/>
@@ -39,7 +41,7 @@ export default function GenderSwitcher({style, initialGender, onGenderChanged}: 
         image={imgUserDetailsMale}
         requireSignedIn={false}
         textColor="#000"
-        title="Male"
+        title={t('gender_dropdown_male_text')}
         tileKey="male"
         backgroundColor={selectedGender === 'MALE' ? color.background : '#fff'}
         onPress={() => setSelectedGender('MALE')}/>
