@@ -1,6 +1,6 @@
 import {Image, type ImageSource } from "expo-image";
 import { View, StyleSheet, Pressable, Text} from "react-native";
-import { color, Spacing } from "@/assets/theme";
+import { color, GlobalStyles, Spacing } from "@/assets/theme";
 
 type Props = {
   title: string;
@@ -37,7 +37,7 @@ export default function MainTile(
 const styles = StyleSheet.create({
   tileOuterContainer: {
     justifyContent: 'center',
-    height: 120,
+    height: 125,
     // width: 90,
     flex: 1,
     paddingHorizontal: 10,
@@ -62,9 +62,10 @@ const styles = StyleSheet.create({
     width: 50,
   },
   tileText: {
-    fontSize: 11,
-    fontFamily: 'Roboto-Medium',
+    // fontSize: 13,
+    // fontFamily: 'Roboto-Medium',
+    ...GlobalStyles.IconTitleText,
     textAlign: 'center',
-    marginTop: Spacing.large,
+    marginTop: Spacing.medium,
   }
 });

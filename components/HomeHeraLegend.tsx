@@ -2,6 +2,7 @@ import { View, StyleSheet, Text } from "react-native";
 import { Image } from "expo-image";
 import { heraIcon } from "@/assets/images/images";
 import { useTranslation } from "@/hooks/useTranslation";
+import { GlobalStyles } from "@/assets/theme";
 
 export default function HomeHeraLegend(){
   const { t } = useTranslation();
@@ -10,9 +11,9 @@ export default function HomeHeraLegend(){
     <View style={styles.legendContainer}>
       <View style={styles.headerContainer}>
         <Image source={heraIcon} style={{width: 38, height: 35, marginRight: 10}} />
-        <Text style={styles.headerText}>{t('visit_hera_web_screen_toolbar_title')}</Text>
+        <Text style={styles.titleText}>{t('visit_hera_web_screen_toolbar_title')}</Text>
       </View>
-      <Text style={styles.bodyText}>{t('home_screen_legend')}</Text>
+      <Text style={styles.headerText}>{t('home_screen_legend')}</Text>
     </View>
   );
 }
@@ -28,13 +29,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  headerText: {
-    fontSize: 45,
-    fontFamily: 'Roboto-Medium',
-    color: '#fff',
+  titleText: {
+    ...GlobalStyles.TitleText,
+    color: '#fff'
   },
-  bodyText: {
-    fontSize: 26,
+  headerText: {
+    fontSize: 28,
     fontFamily: 'Robot-Medium',
     color: '#fff',
     marginTop: 8,

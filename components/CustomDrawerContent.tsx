@@ -30,7 +30,7 @@ export default function CustomDrawerContent(props: any) {
         time_zone: parsed.time_zone as string
       });
     }
-  }, [profileIsRead]);
+  }, [profileIsRead, profile]);
 
   const handleSignOut = async () => {
     signOut();
