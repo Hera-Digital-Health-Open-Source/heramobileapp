@@ -18,6 +18,7 @@ import DropDownPicker from "@/components/DropDownPicker";
 import { useHttpClient } from "@/context/HttpClientContext";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
+import { GlobalStyles } from "@/assets/theme";
 
 export default function TranslatorScreen() {
   const [recognizing, setRecognizing] = useState(false);
@@ -25,7 +26,7 @@ export default function TranslatorScreen() {
   const [displayText, setDisplayText] = useState("");
   const [translating, setTranslating] = useState(false);
   const [translation, setTranslation] = useState("");
-  const [fromLanguageCode, setFromLanguageCode] = useState("ar-SY");
+  const [fromLanguageCode, setFromLanguageCode] = useState("ar-SA");
   const [toLanguageCode, setToLanguageCode] = useState("tr-TR");
   const {sendRequestFetch} = useHttpClient();
   const { session } = useAuth();
@@ -33,7 +34,7 @@ export default function TranslatorScreen() {
   const [hideRedButton, setHideRedButton] = useState(false);
 
   const supportedLanguages = [
-    {"label": t('language_dropdown_arabic_text'), "key": "ar-SY"},
+    {"label": t('language_dropdown_arabic_text'), "key": "ar-SA"},
     {"label": t('language_dropdown_english_text'), "key": "en-US"},
     {"label": t('language_dropdown_turkish_text'), "key": "tr-TR"},
   ];
@@ -51,8 +52,13 @@ export default function TranslatorScreen() {
     }
   });
   useSpeechRecognitionEvent("error", (event) => {
-    Alert.alert("Voice Recognition", JSON.stringify(event));
+    if(event.error === 'language-not-supported'){
+      Alert.alert("Voice Recognition", `The following locale is not exist, the translator will not work properly:\n${fromLanguageCode}`);
+    } else if(event.error !== 'no-speech'){
+      Alert.alert("Voice Recognition", `Unhandeled error: ${event.error} = ${event.message}`);
+    }
   });
+
 
   useEffect(() => {
     if(!recognizing && transcript !== ''){
@@ -88,14 +94,14 @@ export default function TranslatorScreen() {
           await ExpoSpeechRecognitionModule.requestPermissionsAsync();
         if (!result.granted) {
           Alert.alert(t('general_permissions_title'), t('general_permissions_not_granted_message'));
-          console.warn("Permissions not granted", result);
+          // console.warn("Permissions not granted", result);
           return;
         }
       } else {
         Alert.alert(t('general_permissions_title'), t('translator_screen_microphone_permission_required'));
-        console.warn(
-          "You have to allow accessing the microphone from settings"
-        );
+        // console.warn(
+        //   "You have to allow accessing the microphone from settings"
+        // );
         return;
       }
     }
@@ -159,7 +165,7 @@ export default function TranslatorScreen() {
     <View style={{ alignItems: "center", padding: 16, gap: 16 }}>
       <View style={styles.languagesContainer}>
         <View style={styles.singleLanguageContainer}>
-          <Text style={{ fontSize: 10 }}>{t('translator_screen_translate_from_text')}</Text>
+          <Text style={GlobalStyles.IconTitleText}>{t('translator_screen_translate_from_text')}</Text>
           {/* I put this view here because the Picker component inside DropDownPicker component doesn't support alignItems to be center in the parent container, so I isolate the Picker container in this way */}
           <View style={{width: '100%'}}>
             <DropDownPicker
@@ -174,7 +180,7 @@ export default function TranslatorScreen() {
           <Octicons name="arrow-switch" size={16} color="blue" />
         </Pressable>
         <View style={styles.singleLanguageContainer}>
-          <Text style={{ fontSize: 10 }}>{t('translator_screen_translate_to_text')}</Text>
+          <Text style={GlobalStyles.IconTitleText}>{t('translator_screen_translate_to_text')}</Text>
           <View style={{width: '100%'}}>
             <DropDownPicker
               items={supportedLanguages}
@@ -217,14 +223,15 @@ export default function TranslatorScreen() {
       )}
 
       <View style={styles.textContainer}>
-        <Text style={{ textAlign: "right", fontSize: 16 }}>{displayText}</Text>
+        <Text style={{ textAlign: "right", ...GlobalStyles.NormalText }}>{displayText}</Text>
 
         <Text
           style={{
             textAlign: "left",
             marginTop: 16,
             marginBottom: 8,
-            fontSize: 16,
+            // fontSize: 16,
+            ...GlobalStyles.NormalText
           }}
         >
           {t('translator_screen_translation')}
@@ -233,8 +240,9 @@ export default function TranslatorScreen() {
           translation === "" && whenTranslationWillAppear !== "" && 
           <Text
             style={{
+              ...GlobalStyles.NormalText,
               textAlign: "left",
-              fontSize: 14,
+              // fontSize: 14,
               fontStyle: "italic",
               color: "grey",
             }}
