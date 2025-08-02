@@ -110,17 +110,17 @@ const OTPScreen = () => {
       <OtpInput numberOfDigits={6} onTextChange={setOtp} />
 
       <View style={styles.buttonsContainer}>
-        <Button
-          style={{flex: 1}}
-          buttonType={ButtonStyles.UNFILLED}
-          label={t('otp_screen_resend_otp_button')}
-          onPress={handleSubmit}
-        />
         <Button 
           style={{flex: 1}}
           buttonType={otp.length < 6 ? ButtonStyles.DISABLED : ButtonStyles.FILLED}
           label={t('phone_number_verification_enter_otp_hint')}
           onPress={otp.length < 6 ? () => {} : () => handleSubmit()}
+        />
+        <Button
+          style={{flex: 1}}
+          buttonType={ButtonStyles.UNFILLED}
+          label={t('otp_screen_resend_otp_button')}
+          onPress={handleSubmit}
         />
       </View>
       <CloudflareTurnstile
@@ -171,9 +171,10 @@ const styles = StyleSheet.create({
     borderColor: '#6A1B9A',
   },
   buttonsContainer: {
-    flexDirection: 'row',
+    // flexDirection: 'column',
     gap: 10,
     width: '100%',
+    height: 120,
     marginTop: 20,
   },
   resendButton: {
