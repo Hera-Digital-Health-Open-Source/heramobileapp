@@ -2,7 +2,7 @@ import ProfileView from "@/components/profile/ProfileView";
 import { useAuth, UserProfile } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { View } from "react-native";
 export default function MyProfileScreen(){
   const [profilObj, setProfileObj] = useState<UserProfile>();
   const { profile, profileIsRead } = useAuth();
@@ -22,8 +22,8 @@ export default function MyProfileScreen(){
   }, [profileIsRead]);
 
   return(
-    <SafeAreaView style={{flex:1 , backgroundColor: '#fff'}}>
+    <View style={{flex:1, backgroundColor: '#fff'}}>
         <ProfileView profile={profilObj} />
-    </SafeAreaView>
+    </View>
   )
 }
