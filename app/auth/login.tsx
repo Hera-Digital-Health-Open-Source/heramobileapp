@@ -53,7 +53,6 @@ export default function Login(){
       setCPhoneNumber(completeMobileNumber);
       const response = await requestOtp(completeMobileNumber, captchaToken);
       if(response){
-        console.log('login.tsx: Requested OTP successfully');
         router.push('/auth/otp-screen');
       } else {
         Alert.alert("OTP Request", "Failed! Please check the internet connection and try again.");
@@ -74,7 +73,7 @@ export default function Login(){
         <View style={styles.loginContainer}>
           <Image source={imgLoginMain} style={{width: 93, height:86}} />
           <View style={styles.loginInputsContainer}>
-            <Text>{t('login_screen_select_language_dropdown_hint')}</Text>
+            <Text style={GlobalStyles.NormalText}>{t('login_screen_select_language_dropdown_hint')}</Text>
             <DropDownPicker 
               items={languages}
               style={{marginTop: 8}}
@@ -82,7 +81,7 @@ export default function Login(){
               initialKeySelection={locale}
               onItemSelectionChanged={(key) => setCurrentLanguage(key)}
             />
-            <Text style={{marginTop: 16}}>{t('login_screen_phone_number_hint')}</Text>
+            <Text style={{marginTop: 16, ...GlobalStyles.NormalText}}>{t('login_screen_phone_number_hint')}</Text>
             <View style={{flexDirection: 'row', gap: 8 , alignContent: 'space-between', marginTop: 8}}>
               <CountryModalPicker
                 style={{width:75}}
@@ -91,7 +90,7 @@ export default function Login(){
                 onCountrySelectionChanged={(v) => setSelectedCountryCallingCode(v)}
               />
               <TextInput
-                style={[GlobalStyles.InputBoxStyle, {flex:1}]}
+                style={[GlobalStyles.InputBoxStyle, GlobalStyles.NormalText, {flex:1}]}
                 onChangeText={(t) => setMobileNumber(t)}
                 value={mobileNumber}
                 placeholder={t('login_screen_phone_number_hint')}
