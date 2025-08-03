@@ -4,6 +4,14 @@ import { useHttpClient } from "@/context/HttpClientContext";
 import { useLoading } from './LoadingContext';
 
 
+export interface UserProfile {
+  name: string;
+  gender: 'MALE' | 'FEMALE';
+  date_of_birth: string;
+  language_code: 'en' | 'ar' | 'tr';
+  time_zone: string;
+}
+
 interface AuthContextType {
   requestOtp: (completeMobileNumber: string, captchToken: string) => Promise<boolean>;
   validateOtp: (inputOtp: string, phoneNumber?: string) => Promise<boolean>;
@@ -11,23 +19,37 @@ interface AuthContextType {
   setErrorMessage: (errorMessage: string) => void;
   signOut: () => void;
   session?: string | null;
-  setSession: (session: string | null) => void;
-  preparingStorageData: boolean;
+  userId?: string | null;
+  // setSession: (session: string | undefined) => void;
   completePhoneNumber: string;
   setCompletePhoneNumber: (completePhoneNumber: string) => void;
-  isProfileCreated: boolean | undefined;
-  setIsProfileCreated: (isProfileCreated: boolean) => void;
+  // isProfileCreated: boolean | undefined;
+  // setIsProfileCreated: (isProfileCreated: boolean) => void;
+  profile1: string | null;
+  profile: string | null;
+  setProfile: (profile: string | null) => void;
+  preparingProfile: boolean,
+  preparingSession: boolean,
+  profileIsRead: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: {children: ReactNode}) {
-  const [[preparingStorageData, session], setSession] = useStorageState('session');
+  const [[preparingSession, session], setSession] = useStorageState('session');
+  const [actualSession, setActualSession] = useState("");
+  const [[preparingUserId, userId], setUserId] = useStorageState('user_id');
+  const [actualUserId, setActualUserId] = useState("");
+  const [[preparingProfile1, profile1], setProfile1] = useStorageState('profile');
+  const [actualProfile, setActualProfile] = useState("");
+
   const [completeMobileNumber, setCompleteMobileNumber] = useState('');
   const { sendRequest } = useHttpClient();
-  const [isProfileCreated, setIsProfileCreated] = useState<boolean | undefined>(undefined);
   const {setLoading} = useLoading();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+  const [[preparingProfile, profile], setProfile] = useStorageState('profile');
+  const [profileIsRead, setProfileIsRead] = useState(false);
+  const [last, setLast] = useState(false);
 
   const requestOtp = async (completeMobileNumber: string, captchToken: string) : Promise<boolean> => {
     const response = await sendRequest<{phone_number: string, expires_at: string}>({
@@ -48,7 +70,7 @@ export function AuthProvider({ children }: {children: ReactNode}) {
   };
 
   const validateOtp = async (inputOtp: string, phoneNumber?: string): Promise<boolean> => {
-    const response = await sendRequest<{token: string, is_new_user: boolean, user_id: number, user_profile: string}>({
+    const response = await sendRequest<{token: string, is_new_user: boolean, user_id: number, user_profile: UserProfile}>({
       url: '/otp_auth/attempt_challenge/',
       method: 'POST',
       data: {
@@ -62,16 +84,65 @@ export function AuthProvider({ children }: {children: ReactNode}) {
       return false;
     }
 
-    console.log(`==== ${JSON.stringify(response.data)}`);
-
+    setUserId(String(response.data!.user_id));
     setSession(response.data!.token);
-    setIsProfileCreated(response.data!.user_profile ? true : false);
+    // setIsProfileCreated(response.data!.user_profile ? true : false);
+    if(response.data!.user_profile){
+      setProfile(JSON.stringify(response.data!.user_profile))
+      // setProfile({
+      //   name: response.data!.user_profile.name as string,
+      //   gender: response.data!.user_profile.gender as 'MALE' | 'FEMALE',
+      //   date_of_birth: response.data!.user_profile.date_of_birth as string,
+      //   language_code: response.data!.user_profile.language_code as 'ar' | 'en' | 'tr',
+      //   time_zone: response.data!.user_profile.time_zone as string
+      // })
+    }
     return true;
   };
 
   useEffect(() => {
-    setLoading(preparingStorageData);
-  }, [preparingStorageData]);
+    setLoading(preparingSession || preparingProfile || preparingUserId);
+  }, [preparingSession, preparingProfile, preparingUserId]);
+
+  useEffect(() => {
+    if(!preparingProfile1 && profile1){
+      setActualProfile(profile1);
+    }
+  }, [preparingProfile1, profile1]);
+
+  useEffect(() => {
+    if(!preparingSession && session){
+      setActualSession(session);
+    }
+  }, [preparingSession, session]);
+
+  useEffect(() => {
+    if(!preparingUserId && userId){
+      setActualUserId(userId);
+    }
+  }, [preparingUserId, userId]);
+
+  useEffect(() => {
+    if(preparingProfile){
+      setLast(true);
+      setProfileIsRead(false);
+    } else {
+      if(last){
+        setLast(false);
+        setProfileIsRead(true);
+      }
+    }
+  }, [preparingProfile]);
+
+  // useEffect(() => {
+  //   if(!preparingProfile){
+  //     if(profile === null){
+  //       setProfile(null);
+  //     } else {
+  //       setProfile(JSON.parse(profile!));
+  //     }
+  //   }
+  // }, [preparingProfile]);
 
   return (
     <AuthContext.Provider
@@ -83,16 +154,25 @@ export function AuthProvider({ children }: {children: ReactNode}) {
         errorMessage,
         setErrorMessage,
         signOut: () => {
+          setActualProfile("");
+          setActualSession("");
+          setActualUserId("");
           setSession(null);
           setCompleteMobileNumber('');
           setErrorMessage(undefined);
-          setIsProfileCreated(undefined);
+          // setIsProfileCreated(undefined);
+          setProfile(null);
+          setUserId(null);
         },
-        session,
-        setSession,
-        preparingStorageData,
-        isProfileCreated,
-        setIsProfileCreated,
+        session: actualSession,
+        userId: actualUserId,
+        profile1: actualProfile,
+        // setSession,
+        profile: profile,
+        setProfile: setProfile,
+        preparingProfile: preparingProfile,
+        preparingSession: preparingSession,
+        profileIsRead: profileIsRead
       }}>
       {children}
     </AuthContext.Provider>

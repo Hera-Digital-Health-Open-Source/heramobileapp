@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Pressable, StyleProp, ViewStyle } from "react-n
 import {AntDesign} from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import CountryPicker, { CountryCode } from 'react-native-country-picker-modal';
+import { GlobalStyles } from "@/assets/theme";
 
 type Props = {
   onCountrySelectionChanged?: (callingCode:string)=>void;
@@ -25,7 +26,7 @@ export default function CountryModalPicker({preferredCountries, defaultCallingCo
     <View style={style}>
       <Pressable onPress={() => setIsPickerVisible(!isPickerVisible)}>
         <View style={styles.dropDownContainer}>
-          <Text>{countryCallingCode ? countryCallingCode : defaultCallingCode}</Text>
+          <Text style={GlobalStyles.NormalText}>{countryCallingCode ? countryCallingCode : defaultCallingCode}</Text>
           <AntDesign name={isPickerVisible ? "caretup" : "caretdown"} />
         </View>
       </Pressable>

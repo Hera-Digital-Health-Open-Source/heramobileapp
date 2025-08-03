@@ -184,59 +184,65 @@ export default function Appointments() {
 
   const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
 
-  const markedDates = appointments.reduce((acc: { [key: string]: { marked: boolean; dotColor: string, customStyles?: object } }, appointment) => {
-    acc[appointment.date] = { 
-      marked: true,
-      dotColor: color.primary,
-      customStyles: {
-        text: {
-          color: color.primary,
-          fontWeight: 'bold',
+  let markedDates;
+
+  if(!appointments || appointments.length === 0){
+    markedDates = undefined;
+  } else {
+    markedDates = appointments.reduce((acc: { [key: string]: { marked: boolean; dotColor: string, customStyles?: object } }, appointment) => {
+        acc[appointment.date] = { 
+        marked: true,
+        dotColor: color.primary,
+        customStyles: {
+            text: {
+            color: color.primary,
+            fontWeight: 'bold',
+            },
+        }
+        };
+        return acc;
+    }, {});
+    
+    // Add custom style for the current date
+    markedDates[currentDate] = {
+        marked: false,
+        dotColor: '',
+        customStyles: {
+        container: {
+            backgroundColor: color.primary,
+            width: 34, // Adjust the width to make it a circle
+            height: 34, // Adjust the height to make it a circle
+            borderRadius: 17, // Half of the width/height to make it a circle
+            justifyContent: 'center', // Center the text vertically
+            alignItems: 'center', // Center the text horizontally
         },
-      }
+        text: {
+            color: 'white',
+        },
+        },
     };
-    return acc;
-  }, {});
-
-  // Add custom style for the current date
-  markedDates[currentDate] = {
-    marked: false,
-    dotColor: '',
-    customStyles: {
-      container: {
-        backgroundColor: color.primary,
-        width: 34, // Adjust the width to make it a circle
-        height: 34, // Adjust the height to make it a circle
-        borderRadius: 17, // Half of the width/height to make it a circle
-        justifyContent: 'center', // Center the text vertically
-        alignItems: 'center', // Center the text horizontally
-      },
-      text: {
-        color: 'white',
-      },
-    },
-  };
-
-  // Add custom style for the selected day
-  markedDates[selectedDay] = {
-    marked: false,
-    dotColor: '',
-    customStyles: {
-      container: {
-        width: 34, // Adjust the width to make it a circle
-        height: 34, // Adjust the height to make it a circle
-        borderRadius: 17, // Half of the width/height to make it a circle
-        borderColor: color.primary,
-        borderWidth: 1,
-        justifyContent: 'center', // Center the text vertically
-        alignItems: 'center', // Center the text horizontally
-      },
-      text: {
-        color: color.primary,
-        fontWeight: 'bold',
-      },
-    },
-  };
+    
+    // Add custom style for the selected day
+    markedDates[selectedDay] = {
+        marked: false,
+        dotColor: '',
+        customStyles: {
+        container: {
+            width: 34, // Adjust the width to make it a circle
+            height: 34, // Adjust the height to make it a circle
+            borderRadius: 17, // Half of the width/height to make it a circle
+            borderColor: color.primary,
+            borderWidth: 1,
+            justifyContent: 'center', // Center the text vertically
+            alignItems: 'center', // Center the text horizontally
+        },
+        text: {
+            color: color.primary,
+            fontWeight: 'bold',
+        },
+        },
+    };
+  }
 
   const currentMonth = new Date().toISOString().split('T')[0] // Get current date in YYYY-MM-DD format
 
@@ -245,7 +251,7 @@ export default function Appointments() {
       <View style={styles.container}>
       <Text style={[GlobalStyles.SubHeadingText, {textAlign: 'center'}]}>{t('home_screen_my_appointments_title')}</Text>
       <View style={{ flexDirection: 'row', gap: 10, width: '75%', marginLeft: Spacing.medium }}>
-        <Button style={{flex: 3}} buttonType={isCalendarView ? ButtonStyles.FILLED : ButtonStyles.UNFILLED} label={t('my_appointments_screen_calender_view')} onPress={() => setIsCalendarView(true)} />
+        <Button style={{flex: 2}} buttonType={isCalendarView ? ButtonStyles.FILLED : ButtonStyles.UNFILLED} label={t('my_appointments_screen_calender_view')} onPress={() => setIsCalendarView(true)} />
         <Button style={{flex: 2}}  buttonType={isCalendarView ? ButtonStyles.UNFILLED : ButtonStyles.FILLED} label={t('my_appointments_screen_list_view')} onPress={() => setIsCalendarView(false)} />
       </View>
       {isCalendarView && (

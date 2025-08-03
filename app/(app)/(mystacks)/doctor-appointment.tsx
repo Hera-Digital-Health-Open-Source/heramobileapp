@@ -5,9 +5,12 @@ import { imgDoctorAppointmentMain, imgFamily } from "@/assets/images/images";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Linking } from "react-native";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function DoctorAppointment() {
-  const info = `Did you know? There is a hotline with Arabic speakers to help you make free doctor's appointment in Turkey at public clinics and hospitals`;
+  const {t} = useTranslation();
+
+  const info = t('doctor_appointment_screen_description');
 
   const openPhoneApp = () => {
     const phoneNumber = '182';
@@ -28,14 +31,14 @@ export default function DoctorAppointment() {
     <SafeAreaView style={{flex:1}}>
       <View style={styles.container}>
         <View style={{flex:1, gap: Spacing.large}}>
-          <Text style={GlobalStyles.HeadingText}>Doctor’s Appointment</Text>
+          <Text style={GlobalStyles.HeadingText}>{t('doctor_appointment_screen_title')}</Text>
           <Text style={GlobalStyles.NormalText}>{info}</Text>
           <Image source={imgDoctorAppointmentMain} style={{width: 330, height: 330, marginHorizontal: 'auto'}} />
         </View>
         <Button
             // style={{flex: 1}}
             buttonType={ButtonStyles.FILLED}
-            label="Call Hotline Now"
+            label={t('doctor_appointment_screen_call_hotline')}
             onPress={openPhoneApp}
         /> 
       </View>

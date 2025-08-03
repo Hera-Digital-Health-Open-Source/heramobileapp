@@ -2,10 +2,11 @@ import React from 'react';
 import { View, Modal, ActivityIndicator, StyleSheet, Text, Platform, Dimensions } from 'react-native';
 import { useLoading } from '@/context/LoadingContext';
 import { color } from '@/assets/theme';
-
+import { useTranslation } from '@/hooks/useTranslation';
 
 const LoadingModal = () => {
   const {isLoading} = useLoading();
+  const {t} = useTranslation();
 
   return (
     <Modal style={{flex: 1}} transparent={true} visible={isLoading} animationType="fade" statusBarTranslucent={Platform.OS === 'android'}>
@@ -13,7 +14,7 @@ const LoadingModal = () => {
         <View style={styles1.modalBackground}>
           <View style={styles1.loaderContainer}>
             <ActivityIndicator size="large" color={color.primary} />
-            <Text style={styles1.loadingText}>Loading...</Text>
+            <Text style={styles1.loadingText}>{t('general_loading_title')}</Text>
           </View>
         </View>
       </View>
@@ -31,14 +32,14 @@ const styles1 = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    // backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 9999,
   },
   modalBackground: {
     // flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    // backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },

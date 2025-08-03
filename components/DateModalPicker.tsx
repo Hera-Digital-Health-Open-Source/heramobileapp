@@ -1,11 +1,11 @@
 import { StyleSheet, View, Text, Pressable, StyleProp, ViewStyle } from "react-native";
 import {AntDesign} from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 
 type Props = {
-  initialDate: Date;
+  initialDate: Date | undefined;
   onDateSelected?: (date:Date)=>void;
   onCancel?: () => void;
   style?: StyleProp<ViewStyle>;
@@ -13,7 +13,13 @@ type Props = {
 
 export default function DateModalPicker({initialDate, onDateSelected, onCancel, style}: Props){
   const [isPickerVisible, setIsPickerVisible] = useState(false);
-  const [date, setDate] = useState(initialDate);
+  const [date, setDate] = useState<Date | undefined>(undefined);
+
+  useEffect(() => {
+    if(initialDate){
+      setDate(initialDate);
+    }
+  }, [initialDate]);
 
   const handleOnConfirm = (date: Date) => {
     setDate(date);
@@ -30,11 +36,12 @@ export default function DateModalPicker({initialDate, onDateSelected, onCancel, 
       onCancel();
     }
   }
+
   return (
     <View style={style}>
       <Pressable onPress={() => setIsPickerVisible((prev) => !prev)}>
         <View style={styles.dropDownContainer}>
-          <Text>{date.toLocaleDateString()}</Text>
+          <Text>{date?.toLocaleDateString()}</Text>
           <AntDesign name={"calendar"} size={22} />
         </View>
       </Pressable>

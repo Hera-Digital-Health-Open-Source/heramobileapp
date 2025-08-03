@@ -98,6 +98,12 @@ const ButtonTextDisabled = {
   fontFamily: 'Roboto-Bold',
 };
 
+const IconTitleText = {
+  fontFamily: 'Roboto-Medium',
+  fontSize: 14,
+  color: color.black,
+}
+
 const NormalText = {
   fontFamily: 'Roboto-Medium',
   fontSize: 18,
@@ -118,6 +124,12 @@ const HeadingText = {
   color: color.primary,
 }
 
+const TitleText = {
+  ...NormalText,
+  fontFamily: 'Roboto-Medium',
+  fontSize: 45,
+  color: color.primary,
+}
 
 const WhiteContainerNoHorizontalPadding = {
   backgroundColor: color.white,
@@ -145,6 +157,8 @@ export const GlobalStyles = StyleSheet.create({
   WhiteContainerNoHorizontalPadding,
   WhiteContainer,
   ButtonTextBasic,
+  IconTitleText,
+  TitleText
   // Spacing,
 });
 

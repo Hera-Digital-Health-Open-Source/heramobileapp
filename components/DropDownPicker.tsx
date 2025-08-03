@@ -4,6 +4,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {Picker} from '@react-native-picker/picker';
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
+import { GlobalStyles } from "@/assets/theme";
 
 type DropDownItem = {
   label: string;
@@ -28,7 +29,7 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
 
   useEffect(() => {
     if(currentKeySelected){
-      const filtered = items?.filter(i => i.key === currentKeySelected);
+      const filtered = items?.filter(i => i.key === `${currentKeySelected}`);
       if(filtered){
         if(filtered.length > 0){
           setLabel(filtered[0].label);
@@ -45,7 +46,7 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
     return (
       <View style={style}>
         <Picker
-          selectedValue={currentKeySelected}
+          selectedValue={`${currentKeySelected}`}
           onValueChange={(itemValue, itemIndex) => {
             setCurrentKeySelected(itemValue);
             if(onItemSelectionChanged){
@@ -63,7 +64,7 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
       <View style={style}>
         <Pressable onPress={() => setIsPickerVisible(!isPickerVisible)}>
           <View style={styles.dropDownContainer}>
-            <Text>{label ? label : ""}</Text>
+            <Text style={GlobalStyles.NormalText}>{label ? label : ""}</Text>
             <AntDesign name={isPickerVisible ? "caretup" : "caretdown"} />
           </View>
         </Pressable>
@@ -84,11 +85,14 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
               )}
               {items && (
                 <Picker
-                  selectedValue={currentKeySelected}
+                  selectedValue={`${currentKeySelected}`}
                   onValueChange={(itemValue, itemIndex) => {
                     setCurrentKeySelected(itemValue);
+                    setIsPickerVisible(false);
                     if(onItemSelectionChanged){
-                      onItemSelectionChanged(itemValue!);
+                      setTimeout(() => {
+                        onItemSelectionChanged(itemValue!);
+                      }, 500);
                     }
                   }}>
                     {items?.map((item, index) => (

@@ -22,11 +22,11 @@ export default function ChildPlaceHolder ({child, style, onPress}: Props) {
 
 const styles = StyleSheet.create({
   childPlaceHolderContainer: {
-    height: 48,
     borderRadius: 24,
     backgroundColor: color.background,
     padding: Spacing.large,
     flexDirection: 'row',
+    alignItems: 'center'
   },
   childName: {
     fontFamily: 'Roboto-Medium',

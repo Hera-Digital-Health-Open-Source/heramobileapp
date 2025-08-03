@@ -16,8 +16,8 @@ type RegistrationWeekType = {
 interface RegistrationContextProps {
   onBoardingProgress: string | null;
   setOnBoardingProgress: (onboardingprogress: string) => void;
-  gender: 'male' | 'female' | undefined;
-  setGender: (gender: 'male' | 'female' | undefined) => void;
+  gender: 'MALE' | 'FEMALE' | undefined;
+  setGender: (gender: 'MALE' | 'FEMALE' | undefined) => void;
   name: string | undefined;
   setName: (name: string) => void;
   dateOfBirth: Date | undefined;
@@ -40,7 +40,7 @@ interface RegistrationProviderProps {
 }
 
 export const RegistrationProvider = ({ children }: RegistrationProviderProps) => {
-  const [gender, setGender] = useState<'male' | 'female' | undefined>(undefined);
+  const [gender, setGender] = useState<'MALE' | 'FEMALE' | undefined>(undefined);
   const [name, setName] = useState<string | undefined>(undefined);
   const [dateOfBirth, setDateOfBirth] = useState<Date | undefined>(undefined);
   const [[isDataLoading, onBoardingProgress], setOnBoardingProgress] = useStorageState('onBoardingProgress');
