@@ -9,7 +9,7 @@ import { I18nProvider } from './I18nContext';
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    // <Auth0Provider domain={"dev-apc5lc1lhv0fk5hp.us.auth0.com"} clientId={"X6PereqNM4m5SPoT9giirIZHRZsqIwsZ"}>
+    <Auth0Provider domain={"dev-apc5lc1lhv0fk5hp.us.auth0.com"} clientId={"X6PereqNM4m5SPoT9giirIZHRZsqIwsZ"}>
       <LoadingProvider>
         <I18nProvider>
             <HttpClientProvider>
@@ -23,6 +23,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             </HttpClientProvider>
         </I18nProvider>
       </LoadingProvider>
-    // </Auth0Provider>
+    </Auth0Provider>
   );
 };

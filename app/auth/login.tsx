@@ -14,6 +14,7 @@ import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
 import { useHttpClient } from "@/context/HttpClientContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useI18n } from "@/context/I18nContext";
+import Auth0, { useAuth0, User } from 'react-native-auth0';
 
 export default function Login(){
   const [selectedCountryCallingCode, setSelectedCountryCallingCode] = useState<string | null>("+90");
@@ -51,12 +52,14 @@ export default function Login(){
   const handleRequestOtp = async (captchaToken: string) => {
     if(completeMobileNumber){
       setCPhoneNumber(completeMobileNumber);
-      const response = await requestOtp(completeMobileNumber, captchaToken);
-      if(response){
-        router.push('/auth/otp-screen');
-      } else {
-        Alert.alert("OTP Request", "Failed! Please check the internet connection and try again.");
-      }
+      const auth0 = new Auth0({
+        domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN!,
+        clientId: process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID!,
+      });
+      await auth0.auth.passwordlessWithSMS({
+        phoneNumber: completeMobileNumber, 
+      });
+      router.push('/auth/otp-screen');
     }
   }
 

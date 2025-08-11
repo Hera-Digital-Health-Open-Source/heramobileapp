@@ -20,11 +20,11 @@ interface AuthContextType {
   signOut: () => void;
   session?: string | null;
   userId?: string | null;
-  // setSession: (session: string | undefined) => void;
+  setSession: (session: string | null) => void;
   completePhoneNumber: string;
   setCompletePhoneNumber: (completePhoneNumber: string) => void;
-  // isProfileCreated: boolean | undefined;
-  // setIsProfileCreated: (isProfileCreated: boolean) => void;
+  isProfileCreated: boolean | undefined;
+  setIsProfileCreated: (isProfileCreated: boolean) => void;
   profile1: string | null;
   profile: string | null;
   setProfile: (profile: string | null) => void;
@@ -45,6 +45,7 @@ export function AuthProvider({ children }: {children: ReactNode}) {
 
   const [completeMobileNumber, setCompleteMobileNumber] = useState('');
   const { sendRequest } = useHttpClient();
+  const [isProfileCreated, setIsProfileCreated] = useState<boolean | undefined>(undefined);
   const {setLoading} = useLoading();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
   const [[preparingProfile, profile], setProfile] = useStorageState('profile');
@@ -86,7 +87,7 @@ export function AuthProvider({ children }: {children: ReactNode}) {
 
     setUserId(String(response.data!.user_id));
     setSession(response.data!.token);
-    // setIsProfileCreated(response.data!.user_profile ? true : false);
+    setIsProfileCreated(response.data!.user_profile ? true : false);
     if(response.data!.user_profile){
       setProfile(JSON.stringify(response.data!.user_profile))
       // setProfile({
@@ -134,15 +135,6 @@ export function AuthProvider({ children }: {children: ReactNode}) {
     }
   }, [preparingProfile]);
 
-  // useEffect(() => {
-  //   if(!preparingProfile){
-  //     if(profile === null){
-  //       setProfile(null);
-  //     } else {
-  //       setProfile(JSON.parse(profile!));
-  //     }
-  //   }
-  // }, [preparingProfile]);
 
   return (
     <AuthContext.Provider
@@ -160,14 +152,16 @@ export function AuthProvider({ children }: {children: ReactNode}) {
           setSession(null);
           setCompleteMobileNumber('');
           setErrorMessage(undefined);
-          // setIsProfileCreated(undefined);
+          setIsProfileCreated(undefined);
           setProfile(null);
           setUserId(null);
         },
         session: actualSession,
         userId: actualUserId,
         profile1: actualProfile,
-        // setSession,
+        setSession,
+        isProfileCreated,
+        setIsProfileCreated,
         profile: profile,
         setProfile: setProfile,
         preparingProfile: preparingProfile,
