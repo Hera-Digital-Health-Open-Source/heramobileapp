@@ -9,7 +9,7 @@ import { router } from "expo-router";
 import Child from "@/models/Child";
 import Vaccine from "@/models/Vaccine";
 import { useHttpClient } from "@/context/HttpClientContext";
-import { useAuth } from "@/context/AuthContext";
+import { useAuthStore } from '@/store/authStore';
 import { useTranslation } from "@/hooks/useTranslation";
 
 function getVaccineId(vaccines: Vaccine[], vaccineName: string) {
@@ -25,7 +25,7 @@ export default function ChildView({introduceText, child} : {introduceText: strin
   const [gender, setGender] = useState<string>('n/a');
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
   const { sendRequestFetch } = useHttpClient();
-  const { session } = useAuth();
+  const { session } = useAuthStore();
   const [takenVaccines, setTakenVaccines] = useState<string[]>([]);
   const {t} = useTranslation();
 
@@ -85,6 +85,10 @@ export default function ChildView({introduceText, child} : {introduceText: strin
   }
 
   const prepareTakenVaccines = () => {
+    if(!vaccines){
+      return;
+    }
+
     if(child){
       const tmp: string[] = [];
     
@@ -110,8 +114,6 @@ export default function ChildView({introduceText, child} : {introduceText: strin
 
     const vaccines = result.data!;
     setVaccines(vaccines);
-
-    // setRefreshing(false);
   };
 
   useEffect(() => {
@@ -164,7 +166,7 @@ export default function ChildView({introduceText, child} : {introduceText: strin
           <View style={{flex: 1}}>
             <Text style={GlobalStyles.NormalText}>{t('add_a_child_screen_past_vaccinations_title')}</Text>
             <ScrollView style={{height: '100%'}}>
-              {child && vaccines.map( (vaccine, index) => (
+              {child && vaccines && vaccines.map( (vaccine, index) => (
                 <Checkbox
                   key={index}
                   initIsChecked={child?.past_vaccinations.filter(t => t == vaccine.id).length === 1}
@@ -172,7 +174,7 @@ export default function ChildView({introduceText, child} : {introduceText: strin
                   onChange={(val) => {handleTakeVaccine(vaccine.name, val)}}
                 />
               ))}
-              {!child && vaccines.map( (vaccine, index) => (
+              {!child && vaccines && vaccines.map( (vaccine, index) => (
                 <Checkbox
                   key={index}
                   initIsChecked={false}
