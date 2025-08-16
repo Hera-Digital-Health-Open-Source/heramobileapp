@@ -2,6 +2,8 @@
 // export const imgFamily = require('./images/img_family.png');
 // export const imgLogoSmall = require('./images/img_logo_small.png');
 
+export const imgHeraIcon = require('./adaptive-icon.png');
+
 // Home Screen
 export const imgHomeAppointments = require('./home/img_home_appointments.png');
 export const imgHomeTranslator = require('./home/img_home_translator.png');
