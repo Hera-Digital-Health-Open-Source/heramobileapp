@@ -6,14 +6,14 @@ import Button, { ButtonStyles } from "@/components/Button";
 import { useCallback, useEffect, useState } from "react";
 import { useHttpClient } from "@/context/HttpClientContext";
 import Child from "@/models/Child";
-import { useAuth } from "@/context/AuthContext";
+import { useAuthStore } from '@/store/authStore';
 import { ScrollView } from "react-native-gesture-handler";
 import { useTranslation } from "@/hooks/useTranslation";
 
 export default function ChildrenView({showIamDone}: { showIamDone: boolean}) {
   const { sendRequestFetch } = useHttpClient();
   const [children, setChildren] = useState<Child[]>([]);
-  const { session } = useAuth();
+  const { session } = useAuthStore();
   const {t} = useTranslation();
 
   // I use useFocusEffect instead of useEffect, because I need to re-fetch 

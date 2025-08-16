@@ -13,13 +13,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       <LoadingProvider>
         <I18nProvider>
             <HttpClientProvider>
-              <AuthProvider>
+              {/* <AuthProvider> */}
                 <RegistrationProvider>
                   <PregnancyProvider>
                     {children}
                   </PregnancyProvider>
                 </RegistrationProvider>
-              </AuthProvider>
+              {/* </AuthProvider> */}
             </HttpClientProvider>
         </I18nProvider>
       </LoadingProvider>

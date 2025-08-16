@@ -5,7 +5,7 @@ import { color, GlobalStyles, Spacing } from '@/assets/theme';
 import { useState } from 'react';
 import Button, { ButtonStyles } from '@/components/Button';
 import { useHttpClient } from '@/context/HttpClientContext';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthStore } from '@/store/authStore';
 import { ScrollView } from 'react-native-gesture-handler';
 import {PregnancyAppointmentView, VaccineAppointmentView, NoAppointmentView} from '@/components/appointments-screen/AppointmentView';
 import Appointment from '@/models/IAppointment';
@@ -42,7 +42,7 @@ export default function Appointments() {
   const [isCalendarView, setIsCalendarView] = useState(true);
   const { sendRequestFetch } = useHttpClient();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const { session } = useAuth();
+  const { session } = useAuthStore();
   const [ selectedAppointments, setSelectedAppointments ] = useState<Appointment[]>([]);
   const [ selectedDay, setSelectedDay ] = useState('');
   const [refreshing, setRefreshing] = useState(false);

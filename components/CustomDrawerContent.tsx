@@ -2,7 +2,7 @@ import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Pressable, Text, View, Linking, Platform } from "react-native";
-import { useAuth, UserProfile } from "@/context/AuthContext";
+import { useAuthStore } from "@/store/authStore";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { icoHeraIcon } from "@/assets/images/images";
@@ -12,25 +12,9 @@ import { useI18n } from "@/context/I18nContext";
 
 export default function CustomDrawerContent(props: any) {
   const { bottom, top } = useSafeAreaInsets();
-  const { signOut, profile, profileIsRead } = useAuth();
+  const { signOut, userProfile } = useAuthStore();
   const { t } = useTranslation();
   const { locale } = useI18n();
-  
-  const [profilObj, setProfileObj] = useState<UserProfile>();
-
-  useEffect(() => {
-    if(profileIsRead){
-      const parsed = JSON.parse(profile!);
-      if(parsed === null) return;
-      setProfileObj({
-        name: parsed.name as string,
-        gender: parsed.gender as 'MALE' | 'FEMALE',
-        date_of_birth: parsed.date_of_birth as string,
-        language_code: parsed.language_code as 'ar' | 'en' | 'tr',
-        time_zone: parsed.time_zone as string
-      });
-    }
-  }, [profileIsRead, profile]);
 
   const handleSignOut = async () => {
     signOut();
@@ -57,7 +41,7 @@ export default function CustomDrawerContent(props: any) {
       >
         <View style={{alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: "#dde3fe", gap: 8}}>
           <Image source={icoHeraIcon} style={{width: 100, height: 100, borderRadius: 35, marginHorizontal: 'auto'}} />
-          <Text style={{fontSize: 18, fontWeight: 'semibold'}}>{profilObj?.name}</Text>
+          <Text style={{fontSize: 18, fontWeight: 'semibold'}}>{userProfile?.name}</Text>
         </View>
         {/* <DrawerItem 
           icon={({ color, size }) => (

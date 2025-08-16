@@ -16,7 +16,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Octicons from "@expo/vector-icons/Octicons";
 import DropDownPicker from "@/components/DropDownPicker";
 import { useHttpClient } from "@/context/HttpClientContext";
-import { useAuth } from "@/context/AuthContext";
+import { useAuthStore } from '@/store/authStore';
 import { useTranslation } from "@/hooks/useTranslation";
 import { GlobalStyles } from "@/assets/theme";
 
@@ -29,7 +29,7 @@ export default function TranslatorScreen() {
   const [fromLanguageCode, setFromLanguageCode] = useState("ar-SA");
   const [toLanguageCode, setToLanguageCode] = useState("tr-TR");
   const {sendRequestFetch} = useHttpClient();
-  const { session } = useAuth();
+  const { session } = useAuthStore();
   const {t} = useTranslation();
   const [hideRedButton, setHideRedButton] = useState(false);
 

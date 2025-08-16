@@ -1,13 +1,13 @@
 import { useHttpClient } from "@/context/HttpClientContext";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuthStore } from "@/store/authStore";
 import IPregnancy from "@/models/IPregnancy";
 import PregnancyView from "@/components/pregnancy/PregnancyView";
 import { useTranslation } from "@/hooks/useTranslation";
 
 export default function PregnancyInfoScreen() {
   const {sendRequestFetch} = useHttpClient();
-  const { session } = useAuth();
+  const { session } = useAuthStore();
   const [pregnancy, setPregnancy] = useState<IPregnancy | undefined>(undefined);
   const {t} = useTranslation();
   

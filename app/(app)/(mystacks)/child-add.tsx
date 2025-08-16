@@ -3,14 +3,13 @@ import Child from "@/models/Child";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useHttpClient } from "@/context/HttpClientContext";
-import { useAuth } from "@/context/AuthContext";
-
+import { useAuthStore } from "@/store/authStore";
 
 export default function ChildAdd(){
   const { childId } = useLocalSearchParams();
   const [child, setChild] = useState<Child | undefined>(undefined);
   const { sendRequestFetch } = useHttpClient();
-  const { session } = useAuth();
+  const { session } = useAuthStore();
   
   const id = childId ? Number(childId) : undefined;
 
