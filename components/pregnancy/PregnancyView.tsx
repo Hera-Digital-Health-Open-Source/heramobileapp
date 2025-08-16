@@ -6,7 +6,7 @@ import DateModalPicker from "@/components/DateModalPicker";
 import DropDownPicker from "@/components/DropDownPicker";
 import { router } from "expo-router";
 import { RequestConfig, useHttpClient } from "@/context/HttpClientContext";
-import { useAuth } from "@/context/AuthContext";
+import { useAuthStore } from '@/store/authStore';
 import IPregnancy from "@/models/IPregnancy";
 import { useTranslation } from "@/hooks/useTranslation";
 
@@ -16,7 +16,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
   const [prentalVisits, setPrentalVisits] = useState<string>("");
   const [pregnancyWeek, setPregnancyWeek] = useState<string>("");
   const {sendRequestFetch} = useHttpClient();
-  const {session} = useAuth();
+  const {session} = useAuthStore();
   const {t} = useTranslation();
 
   const info = !introduceText ? t('your_pregnancy_screen_description_1') : introduceText;
