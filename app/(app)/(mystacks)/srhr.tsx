@@ -21,7 +21,7 @@ import { color, GlobalStyles, Spacing } from '@/assets/theme';
 // import {userService} from '@services/user-service';
 // import {TouchableOpacity} from 'react-native-gesture-handler';
 import { useHttpClient } from '@/context/HttpClientContext';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthStore } from '@/store/authStore';
 import { imgHomeWhatsappHotline } from '@/assets/images/images';
 
 if (Platform.OS === 'android') {
@@ -46,12 +46,13 @@ export default function SrhrScreen() {
   const [searchInput, setSearchInput] = useState('');
   const [filteredSections, setFilteredSections] = useState<ISection[]>([]);
   const {sendRequestFetch} = useHttpClient();
-  const { session } = useAuth();
+  const { session, userProfile } = useAuthStore();
 
+  console.log(`/concepts/${1}/${userProfile?.language_code}/sections/`)
   useEffect(() => {
     async function getSectionsOfConcept() {
       const result = await sendRequestFetch<ISection[]>({
-        url: `/concepts/${1}/${'en'}/sections/`,
+        url: `/concepts/${1}/${userProfile?.language_code}/sections/`,
         method: 'GET',
         headers: {
           'Accept-Language': 'en',
