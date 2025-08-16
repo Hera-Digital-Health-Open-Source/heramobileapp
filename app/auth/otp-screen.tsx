@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import {OtpInput} from 'react-native-otp-entry';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthStore, UserProfile } from '@/store/authStore';
 import Button, { ButtonStyles } from '@/components/Button';
 import { router } from 'expo-router';
 import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
@@ -9,93 +9,96 @@ import { useTranslation } from '@/hooks/useTranslation';
 import Auth0 from 'react-native-auth0';
 import { useHttpClient } from '@/context/HttpClientContext';
 
+type OtpHandle = React.ElementRef<typeof OtpInput>;
+
 const OTPScreen = () => {
   const [otp, setOtp] = useState('');
-  const {
-    completePhoneNumber,
-    requestOtp,
-    validateOtp,
-    profile,
-    preparingProfile,
-    profileIsRead,
-    setSession,
-    isProfileCreated,
-    setIsProfileCreated,
-    setProfile
-  } = useAuth();
+  const { fullMobileNumber, setSession, setUserProfile, setUserId } = useAuthStore();
   const [showCaptcha, setShowCaptcha] = useState(false);
-  const [flag, setFlag] = useState(false);
-  const {t} = useTranslation();
-  const {sendRequestFetch} = useHttpClient();
+  const { t } = useTranslation();
+  const { sendRequestFetch } = useHttpClient();
+  const [enableSendOTP, setEnableSendOTP] = useState(true);
+  const otpRef = useRef<OtpHandle>(null);
 
   const handleResendOTP = async (captchaToken: string) => {
-    console.log('*'.repeat(50));
-    console.log(completePhoneNumber);
-    console.log(captchaToken)
-    if(completePhoneNumber){
-      const response = await requestOtp(completePhoneNumber, captchaToken);
-      if(response){
-        console.log('login.tsx: Requested OTP successfully');
-        setOtp('');
-      } else {
-        console.error('login.tsx: Could not requested OTP! something went wrong!');
-      }
+    if(fullMobileNumber){
+      setOtp("");
+      otpRef.current?.clear();
+
+      const auth0 = new Auth0({
+        domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN!,
+        clientId: process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID!,
+      });
+      await auth0.auth.passwordlessWithSMS({
+        phoneNumber: fullMobileNumber, 
+      });
+      // const response = await requestOtp(fullMobileNumber, captchaToken);
+      // if(response){
+      //   console.log('login.tsx: Requested OTP successfully');
+      //   setOtp('');
+      // } else {
+      //   console.error('login.tsx: Could not requested OTP! something went wrong!');
+      // }
     }
   }
 
-  useEffect(() => {
-    if(!flag) return;
-    if(profileIsRead){
-      if(profile){
-        router.replace('/');
-      } else {
-        router.replace('/registration/user-details');
-      }
-    }
-  }, [flag, profileIsRead]);
-
   const handleSubmit = async () => {
-    const auth0 = new Auth0({
-      domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN!,
-      clientId: process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID!,
-    });
-    
-    const credentials = await auth0.auth.loginWithSMS({
-      phoneNumber: completePhoneNumber, // The same phone number used in the previous step
-      code: otp,              // The OTP entered by the user
-    });
+    setEnableSendOTP(false);
+    try{
+      const auth0 = new Auth0({
+        domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN!,
+        clientId: process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID!,
+      });
+      
+      const credentials = await auth0.auth.loginWithSMS({
+        phoneNumber: fullMobileNumber!, // The same phone number used in the previous step
+        code: otp,              // The OTP entered by the user
+      });
 
-    if(credentials && credentials.idToken){
-      const response = await sendRequestFetch<{token: string, is_new_user: boolean, user_id: number, user_profile: string}>({
-        url: '/otp_auth/auth0_authentication/',
-        method: 'POST',
-        data: {
-          phone_number: completePhoneNumber,
-        },
-        headers: {
-          'Accept-Language': 'en',
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + credentials.idToken,
-        },
-      })
+      
+      if(credentials && credentials.idToken){
+        const response = await sendRequestFetch<{
+          token: string,
+          is_new_user: boolean,
+          user_id: number,
+          user_profile: UserProfile
+        }>({
+          url: '/otp_auth/auth0_authentication/',
+          method: 'POST',
+          data: {
+            phone_number: fullMobileNumber!,
+          },
+          headers: {
+            'Accept-Language': 'en',
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + credentials.idToken,
+          },
+        });
 
-      if(response.error){
-        console.log('login.tsx: Error in fetching user profile: ', response.error);
-        return;
-      }
-      if(response.data){
-        setSession(response.data.token);
-        if(response.data.user_profile){
-          setProfile(JSON.stringify(response.data.user_profile));
-          setIsProfileCreated(true);
-          router.replace('/');
-        } else if(response.data.is_new_user) {
-          setIsProfileCreated(false);
-          router.replace('/registration/user-details');
-        } else {
+        if(response.error){
+          console.log('login.tsx: Error in fetching user profile: ', response.error);
           return;
         }
+        if(response.data){
+          setSession(response.data.token);
+          setUserId(response.data.user_id);
+          if(response.data.user_profile){
+            setUserProfile(response.data.user_profile);
+
+            // setIsProfileCreated(true);
+            router.replace('/');
+          } else if(response.data.is_new_user) {
+            // setIsProfileCreated(false);
+            router.replace('/registration/user-details');
+          } else {
+            return;
+          }
+        }
       }
+    } catch {
+      Alert.alert(t('otp_screen_alert_title'), t('otp_screen_incorrect_code_text'));
+    } finally {
+      setEnableSendOTP(true);
     }
   }
 
@@ -107,14 +110,14 @@ const OTPScreen = () => {
       <Text style={styles.title}>{t('otp_screen_toolbar_title')}</Text>
       <Text style={styles.subtitle}>{t('otp_screen_enter_code_description')}</Text>
       
-      <OtpInput numberOfDigits={6} onTextChange={setOtp} />
+      <OtpInput ref={otpRef} numberOfDigits={6} onTextChange={setOtp} />
 
       <View style={styles.buttonsContainer}>
         <Button 
           style={{flex: 1}}
-          buttonType={otp.length < 6 ? ButtonStyles.DISABLED : ButtonStyles.FILLED}
+          buttonType={otp.length < 6 || !enableSendOTP ? ButtonStyles.DISABLED : ButtonStyles.FILLED}
           label={t('phone_number_verification_enter_otp_hint')}
-          onPress={otp.length < 6 ? () => {} : () => handleSubmit()}
+          onPress={otp.length < 6 || !enableSendOTP ? () => {} : () => handleSubmit()}
         />
         <Button
           style={{flex: 1}}
