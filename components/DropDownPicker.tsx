@@ -4,7 +4,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {Picker} from '@react-native-picker/picker';
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
-import { GlobalStyles } from "@/assets/theme";
+import { GlobalStyles, Spacing } from "@/assets/theme";
 
 type DropDownItem = {
   label: string;
@@ -63,7 +63,7 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
     return (
       <View style={style}>
         <Pressable onPress={() => setIsPickerVisible(!isPickerVisible)}>
-          <View style={styles.dropDownContainer}>
+          <View style={GlobalStyles.DropDownContainerStyle}>
             <Text style={GlobalStyles.NormalText}>{label ? label : ""}</Text>
             <AntDesign name={isPickerVisible ? "caretup" : "caretdown"} />
           </View>
@@ -111,19 +111,6 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
 }
 
 const styles = StyleSheet.create({
-  dropDownContainer: {
-    width: '100%',
-    height: 48,
-    paddingHorizontal: 10,
-    paddingVertical: 11,
-    flexDirection: 'row',
-    borderRadius: 10,
-    borderColor: '#eee',
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    // backgroundColor: '#fa5'
-  },
   modalContainer: {
     height: '25%',
     width: '100%',

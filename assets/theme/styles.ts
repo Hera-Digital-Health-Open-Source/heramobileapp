@@ -33,14 +33,61 @@ export const color = {
   purple: '#800080',
 };
 
+const NormalText = {
+  fontFamily: 'SpaceMono-Regular',
+  fontSize: 18,
+  color: color.black,
+}
+
+const SubHeadingText = {
+  ...NormalText,
+  fontFamily: 'Roboto-ExtraBold',
+  fontSize: 24,
+  color: color.primary,
+}
+
+const HeadingText = {
+  ...NormalText,
+  // fontFamily: 'Roboto-Black',
+  fontFamily: 'Roboto-Medium',
+  fontSize: 32,
+  color: color.primary,
+}
+
+const TitleText = {
+  ...NormalText,
+  fontFamily: 'Roboto-Medium',
+  fontSize: 45,
+  color: color.primary,
+}
+
+const DropDownContainerStyle = {
+    width: '100%' as '100%',
+    height: 48,
+    paddingHorizontal: 10,
+    paddingVertical: 11,
+    flexDirection: 'row' as 'row',
+    borderRadius: Spacing.medium,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    alignItems: 'center' as 'center',
+    justifyContent: 'space-between' as 'space-between',
+    backgroundColor: '#f9f9f9',
+}
+
+
 const InputBoxStyle = {
   height: 48,
   paddingHorizontal: 10,
   paddingVertical: 11,
-  borderRadius: 10,
-  borderColor: '#eee',
+  borderRadius: Spacing.medium,
+  borderColor: '#ddd',
   borderWidth: 1,
   alignItems: 'center' as 'center', // Explicitly specify the type (not as a string)
+  backgroundColor: '#f9f9f9',
+  fontFamily: NormalText.fontFamily,
+  fontSize: NormalText.fontSize,
+  color: NormalText.color,
 }
 
 const ButtonBasic = {
@@ -104,33 +151,6 @@ const IconTitleText = {
   color: color.black,
 }
 
-const NormalText = {
-  fontFamily: 'Roboto-Medium',
-  fontSize: 18,
-  color: color.black,
-}
-
-const SubHeadingText = {
-  ...NormalText,
-  fontFamily: 'Roboto-ExtraBold',
-  fontSize: 24,
-  color: color.primary,
-}
-
-const HeadingText = {
-  ...NormalText,
-  fontFamily: 'Roboto-Black',
-  fontSize: 32,
-  color: color.primary,
-}
-
-const TitleText = {
-  ...NormalText,
-  fontFamily: 'Roboto-Medium',
-  fontSize: 45,
-  color: color.primary,
-}
-
 const WhiteContainerNoHorizontalPadding = {
   backgroundColor: color.white,
   flex: 1,
@@ -158,7 +178,8 @@ export const GlobalStyles = StyleSheet.create({
   WhiteContainer,
   ButtonTextBasic,
   IconTitleText,
-  TitleText
+  TitleText,
+  DropDownContainerStyle
   // Spacing,
 });
 
