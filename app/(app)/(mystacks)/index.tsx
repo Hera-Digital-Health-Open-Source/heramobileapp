@@ -1,4 +1,4 @@
-import { View, StyleSheet, Alert, Linking } from "react-native";
+import { View, StyleSheet, Alert, Linking, ScrollView } from "react-native";
 import { Image } from "expo-image";
 import { 
   imgHomeAppointments,
@@ -136,62 +136,64 @@ export default function Index() {
     },
   ];
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        // backgroundColor: '#541'
-      }}
-    >
-      <View style={{position: 'absolute', top: 50, left: 20, zIndex: 100}}>
-        <Ionicons name="menu" size={32} color="white" onPress={() => navigation.dispatch(DrawerActions.openDrawer)} />
-      </View>
-      <View style={{width: '100%', height: 420}}>
-        <Image source={imgHomeMain} style={{width: '100%', height: '100%'}}/>
-        <HomeHeraLegend />
-      </View>
-      <View style={styles.linesContainer}>
-        <View style={styles.line}>
-          {mainTiles.slice(0,3).map((item, index) => (
-            <MainTile
-              image={item.image}
-              title={item.title} 
-              tileKey={item.tileKey}
-              textColor={item.textColor}
-              backgroundColor={item.backgroundColor}
-              requireSignedIn={item.requireSignedIn}
-              key={item.tileKey}
-              onPress={item.onPressHandler}/>
-          ))}
+    <View style={{ flex: 1 }}>
+      <ScrollView 
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          alignItems: "center",
+          minHeight: '100%'
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={{position: 'absolute', top: 50, left: 20, zIndex: 100}}>
+          <Ionicons name="menu" size={32} color="white" onPress={() => navigation.dispatch(DrawerActions.openDrawer)} />
         </View>
-        <View style={styles.line}>
-          {mainTiles.slice(3,6).map((item, index) => (
-            <MainTile
-              image={item.image}
-              title={item.title} 
-              tileKey={item.tileKey}
-              textColor={item.textColor}
-              backgroundColor={item.backgroundColor}
-              requireSignedIn={item.requireSignedIn}
-              key={item.tileKey}
-              onPress={item.onPressHandler}/>
-          ))}
+        <View style={{width: '100%', height: 420}}>
+          <Image source={imgHomeMain} style={{width: '100%', height: '100%'}}/>
+          <HomeHeraLegend />
         </View>
-        <View style={styles.line}>
-          {mainTiles.slice(6,9).map((item, index) => (
-            <MainTile
-              image={item.image}
-              title={item.title} 
-              tileKey={item.tileKey}
-              textColor={item.textColor}
-              backgroundColor={item.backgroundColor}
-              requireSignedIn={item.requireSignedIn}
-              key={item.tileKey}
-              onPress={item.onPressHandler}/>
-          ))}
+        <View style={styles.linesContainer}>
+          <View style={styles.line}>
+            {mainTiles.slice(0,3).map((item, index) => (
+              <MainTile
+                image={item.image}
+                title={item.title} 
+                tileKey={item.tileKey}
+                textColor={item.textColor}
+                backgroundColor={item.backgroundColor}
+                requireSignedIn={item.requireSignedIn}
+                key={item.tileKey}
+                onPress={item.onPressHandler}/>
+            ))}
+          </View>
+          <View style={styles.line}>
+            {mainTiles.slice(3,6).map((item, index) => (
+              <MainTile
+                image={item.image}
+                title={item.title} 
+                tileKey={item.tileKey}
+                textColor={item.textColor}
+                backgroundColor={item.backgroundColor}
+                requireSignedIn={item.requireSignedIn}
+                key={item.tileKey}
+                onPress={item.onPressHandler}/>
+            ))}
+          </View>
+          <View style={styles.line}>
+            {mainTiles.slice(6,9).map((item, index) => (
+              <MainTile
+                image={item.image}
+                title={item.title} 
+                tileKey={item.tileKey}
+                textColor={item.textColor}
+                backgroundColor={item.backgroundColor}
+                requireSignedIn={item.requireSignedIn}
+                key={item.tileKey}
+                onPress={item.onPressHandler}/>
+            ))}
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
