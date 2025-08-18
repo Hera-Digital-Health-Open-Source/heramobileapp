@@ -9,12 +9,17 @@ import { useAuthStore } from '@/store/authStore';
 import { ScrollView } from 'react-native-gesture-handler';
 import {PregnancyAppointmentView, VaccineAppointmentView, NoAppointmentView} from '@/components/appointments-screen/AppointmentView';
 import Appointment from '@/models/IAppointment';
-import MarkAsDoneModal from '@/components/appointments-screen/MarkAsDoneModal';
+import ConfirmTakenPastVaccinesModal from '@/components/appointments-screen/ConfirmTakenPastVaccinesModal';
+import ConfirmTakenPregnancyModel from '@/components/appointments-screen/ConfirmTakenPregnancyModal';
 import Vaccine from '@/models/Vaccine';
 import Child from '@/models/Child';
 import { useRouter } from 'expo-router';
 import { useTranslation } from '@/hooks/useTranslation';
 import { I18nManager } from 'react-native';
+import MarkAsDoneButton from '@/components/appointments-screen/MarkAsDoneButton';
+import { usePregnancyStore } from '@/store/pregnancyStore';
+import DynamicNavigationHeader from '@/components/DynamicNavigationHeader';
+
 
 interface DateObject {
   dateString: string;
@@ -50,6 +55,7 @@ export default function Appointments() {
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
   const router = useRouter();
   const {t} = useTranslation();
+  const { addPregnancyCheck, pregnancyChecks} = usePregnancyStore();
 
   const getVaccines = async () => {
     setRefreshing(true);
@@ -89,7 +95,6 @@ export default function Appointments() {
   };
 
   const getAppointments = async () => {
-    // console.log('Preparing to call sendRequest... ')
     setRefreshing(true);
     let result = await sendRequestFetch<Appointment[]>({
       url: '/calendar_events/',
@@ -126,7 +131,7 @@ export default function Appointments() {
 
   };
 
-  const handleOnSave = async (childId: number, takenVaccineNames: string[]) => {
+  const saveTakenVaccines = async (childId: number, takenVaccineNames: string[]) => {
     const takenVaccineIds = takenVaccineNames.map(v => getVaccineId(vaccines, v)!);
     const child = children.filter(c => c.id === childId)[0];
     child.past_vaccinations = takenVaccineIds;
@@ -143,6 +148,11 @@ export default function Appointments() {
     });
   };
 
+  const saveTakenPregnancyOffline = async (date: string) => {
+    console.log(date)
+    addPregnancyCheck(date);
+  };
+
   useEffect(() => {
     getAppointments()
     .then(() => {
@@ -156,31 +166,51 @@ export default function Appointments() {
     });
   }, []);
 
-  const renderAppointmentItem = ({ item }: { item: Appointment }) => {
-    const isVaccination = item.event_type == 'vaccination';
-    let takenVaccineNames: string[] = [];
+  const renderAppointmentVaccineListItem = (item : Appointment) => {
+    const takenVaccineIds = children.filter(c => c.id === item.child_id)[0].past_vaccinations;
+    const takenVaccineNames = takenVaccineIds.map(i => getVaccineName(vaccines, i)!);
   
-    if(isVaccination){
-      // console.log('in renderAppointmentItem')
-      // console.log(children);
-      const takenVaccineIds = children.filter(c => c.id === item.child_id)[0].past_vaccinations;
-      takenVaccineNames = takenVaccineIds.map(i => getVaccineName(vaccines, i)!);
-    }
+    return (
+      <View style={[styles.item, {flexDirection: 'row', gap: Spacing.large, alignItems: 'center'}]}>
+        <View style={{flex: 4, gap: Spacing.medium}}>
+          <Text style={ GlobalStyles.SubHeadingText }>{item.date}</Text>
+          <Text style={styles.title}>{ item.person_name }</Text>
+          <Text style={{}}>{ item.vaccine_names}</Text>
+        </View>
+        <ConfirmTakenPastVaccinesModal
+          appointment={item}
+          onSave={async (takenVaccineNames) => {await saveTakenVaccines(item.child_id, takenVaccineNames)}}
+          initTakenVaccines={takenVaccineNames} 
+        />
+      </View>
+    )
+  };
 
+  const renderAppointmentPregnancyListItem = (item : Appointment) => {
+    // console.log(!!pregnancyChecks?.find(pc => pc === item.date))
     return (
       <View style={[styles.item, {flexDirection: 'row', gap: Spacing.large, alignItems: 'center'}]}>
         <View style={{flex: 4, gap: Spacing.medium}}>
           <Text style={GlobalStyles.SubHeadingText}>{item.date}</Text>
-          <Text style={styles.title}>{isVaccination ? item.person_name : t('my_appointments_pregnancy_check')}</Text>
-          <Text style={{}}>{isVaccination ? item.vaccine_names : ''}</Text>
+          <Text style={styles.title}>{t('my_appointments_pregnancy_check')}</Text>
+          <Text style={{}}>{''}</Text>
         </View>
-        <MarkAsDoneModal
+        <ConfirmTakenPregnancyModel
           appointment={item}
-          onSave={async (takenVaccineNames) => {await handleOnSave(item.child_id, takenVaccineNames)}}
-          initTakenVaccines={takenVaccineNames} 
+          onConfirm={async () => {saveTakenPregnancyOffline(item.date)}}
+          isTaken={!!pregnancyChecks?.find(pc => pc === item.date)}
         />
       </View>
-  )};
+    )
+  };
+
+  const renderAppointmentListItem = ({ item }: { item: Appointment }) => {
+    if(item.event_type === 'vaccination'){
+      return renderAppointmentVaccineListItem(item);
+    } else {
+      return renderAppointmentPregnancyListItem(item);
+    }
+  };
 
   const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
 
@@ -248,6 +278,7 @@ export default function Appointments() {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <DynamicNavigationHeader />
       <View style={styles.container}>
       <Text style={[GlobalStyles.SubHeadingText, {textAlign: 'center'}]}>{t('home_screen_my_appointments_title')}</Text>
       <View style={{ flexDirection: 'row', gap: 10, width: '75%', marginLeft: Spacing.medium }}>
@@ -300,7 +331,7 @@ export default function Appointments() {
       {!isCalendarView && (
         <FlatList
           data={appointments}
-          renderItem={renderAppointmentItem}
+          renderItem={renderAppointmentListItem}
           keyExtractor={(item) => `${item.event_type === 'vaccination' ? '' : `${item.date}_`}${item.event_key}`}
         />
       )}
