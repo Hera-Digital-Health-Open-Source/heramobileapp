@@ -15,8 +15,6 @@ import Vaccine from '@/models/Vaccine';
 import Child from '@/models/Child';
 import { useRouter } from 'expo-router';
 import { useTranslation } from '@/hooks/useTranslation';
-import { I18nManager } from 'react-native';
-import MarkAsDoneButton from '@/components/appointments-screen/MarkAsDoneButton';
 import { usePregnancyStore } from '@/store/pregnancyStore';
 import DynamicNavigationHeader from '@/components/DynamicNavigationHeader';
 
