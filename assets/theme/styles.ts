@@ -4,6 +4,7 @@ import { StyleSheet } from "react-native";
 export const Spacing = {
   small: 4,
   medium: 8,
+  standard: 12,
   large: 16,
   xlarge: 24,
   xxlarge: 32,
@@ -16,7 +17,7 @@ export const Spacing = {
 //   extra: 16,
 // };
 
-export const color = {
+export const Colors = {
   primary: '#68207E',
   background: '#F2F2F2',
   white: '#FFFFFF',
@@ -36,14 +37,14 @@ export const color = {
 const NormalText = {
   fontFamily: 'SpaceMono-Regular',
   fontSize: 18,
-  color: color.black,
+  color: Colors.black,
 }
 
 const SubHeadingText = {
   ...NormalText,
   fontFamily: 'Roboto-ExtraBold',
   fontSize: 24,
-  color: color.primary,
+  color: Colors.primary,
 }
 
 const HeadingText = {
@@ -51,43 +52,38 @@ const HeadingText = {
   // fontFamily: 'Roboto-Black',
   fontFamily: 'Roboto-Medium',
   fontSize: 32,
-  color: color.primary,
+  color: Colors.primary,
 }
 
 const TitleText = {
   ...NormalText,
   fontFamily: 'Roboto-Medium',
   fontSize: 45,
-  color: color.primary,
+  color: Colors.primary,
 }
-
-const DropDownContainerStyle = {
-    width: '100%' as '100%',
-    height: 48,
-    paddingHorizontal: 10,
-    paddingVertical: 11,
-    flexDirection: 'row' as 'row',
-    borderRadius: Spacing.medium,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    alignItems: 'center' as 'center',
-    justifyContent: 'space-between' as 'space-between',
-    backgroundColor: '#f9f9f9',
-}
-
 
 const InputBoxStyle = {
-  height: 48,
-  paddingHorizontal: 10,
-  paddingVertical: 11,
+  ...NormalText,
+  paddingHorizontal: Spacing.standard,
+  paddingVertical: Spacing.standard,
   borderRadius: Spacing.medium,
   borderColor: '#ddd',
   borderWidth: 1,
-  alignItems: 'center' as 'center', // Explicitly specify the type (not as a string)
   backgroundColor: '#f9f9f9',
-  fontFamily: NormalText.fontFamily,
-  fontSize: NormalText.fontSize,
-  color: NormalText.color,
+}
+
+const InputBoxWithIconStyle = {
+  ...InputBoxStyle,
+  flexDirection: 'row' as 'row',
+  alignItems: 'center' as 'center', // Explicitly specify the type (not as a string)
+  justifyContent: 'space-between' as 'space-between'
+}
+
+const DropDownContainerStyle = {
+  ...InputBoxStyle,
+    width: '100%' as '100%',
+    flexDirection: 'row' as 'row',
+    justifyContent: 'space-between' as 'space-between',
 }
 
 const ButtonBasic = {
@@ -99,8 +95,8 @@ const ButtonBasic = {
 const Button = {
   ...ButtonBasic,
   borderRadius: 24,
-  backgroundColor: color.primary,
-  shadowColor: color.black,
+  backgroundColor: Colors.primary,
+  shadowColor: Colors.black,
   shadowOpacity: 0.2,
   elevation: 6,
   shadowOffset: {
@@ -111,12 +107,12 @@ const Button = {
 
 const ButtonALT = {
   ...Button,
-  backgroundColor: color.white,
+  backgroundColor: Colors.white,
 };
 
 const ButtonDisabled = {
   ...Button,
-  backgroundColor: color.disabled,
+  backgroundColor: Colors.disabled,
   fontFamily: 'Roboto-Bold',
 };
 
@@ -131,33 +127,33 @@ const ButtonTextBasic = {
 
 const ButtonText = {
   ...ButtonTextBasic,
-  color: color.white,
+  color: Colors.white,
 };
 
 const ButtonTextALT = {
   ...ButtonText,
-  color: color.primary,
+  color: Colors.primary,
 };
 
 const ButtonTextDisabled = {
   ...ButtonText,
-  color: color.disabledtext,
+  color: Colors.disabledtext,
   fontFamily: 'Roboto-Bold',
 };
 
 const IconTitleText = {
   fontFamily: 'Roboto-Medium',
   fontSize: 14,
-  color: color.black,
+  color: Colors.black,
 }
 
 const WhiteContainerNoHorizontalPadding = {
-  backgroundColor: color.white,
+  backgroundColor: Colors.white,
   flex: 1,
 };
 
 const WhiteContainer = {
-  backgroundColor: color.white,
+  backgroundColor: Colors.white,
   flex: 1,
   paddingHorizontal: 16,
 };
@@ -179,7 +175,8 @@ export const GlobalStyles = StyleSheet.create({
   ButtonTextBasic,
   IconTitleText,
   TitleText,
-  DropDownContainerStyle
+  DropDownContainerStyle,
+  InputBoxWithIconStyle
   // Spacing,
 });
 

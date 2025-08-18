@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text, Pressable, StyleProp, ViewStyle, TextStyle } from "react-native";
 import { GlobalStyles, Spacing } from "@/assets/theme";
-import { color } from "@/assets/theme";
+import { Colors } from "@/assets/theme";
 
 export enum ButtonStyles{
   FILLED = 1,
@@ -33,7 +33,7 @@ export default function Button({style, label, buttonType, onPress}: Props){
     buttonStyle = GlobalStyles.ButtonDisabled;
     textStyle = GlobalStyles.ButtonTextDisabled;
   } else if(buttonType == ButtonStyles.FLAT){
-    buttonStyle = {...GlobalStyles.ButtonBasic, borderColor: color.primary, borderWidth: 1, borderRadius: Spacing.medium };
+    buttonStyle = {...GlobalStyles.ButtonBasic, borderColor: Colors.primary, borderWidth: 1, borderRadius: Spacing.medium };
     textStyle = GlobalStyles.ButtonTextALT;
   }else {
     buttonStyle = GlobalStyles.Button;

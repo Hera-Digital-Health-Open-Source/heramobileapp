@@ -1,4 +1,4 @@
-import { color, Spacing } from "@/assets/theme";
+import { Colors, Spacing } from "@/assets/theme";
 import Child from "@/models/Child";
 import { AntDesign } from "@expo/vector-icons";
 import { View, StyleSheet, Text, StyleProp, ViewStyle, Pressable } from "react-native";
@@ -23,7 +23,7 @@ export default function ChildPlaceHolder ({child, style, onPress}: Props) {
 const styles = StyleSheet.create({
   childPlaceHolderContainer: {
     borderRadius: 24,
-    backgroundColor: color.background,
+    backgroundColor: Colors.background,
     padding: Spacing.large,
     flexDirection: 'row',
     alignItems: 'center'
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   childName: {
     fontFamily: 'Roboto-Medium',
     fontSize: 16,
-    color: color.primary,
+    color: Colors.primary,
     flex: 1,
   }
 });

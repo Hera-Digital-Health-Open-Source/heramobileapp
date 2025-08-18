@@ -4,7 +4,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {Picker} from '@react-native-picker/picker';
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
-import { GlobalStyles, Spacing } from "@/assets/theme";
+import { Colors, GlobalStyles, Spacing } from "@/assets/theme";
 
 type DropDownItem = {
   label: string;

@@ -1,4 +1,4 @@
-import { color, GlobalStyles, Spacing } from "@/assets/theme";
+import { Colors, GlobalStyles, Spacing } from "@/assets/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { ReactNode } from "react";
 import { StyleProp, View, ViewStyle, Text, Pressable } from "react-native";
@@ -21,7 +21,7 @@ export function PregnancyAppointmentView({style}: {style: StyleProp<ViewStyle>})
   const {t} = useTranslation();
   return (
     <AppointmentView style={style}>
-      <Text style={[GlobalStyles.NormalText, {color: color.primary}]}>
+      <Text style={[GlobalStyles.NormalText, {color: Colors.primary}]}>
         {t('my_appointments_pregnancy_check')}
       </Text>
       <Text>
@@ -36,7 +36,7 @@ export function VaccineAppointmentView({style, person_name, vaccine_names}: {per
   const {t} = useTranslation();
   return (
     <AppointmentView style={style}>
-      <Text style={[GlobalStyles.NormalText, {color: color.primary}]}>
+      <Text style={[GlobalStyles.NormalText, {color: Colors.primary}]}>
         {person_name}
       </Text>
       <Text>
@@ -62,14 +62,14 @@ function FindHealthCenterView({label}: {label: string}) {
       <View style={{
         gap: Spacing.large,
         borderRadius: Spacing.medium,
-        borderColor: color.green,
+        borderColor: Colors.green,
         flexDirection: 'row',
         borderWidth: 1, padding:
         Spacing.medium
       }}>
-        <Ionicons name="medkit-outline" size={32} color={color.green} />
+        <Ionicons name="medkit-outline" size={32} color={Colors.green} />
         <Text style={{flex: 1}}>{label}</Text>
-        <Ionicons name="chevron-forward-outline" size={32} color={color.green} />
+        <Ionicons name="chevron-forward-outline" size={32} color={Colors.green} />
       </View>
     </Pressable>
   );

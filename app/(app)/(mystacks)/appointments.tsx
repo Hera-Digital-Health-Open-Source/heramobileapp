@@ -1,7 +1,7 @@
 import React, { useEffect, ReactNode } from 'react';
 import { View, Text, FlatList, StyleSheet, SafeAreaView, useWindowDimensions, StyleProp, ViewStyle, RefreshControl } from 'react-native';
 import { Calendar, CalendarList } from 'react-native-calendars';
-import { color, GlobalStyles, Spacing } from '@/assets/theme';
+import { Colors, GlobalStyles, Spacing } from '@/assets/theme';
 import { useState } from 'react';
 import Button, { ButtonStyles } from '@/components/Button';
 import { useHttpClient } from '@/context/HttpClientContext';
@@ -192,10 +192,10 @@ export default function Appointments() {
     markedDates = appointments.reduce((acc: { [key: string]: { marked: boolean; dotColor: string, customStyles?: object } }, appointment) => {
         acc[appointment.date] = { 
         marked: true,
-        dotColor: color.primary,
+        dotColor: Colors.primary,
         customStyles: {
             text: {
-            color: color.primary,
+            color: Colors.primary,
             fontWeight: 'bold',
             },
         }
@@ -209,7 +209,7 @@ export default function Appointments() {
         dotColor: '',
         customStyles: {
         container: {
-            backgroundColor: color.primary,
+            backgroundColor: Colors.primary,
             width: 34, // Adjust the width to make it a circle
             height: 34, // Adjust the height to make it a circle
             borderRadius: 17, // Half of the width/height to make it a circle
@@ -231,13 +231,13 @@ export default function Appointments() {
             width: 34, // Adjust the width to make it a circle
             height: 34, // Adjust the height to make it a circle
             borderRadius: 17, // Half of the width/height to make it a circle
-            borderColor: color.primary,
+            borderColor: Colors.primary,
             borderWidth: 1,
             justifyContent: 'center', // Center the text vertically
             alignItems: 'center', // Center the text horizontally
         },
         text: {
-            color: color.primary,
+            color: Colors.primary,
             fontWeight: 'bold',
         },
         },

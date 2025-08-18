@@ -14,7 +14,7 @@ import {
   TextInput
 } from 'react-native';
 // import {color, styles, gifLoading, imgHomeWhatsappHotline} from '../../theme';
-import { color, GlobalStyles, Spacing } from '@/assets/theme';
+import { Colors, GlobalStyles, Spacing } from '@/assets/theme';
 // import {useTranslation} from 'react-i18next';
 // import {t} from 'i18next';
 // import {ToolBar} from '../../components/toolbar';
@@ -160,7 +160,7 @@ export default function SrhrScreen() {
           }}>
           <Text
             style={{
-              color: color.disabledtext,
+              color: Colors.disabledtext,
               textAlign: 'center',
             }}>
             No content
@@ -195,12 +195,12 @@ function Section({section}:{section: ISection}) {
           style={{
             flexDirection: 'column',
             justifyContent: 'center',
-            backgroundColor: color.background,
+            backgroundColor: Colors.background,
             borderRadius: 13,
             width: 26,
             height: 26,
           }}>
-          <Text style={{textAlign: 'center', color: color.black}}>
+          <Text style={{textAlign: 'center', color: Colors.black}}>
             {section.articles.length}
           </Text>
         </View>
@@ -236,12 +236,12 @@ const localStyles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     marginVertical: 0,
-    backgroundColor: color.whatsappgreen,
+    backgroundColor: Colors.whatsappgreen,
     borderRadius: 8,
     justifyContent: 'center',
   },
   askAmti: {
-    color: color.green,
+    color: Colors.green,
     fontSize: 16,
     marginHorizontal: 8,
   },
@@ -264,10 +264,10 @@ const localStyles = StyleSheet.create({
   },
   sectionHeaderText: {
     fontSize: 16,
-    color: color.white,
+    color: Colors.white,
   },
   sectionHeaderContainer: {
-    backgroundColor: color.primary,
+    backgroundColor: Colors.primary,
     margin: 0,
     paddingVertical: 4,
     paddingHorizontal: 16,
@@ -283,7 +283,7 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: color.disabled,
+    borderBottomColor: Colors.disabled,
     paddingLeft: 8,
     paddingRight: 32,
     paddingVertical: 8,
