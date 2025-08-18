@@ -41,7 +41,7 @@ export default function DateModalPicker({initialDate, onDateSelected, onCancel, 
   return (
     <View style={style}>
       <Pressable onPress={() => setIsPickerVisible((prev) => !prev)}>
-        <View style={GlobalStyles.DropDownContainerStyle}>
+        <View style={GlobalStyles.InputBoxWithIconStyle}>
           <Text style={GlobalStyles.NormalText}>{date?.toLocaleDateString()}</Text>
           <AntDesign name={"calendar"} size={22} />
         </View>
