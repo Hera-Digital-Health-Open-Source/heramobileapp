@@ -104,6 +104,14 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
       }
     );
     await setAppLanguage(language as "ar" | "en" | "tr");
+    
+    // For non-Arabic languages, show a brief confirmation since the app doesn't restart
+    if (language !== 'ar') {
+      // Wait a brief moment for the translation to take effect
+      setTimeout(() => {
+        Alert.alert(t("language_changed_successfully"));
+      }, 100);
+    }
   };
 
   const languages = [
