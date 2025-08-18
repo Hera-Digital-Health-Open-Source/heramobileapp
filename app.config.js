@@ -19,6 +19,7 @@ export default () => ({
     // },
     ios: {
       buildNumber: "2",
+      icon: "./assets/images/ios-light.png",
       supportsTablet: true,
       bundleIdentifier: "com.heradigitalhealth.ios",
       infoPlist: {
