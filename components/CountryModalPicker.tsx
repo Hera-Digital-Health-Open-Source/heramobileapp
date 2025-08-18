@@ -25,7 +25,7 @@ export default function CountryModalPicker({preferredCountries, defaultCallingCo
   return (
     <View style={style}>
       <Pressable onPress={() => setIsPickerVisible(!isPickerVisible)}>
-        <View style={GlobalStyles.DropDownContainerStyle}>
+        <View style={GlobalStyles.InputBoxWithIconStyle}>
           <Text style={GlobalStyles.NormalText}>{countryCallingCode ? countryCallingCode : defaultCallingCode}</Text>
           <AntDesign name={isPickerVisible ? "caretup" : "caretdown"} />
         </View>
