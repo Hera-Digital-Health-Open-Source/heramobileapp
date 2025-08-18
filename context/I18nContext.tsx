@@ -31,20 +31,19 @@ export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
 
   const setAppLanguage = async (lang: 'en' | 'ar' | 'tr') => {
     const shouldBeRTL = lang === 'ar';
+    const currentIsRTL = I18nManager.isRTL;
 
-    if (I18nManager.isRTL !== shouldBeRTL) {
-      // Change layout direction and reload app
+    // Always update i18n locale first
+    i18n.locale = lang;
+    setLocale(lang);
+
+    // If RTL direction needs to change, we must restart the app
+    if (currentIsRTL !== shouldBeRTL) {
       I18nManager.allowRTL(shouldBeRTL);
       I18nManager.forceRTL(shouldBeRTL);
-      i18n.locale = lang;
-      setLocale(lang);
       RNRestart.Restart();
       return;
     }
-  
-    // Otherwise just change the language normally
-    i18n.locale = lang;
-    setLocale(lang);
   };
 
   return (
