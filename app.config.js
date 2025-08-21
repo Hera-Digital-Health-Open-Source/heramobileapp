@@ -47,7 +47,7 @@ export default () => ({
         "android.permission.ACCESS_FINE_LOCATION"
       ],
       manifestPlaceholders: {
-        auth0Domain: "dev-apc5lc1lhv0fk5hp.us.auth0.com",     // 🔁 use your real Auth0 domain
+        auth0Domain: "heradigitalhealth.eu.auth0.com",     // 🔁 use your real Auth0 domain
         auth0Scheme: "myapp",                    // 🔁 use your actual scheme
       },
     },
@@ -81,7 +81,7 @@ export default () => ({
       [
         "react-native-auth0",
         {
-          domain: "dev-apc5lc1lhv0fk5hp.us.auth0.com"
+          domain: "heradigitalhealth.eu.auth0.com"
         }
       ],
       "expo-secure-store",

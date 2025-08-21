@@ -1,5 +1,4 @@
 import React from 'react';
-import { AuthProvider } from './AuthContext';
 import HttpClientProvider from './HttpClientContext';
 import { RegistrationProvider } from './RegistrationContext';
 import { PregnancyProvider } from './PregnancyContext';
@@ -9,7 +8,7 @@ import { I18nProvider } from './I18nContext';
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <Auth0Provider domain={"dev-apc5lc1lhv0fk5hp.us.auth0.com"} clientId={"X6PereqNM4m5SPoT9giirIZHRZsqIwsZ"}>
+    <Auth0Provider domain={"heradigitalhealth.eu.auth0.com"} clientId={"ZQyw1Cm4ht1Gpccd7aA12LgeIdfMGF99"}>
       <LoadingProvider>
         <I18nProvider>
             <HttpClientProvider>
