@@ -2,7 +2,7 @@ import { createContext, useContext, useState, ReactNode, useCallback } from "rea
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { baseURL } from "@/constants";
 import { useLoading } from "./LoadingContext";
-
+import { useAuthStore } from "@/store/authStore";
 export interface RequestConfig {
   url: string;
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -28,6 +28,7 @@ const HttpClientContext = createContext<HttpClientContextType | undefined>(undef
 
 export default function HttpClientProvider({children}:{children: ReactNode}){
     const {setLoading} = useLoading();
+    const {setSession} = useAuthStore();
 
     const axiosInstance = axios.create({
       baseURL: baseURL,
@@ -40,24 +41,38 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
 
     const sendRequestFetch = async <T,> (requestObj: RequestConfig): Promise<ClientResponse<T>> => {
       setLoading(true);
-      try{
-        const requestOptions = {
-          method: requestObj.method || 'GET',
-          headers: requestObj.headers || {},
-          body: JSON.stringify(requestObj.data),
-        };
-        const response = await fetch(baseURL + requestObj.url, requestOptions);
-        const data = await response.json();
-        if(response.status >= 400 && response.status < 500){
-          return { data: null, isTokenExpired: true, error: null};
+        try{
+          const requestOptions = {
+            method: requestObj.method || 'GET',
+            headers: requestObj.headers || {},
+            body: JSON.stringify(requestObj.data),
+          };
+
+          const response = await fetch(baseURL + requestObj.url, requestOptions);
+
+          if (response.status >= 400) {
+            const isTokenExpired = response.status >= 401 && response.status <= 403;
+            if(isTokenExpired){
+              setSession('');
+            }
+            return {
+              data: null,
+              isTokenExpired,
+              error: response.statusText || "Request failed",
+            };
+          }
+      
+          // if(response.status >= 400 && response.status < 500){
+          //   return { data: null, isTokenExpired: true, error: response.statusText};
+          // }
+          const data = await response.json();
+          return {data: data, error: null};
+        } catch(error: any){
+          console.log(`Error: ${error}`);
+          return { data: null, error: error.message || error};
+        } finally {
+          setLoading(false);
         }
-        return {data: data, error: null};
-      } catch(error){
-        console.log(`Error: ${error}`);
-        return { data: null, error};
-      } finally {
-        setLoading(false);
-      }
     };
 
     const sendRequest = async <T,> (requestObj: RequestConfig): Promise<ClientResponse<T>> => {
