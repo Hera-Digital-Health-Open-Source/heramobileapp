@@ -6,6 +6,7 @@ import MarkAsDoneButton from "./MarkAsDoneButton";
 import Button, { ButtonStyles } from "../Button";
 import { Colors, GlobalStyles, Spacing } from "@/assets/theme";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useI18n } from "@/context/I18nContext";
 
 type Props = {
   appointment: Appointment;
@@ -18,6 +19,7 @@ export default function ConfirmTakenPregnancyModal({appointment, onConfirm, styl
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const [isTakenBefore, setIsTakenBefore] = useState(isTaken);
   const {t} = useTranslation();
+  const { locale } = useI18n();
 
   const handleOnConfirm = async () => {
     setIsTakenBefore(true);
@@ -29,14 +31,20 @@ export default function ConfirmTakenPregnancyModal({appointment, onConfirm, styl
       {!isTakenBefore && 
         <MarkAsDoneButton 
           style={{paddingHorizontal: Spacing.small}}
-          label={t('my_appointments_screen_mark_as_done_btn')}
+          label={t('my_appointments_screen_i_attend_this_btn')}
           onPress={() => setIsPickerVisible(!isPickerVisible)}
         />
       }
       {isTakenBefore && 
         <MarkAsDoneButton 
-          style={{paddingHorizontal: Spacing.small, borderColor: Colors.white, borderWidth: 0}}
-          label={'Confirmed'}
+          style={
+            {
+              paddingHorizontal: Spacing.small,
+              borderColor: Colors.white,
+              borderWidth: 0
+            }
+          }
+          label={t('confirmed_label')}
           onPress={() => {}}
         />
       }
@@ -51,7 +59,10 @@ export default function ConfirmTakenPregnancyModal({appointment, onConfirm, styl
               </View>
               <View style={styles.modalBodyContainer}>
                 <View style={{flex: 1, padding: Spacing.medium, marginTop: Spacing.large}}>
-                  <Text style={GlobalStyles.SubHeadingText}>Did you go to the pregnancy check on {appointment.date}?</Text>
+                  <Text style={GlobalStyles.SubHeadingText}>
+                    {locale === 'tr' && appointment.date + t('my_appointments_screen_prenatal_attend_label')}
+                    {locale !== 'tr' && t('my_appointments_screen_prenatal_attend_label') + appointment.date + "?"}
+                  </Text>
                 </View>
                 <View style={{paddingHorizontal: Spacing.medium}}>
                   <Button buttonType={ButtonStyles.FILLED} label={t('mark_as_done_modal_confirm_btn')} onPress={handleOnConfirm}/>

@@ -37,7 +37,7 @@ export default function ConfirmTakenPastVaccinesModal({appointment, onSave, styl
   return (
     <View style={style}>
       <MarkAsDoneButton 
-        style={{paddingHorizontal: 4}}
+        style={{paddingHorizontal: Spacing.small}}
         label={t('my_appointments_screen_mark_as_done_btn')}
         onPress={() => setIsPickerVisible(!isPickerVisible)}
       />
