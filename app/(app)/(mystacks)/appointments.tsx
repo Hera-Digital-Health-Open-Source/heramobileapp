@@ -107,6 +107,11 @@ export default function Appointments() {
       setRefreshing(false);
       throw new Error('Token expired');
     }
+
+    // if(result.isTokenExpired){
+    //   setRefreshing(false);
+    //   throw new Error('Token expired');
+    // }
     const s = result.data!;
     setAppointments(s);
 
@@ -123,10 +128,6 @@ export default function Appointments() {
 
 
     setRefreshing(false);
-    // const filtered = s.filter(e => e.event_type === 'vaccination');
-    // const u = filtered.map(e => e.dose_ids)
-    //console.log(result.data)
-
   };
 
   const saveTakenVaccines = async (childId: number, takenVaccineNames: string[]) => {
@@ -167,37 +168,40 @@ export default function Appointments() {
   const renderAppointmentVaccineListItem = (item : Appointment) => {
     const takenVaccineIds = children.filter(c => c.id === item.child_id)[0].past_vaccinations;
     const takenVaccineNames = takenVaccineIds.map(i => getVaccineName(vaccines, i)!);
-  
+    //style={{marginEnd: Spacing.xlarge}}
     return (
-      <View style={[styles.item, {flexDirection: 'row', gap: Spacing.large, alignItems: 'center'}]}>
-        <View style={{flex: 4, gap: Spacing.medium}}>
+      <View style={[styles.item, {flexDirection: 'row', alignItems: 'center'}]}>
+        <View style={{flex: 5, gap: Spacing.medium}}>
           <Text style={ GlobalStyles.SubHeadingText }>{item.date}</Text>
           <Text style={styles.title}>{ item.person_name }</Text>
           <Text style={{}}>{ item.vaccine_names}</Text>
         </View>
+        <View style={{alignItems: 'center', flex: 3}}>
         <ConfirmTakenPastVaccinesModal
           appointment={item}
           onSave={async (takenVaccineNames) => {await saveTakenVaccines(item.child_id, takenVaccineNames)}}
           initTakenVaccines={takenVaccineNames} 
         />
+        </View>
       </View>
     )
   };
 
   const renderAppointmentPregnancyListItem = (item : Appointment) => {
-    // console.log(!!pregnancyChecks?.find(pc => pc === item.date))
     return (
-      <View style={[styles.item, {flexDirection: 'row', gap: Spacing.large, alignItems: 'center'}]}>
-        <View style={{flex: 4, gap: Spacing.medium}}>
+      <View style={[styles.item, {flexDirection: 'row', alignItems: 'center'}]}>
+        <View style={{flex: 5, gap: Spacing.medium}}>
           <Text style={GlobalStyles.SubHeadingText}>{item.date}</Text>
           <Text style={styles.title}>{t('my_appointments_pregnancy_check')}</Text>
           <Text style={{}}>{''}</Text>
         </View>
+        <View style={{alignItems: 'center', flex: 3}}>
         <ConfirmTakenPregnancyModel
           appointment={item}
           onConfirm={async () => {saveTakenPregnancyOffline(item.date)}}
           isTaken={!!pregnancyChecks?.find(pc => pc === item.date)}
         />
+        </View>
       </View>
     )
   };
