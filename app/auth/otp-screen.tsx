@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'r
 import {OtpInput} from 'react-native-otp-entry';
 import { useAuthStore, UserProfile } from '@/store/authStore';
 import Button, { ButtonStyles } from '@/components/Button';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
 import { useTranslation } from '@/hooks/useTranslation';
 import Auth0 from 'react-native-auth0';
@@ -19,6 +19,7 @@ const OTPScreen = () => {
   const { sendRequestFetch } = useHttpClient();
   const [enableSendOTP, setEnableSendOTP] = useState(true);
   const otpRef = useRef<OtpHandle>(null);
+  const router = useRouter();
 
   const handleResendOTP = async (captchaToken: string) => {
     if(fullMobileNumber){
@@ -74,6 +75,10 @@ const OTPScreen = () => {
             Authorization: 'Bearer ' + credentials.idToken,
           },
         });
+
+        if(response.isTokenExpired){
+          return router.replace('/auth/login');
+        }
 
         if(response.error){
           console.log('login.tsx: Error in fetching user profile: ', response.error);

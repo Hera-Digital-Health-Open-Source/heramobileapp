@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Pressable, Text, View, Linking, Platform } from "react-native";
 import { useAuthStore } from "@/store/authStore";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { icoHeraIcon } from "@/assets/images/images";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -15,6 +15,7 @@ export default function CustomDrawerContent(props: any) {
   const { signOut, userProfile } = useAuthStore();
   const { t } = useTranslation();
   const { locale } = useI18n();
+  const router = useRouter();
 
   const handleSignOut = async () => {
     signOut();

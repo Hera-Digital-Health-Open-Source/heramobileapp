@@ -19,6 +19,7 @@ import { useHttpClient } from "@/context/HttpClientContext";
 import { useAuthStore } from '@/store/authStore';
 import { useTranslation } from "@/hooks/useTranslation";
 import { GlobalStyles } from "@/assets/theme";
+import { useRouter } from "expo-router";
 
 export default function TranslatorScreen() {
   const [recognizing, setRecognizing] = useState(false);
@@ -32,6 +33,7 @@ export default function TranslatorScreen() {
   const { session } = useAuthStore();
   const {t} = useTranslation();
   const [hideRedButton, setHideRedButton] = useState(false);
+  const router = useRouter();
 
   const supportedLanguages = [
     {"label": t('language_dropdown_arabic_text'), "key": "ar-SA"},
@@ -75,8 +77,11 @@ export default function TranslatorScreen() {
           source_text: transcript,
           dest_language: toLanguageCode
         }
-      }).then(r => {
-        setTranslation(r.data?.result!);
+      }).then(result => {
+        if(result.isTokenExpired){
+          return router.replace('/auth/login');
+        }
+        setTranslation(result.data?.result!);
       }).catch(err => {
         Alert.alert(t('translator_screen_failed_alert_title'), t('translator_screen_failed_alert_message'))
         console.log(err);

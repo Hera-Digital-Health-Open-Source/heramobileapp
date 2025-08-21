@@ -12,7 +12,7 @@ import { GlobalStyles, Spacing } from "@/assets/theme";
 import GenderSwitcher from "@/components/GenderSwitcher";
 import { useEffect, useState } from "react";
 import Button, { ButtonStyles } from "@/components/Button";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { useRegistration } from "@/context/RegistrationContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import DropDownPicker from "../DropDownPicker";
@@ -34,6 +34,7 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
   const { setGender, setName, setDateOfBirth } = useRegistration();
   const { sendRequestFetch } = useHttpClient();
   const { session, userId, setUserProfile } = useAuthStore();
+  const router = useRouter();
 
   useEffect(() => {
     if (profile) {
@@ -63,6 +64,10 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
         Authorization: "Token " + session,
       },
     });
+
+    if(response.isTokenExpired){
+      return router.replace('/auth/login');
+    }
 
     if (response.error) {
       Alert.alert(

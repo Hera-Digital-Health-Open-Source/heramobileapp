@@ -3,10 +3,12 @@ import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import { imgFamily } from "@/assets/images/images";
 import { Image } from "expo-image";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 
 
 export default function ChildInfo() {
+  const router = useRouter();
+
   const info = `Enter your child’s information and we will add their recommended vaccination dates on your calendar!`;
 
   return (

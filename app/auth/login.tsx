@@ -7,7 +7,7 @@ import DropDownPicker from "@/components/DropDownPicker";
 import CountryModalPicker from "@/components/CountryModalPicker";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import Button, {ButtonStyles} from "@/components/Button";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { Platform } from "react-native";
 import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -25,6 +25,7 @@ export default function Login(){
   const [showCaptcha, setShowCaptcha] = useState(false);
   const { t } = useTranslation();
   const { setAppLanguage, locale } = useI18n();
+  const router = useRouter();
 
   const languages = [
     {label: t('language_dropdown_arabic_text'), key: 'ar'},
@@ -134,10 +135,8 @@ const styles = StyleSheet.create({
   },
   loginContainer: {
     paddingHorizontal: 16,
-    // justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
-    // backgroundColor: '#faa'
   },
   loginInputsContainer: {
     marginTop: 32,

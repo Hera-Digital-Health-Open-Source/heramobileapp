@@ -4,7 +4,7 @@ import Button, { ButtonStyles } from "@/components/Button";
 import { useEffect, useState } from "react";
 import DateModalPicker from "@/components/DateModalPicker";
 import DropDownPicker from "@/components/DropDownPicker";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { RequestConfig, useHttpClient } from "@/context/HttpClientContext";
 import { useAuthStore } from '@/store/authStore';
 import IPregnancy from "@/models/IPregnancy";
@@ -18,6 +18,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
   const {sendRequestFetch} = useHttpClient();
   const {session} = useAuthStore();
   const {t} = useTranslation();
+  const router = useRouter();
 
   const info = !introduceText ? t('your_pregnancy_screen_description_1') : introduceText;
   const enableContinue = (pregnancyCalculationMethod === 'lastMenstrualDate' && lastMenstrualDate && prentalVisits && prentalVisits !== '-1') || 
@@ -68,6 +69,10 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
     };
 
     const response = await sendRequestFetch<null>(requestConfig);
+
+    if(response.isTokenExpired){
+      return router.replace('/auth/login');
+    }
 
     if(response.error){
       console.log(response.error)

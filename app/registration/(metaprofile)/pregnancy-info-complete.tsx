@@ -3,10 +3,12 @@ import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import { imgPregnancyInfoComplete } from "@/assets/images/images";
 import { Image } from "expo-image";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 
 
 export default function PregnancyInfoComplete() {
+  const router = useRouter();
+
   const info = `During your pregnancy, it is important to visit your doctor at least 4 times. Your appointment dates have been added in “My Appointments”!`;
   
   return (

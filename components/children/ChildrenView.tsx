@@ -1,7 +1,7 @@
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import ChildPlaceHolder from "./ChildPlaceHolder";
-import { router, useFocusEffect } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import Button, { ButtonStyles } from "@/components/Button";
 import { useCallback, useEffect, useState } from "react";
 import { useHttpClient } from "@/context/HttpClientContext";
@@ -15,6 +15,7 @@ export default function ChildrenView({showIamDone}: { showIamDone: boolean}) {
   const [children, setChildren] = useState<Child[]>([]);
   const { session } = useAuthStore();
   const {t} = useTranslation();
+  const router = useRouter();
 
   // I use useFocusEffect instead of useEffect, because I need to re-fetch 
   // children again when navigating back from a Child view.
@@ -34,6 +35,10 @@ export default function ChildrenView({showIamDone}: { showIamDone: boolean}) {
         Authorization: 'Token ' + session,
       },
     });
+
+    if(result.isTokenExpired){
+      return router.replace('/auth/login');
+    }
 
     const s = result.data!;
     setChildren(s);

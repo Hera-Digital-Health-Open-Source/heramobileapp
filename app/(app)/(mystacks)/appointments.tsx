@@ -1,6 +1,6 @@
-import React, { useEffect, ReactNode } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, SafeAreaView, useWindowDimensions, StyleProp, ViewStyle, RefreshControl } from 'react-native';
-import { Calendar, CalendarList } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
 import { Colors, GlobalStyles, Spacing } from '@/assets/theme';
 import { useState } from 'react';
 import Button, { ButtonStyles } from '@/components/Button';
@@ -66,6 +66,10 @@ export default function Appointments() {
       },
     });
 
+    if(result.isTokenExpired){
+      return router.replace('/auth/login');
+    }
+
     const s = result.data!;
     setVaccines(s);
 
@@ -83,12 +87,12 @@ export default function Appointments() {
       },
     });
 
+    if(result.isTokenExpired){
+      return router.replace('/auth/login');
+    }
+
     const s = result.data!;
     setChildren(s);
-
-    // console.log('children:')
-    // console.log(s);
-
     setRefreshing(false);
   };
 
@@ -104,8 +108,7 @@ export default function Appointments() {
     });
 
     if(result.isTokenExpired){
-      setRefreshing(false);
-      throw new Error('Token expired');
+      return router.replace('/auth/login');
     }
 
     // if(result.isTokenExpired){
@@ -135,7 +138,7 @@ export default function Appointments() {
     const child = children.filter(c => c.id === childId)[0];
     child.past_vaccinations = takenVaccineIds;
 
-    await sendRequestFetch<{}>({
+    const response = await sendRequestFetch<{}>({
       url: `/children/${childId}/`,
       method: 'PATCH',
       headers: {
@@ -145,6 +148,10 @@ export default function Appointments() {
       },
       data: child,
     });
+
+    if(response.isTokenExpired){
+      return router.replace('/auth/login');
+    }
   };
 
   const saveTakenPregnancyOffline = async (date: string) => {
@@ -177,11 +184,11 @@ export default function Appointments() {
           <Text style={{}}>{ item.vaccine_names}</Text>
         </View>
         <View style={{alignItems: 'center', flex: 3}}>
-        <ConfirmTakenPastVaccinesModal
-          appointment={item}
-          onSave={async (takenVaccineNames) => {await saveTakenVaccines(item.child_id, takenVaccineNames)}}
-          initTakenVaccines={takenVaccineNames} 
-        />
+          <ConfirmTakenPastVaccinesModal
+            appointment={item}
+            onSave={async (takenVaccineNames) => {await saveTakenVaccines(item.child_id, takenVaccineNames)}}
+            initTakenVaccines={takenVaccineNames} 
+          />
         </View>
       </View>
     )
@@ -196,11 +203,11 @@ export default function Appointments() {
           <Text style={{}}>{''}</Text>
         </View>
         <View style={{alignItems: 'center', flex: 3}}>
-        <ConfirmTakenPregnancyModel
-          appointment={item}
-          onConfirm={async () => {saveTakenPregnancyOffline(item.date)}}
-          isTaken={!!pregnancyChecks?.find(pc => pc === item.date)}
-        />
+          <ConfirmTakenPregnancyModel
+            appointment={item}
+            onConfirm={async () => {saveTakenPregnancyOffline(item.date)}}
+            isTaken={!!pregnancyChecks?.find(pc => pc === item.date)}
+          />
         </View>
       </View>
     )

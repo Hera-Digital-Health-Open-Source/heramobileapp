@@ -5,7 +5,7 @@ import DateModalPicker from "@/components/DateModalPicker";
 import DropDownPicker from "@/components/DropDownPicker";
 import Checkbox from "@/components/CheckBox";
 import Button, { ButtonStyles } from "@/components/Button";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import Child from "@/models/Child";
 import Vaccine from "@/models/Vaccine";
 import { useHttpClient } from "@/context/HttpClientContext";
@@ -28,6 +28,7 @@ export default function ChildView({introduceText, child} : {introduceText: strin
   const { session } = useAuthStore();
   const [takenVaccines, setTakenVaccines] = useState<string[]>([]);
   const {t} = useTranslation();
+  const router = useRouter();
 
   const info = !introduceText ? t('child_info_screen_description'): '';
   const enableActionButton = childName.length > 0 && gender.length > 0 && (gender === 'MALE' || gender == 'FEMALE');
@@ -59,7 +60,7 @@ export default function ChildView({introduceText, child} : {introduceText: strin
       method = 'POST';
     }
     
-    await sendRequestFetch<{}>({
+    const response = await sendRequestFetch<{}>({
       url: url,
       method: method,
       headers: {
@@ -69,6 +70,10 @@ export default function ChildView({introduceText, child} : {introduceText: strin
       },
       data: payloadData,
     });
+
+    if(response.isTokenExpired){
+      return router.replace('/auth/login');
+    }
   };
 
   const handleAddSaveChild = async () => {
@@ -111,6 +116,10 @@ export default function ChildView({introduceText, child} : {introduceText: strin
         Authorization: 'Token ' + session,
       },
     });
+
+    if(result.isTokenExpired){
+      return router.replace('/auth/login');
+    }
 
     const vaccines = result.data!;
     setVaccines(vaccines);

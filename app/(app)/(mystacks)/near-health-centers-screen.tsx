@@ -20,6 +20,8 @@ import { useHttpClient } from '@/context/HttpClientContext';
 import { Colors, GlobalStyles, Spacing } from "@/assets/theme";
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useRouter } from 'expo-router';
+
 // import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 // import Toast from 'react-native-toast-message';
 // import {useTranslation} from 'react-i18next';
@@ -90,6 +92,7 @@ export default function NearHealthCentersScreen() {
   const [markers, setMarkers] = useState<HealthCenter[]>([]);
   const [region, setRegion] = useState<RegionGeolocation | undefined>(undefined);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const router = useRouter();
 
   const INITIAL_REGION: RegionGeolocation = {
     latitude: 41.0082,
@@ -113,6 +116,10 @@ export default function NearHealthCentersScreen() {
         },
       });
       
+      if(result.isTokenExpired){
+        return router.replace('/auth/login');
+      }
+
       setMarkers(result.data!);
     } catch (err) {
       console.error(err);

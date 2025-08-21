@@ -3,12 +3,13 @@ import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import { imgDoctorAppointmentMain, imgFamily } from "@/assets/images/images";
 import { Image } from "expo-image";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { Linking } from "react-native";
 import { useTranslation } from "@/hooks/useTranslation";
 
 export default function DoctorAppointment() {
   const {t} = useTranslation();
+  const router = useRouter();
 
   const info = t('doctor_appointment_screen_description');
 

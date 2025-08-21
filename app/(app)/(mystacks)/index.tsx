@@ -26,7 +26,7 @@ import {
   doctorAppointment
 } from "@/constants";
 import HomeHeraLegend from "@/components/HomeHeraLegend";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -37,6 +37,7 @@ import * as Localization from 'expo-localization';
 export default function Index() {
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const router = useRouter();
 
   const emergencyCall = () => {
     const locals = Localization.getLocales();

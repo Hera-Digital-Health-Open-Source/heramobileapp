@@ -3,9 +3,10 @@ import { GlobalStyles, Spacing } from "@/assets/theme";
 import Button, { ButtonStyles } from "@/components/Button";
 import CheckBox from "@/components/CheckBox";
 import { useState } from "react";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function TermsOfUse(){
+  const router = useRouter();
   const [isAccept, setIsAccept] = useState(false);
 
   const termOfUse = `“HERA” User Agreement

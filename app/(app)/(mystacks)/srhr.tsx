@@ -23,6 +23,7 @@ import { Colors, GlobalStyles, Spacing } from '@/assets/theme';
 import { useHttpClient } from '@/context/HttpClientContext';
 import { useAuthStore } from '@/store/authStore';
 import { imgHomeWhatsappHotline } from '@/assets/images/images';
+import { useRouter } from 'expo-router';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -47,8 +48,8 @@ export default function SrhrScreen() {
   const [filteredSections, setFilteredSections] = useState<ISection[]>([]);
   const {sendRequestFetch} = useHttpClient();
   const { session, userProfile } = useAuthStore();
+  const router = useRouter();
 
-  console.log(`/concepts/${1}/${userProfile?.language_code}/sections/`)
   useEffect(() => {
     async function getSectionsOfConcept() {
       const result = await sendRequestFetch<ISection[]>({
@@ -60,6 +61,10 @@ export default function SrhrScreen() {
         },
       });
 
+      if(result.isTokenExpired){
+        return router.replace('/auth/login');
+      }
+  
       if(result.data){
         setSections(result.data);
         setFilteredSections(result.data);
@@ -173,14 +178,15 @@ export default function SrhrScreen() {
 
 function Section({section}:{section: ISection}) {
   const [open, setopen] = useState(false);
+  const router = useRouter();
+  
   const onPress = (value: number, title: string) => {
     if (value === 0) {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setopen(!open);
     } else {
-      // props.navigation.navigate('srhrItemDetailsScreen', {
-      //   id: value,
-      // });
+      // Navigate to article details screen
+      router.push(`./article-details?id=${value}&title=${encodeURIComponent(title)}`);
     }
   };
   return (

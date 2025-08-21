@@ -2,10 +2,11 @@ import { SafeAreaView, View , Text, ScrollView, StyleSheet} from "react-native";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import Button, { ButtonStyles } from "@/components/Button";
 import { useState } from "react";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 
 
 export default function PregnancyYesNo(){
+  const router = useRouter();
   const [isPregnant, setIsPregnant] = useState<boolean | undefined>(undefined);
 
   const areYouPregnant = `Are you pregnant? Our app can help you go through your pregnancy journey.`;
