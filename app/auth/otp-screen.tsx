@@ -14,14 +14,14 @@ type OtpHandle = React.ElementRef<typeof OtpInput>;
 const OTPScreen = () => {
   const [otp, setOtp] = useState('');
   const { fullMobileNumber, setSession, setUserProfile, setUserId } = useAuthStore();
-  const [showCaptcha, setShowCaptcha] = useState(false);
+  // const [showCaptcha, setShowCaptcha] = useState(false);
   const { t } = useTranslation();
   const { sendRequestFetch } = useHttpClient();
   const [enableSendOTP, setEnableSendOTP] = useState(true);
   const otpRef = useRef<OtpHandle>(null);
   const router = useRouter();
 
-  const handleResendOTP = async (captchaToken: string) => {
+  const handleResendOTP = async (/*captchaToken: string*/) => {
     if(fullMobileNumber){
       setOtp("");
       otpRef.current?.clear();
@@ -55,8 +55,7 @@ const OTPScreen = () => {
         phoneNumber: fullMobileNumber!, // The same phone number used in the previous step
         code: otp,              // The OTP entered by the user
       });
-
-      
+ 
       if(credentials && credentials.idToken){
         const response = await sendRequestFetch<{
           token: string,
@@ -100,8 +99,10 @@ const OTPScreen = () => {
           }
         }
       }
-    } catch {
+    } catch (e) {
       Alert.alert(t('otp_screen_alert_title'), t('otp_screen_incorrect_code_text'));
+      console.log("When OTP verification the following error has occured:");
+      console.log(e);
     } finally {
       setEnableSendOTP(true);
     }
@@ -128,16 +129,16 @@ const OTPScreen = () => {
           style={{flex: 1}}
           buttonType={ButtonStyles.UNFILLED}
           label={t('otp_screen_resend_otp_button')}
-          onPress={() => setShowCaptcha(true)}
+          onPress={async () => handleResendOTP()}
         />
       </View>
-      <CloudflareTurnstile
+      {/* <CloudflareTurnstile
         show={showCaptcha}
         setIsShow={setShowCaptcha}
         successFn={async (token) => {
           await handleResendOTP(token);
         }}
-      />
+      /> */}
     </KeyboardAvoidingView>
   );
 };

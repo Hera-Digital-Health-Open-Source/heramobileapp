@@ -9,7 +9,7 @@ import { GlobalStyles, Spacing } from "@/assets/theme";
 import Button, {ButtonStyles} from "@/components/Button";
 import { useRouter } from "expo-router";
 import { Platform } from "react-native";
-import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
+// import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useI18n } from "@/context/I18nContext";
 import Auth0 from 'react-native-auth0';
@@ -22,7 +22,7 @@ export default function Login(){
   const [completeMobileNumber, updateFullMobileNumber] = useState<string | undefined>(undefined);
   const [isRegisterMode, setIsRegisterMode] = useState(true);
   const { session, userProfile, setFullMobileNumber } = useAuthStore();
-  const [showCaptcha, setShowCaptcha] = useState(false);
+  // const [showCaptcha, setShowCaptcha] = useState(false);
   const { t } = useTranslation();
   const { setAppLanguage, locale } = useI18n();
   const router = useRouter();
@@ -52,16 +52,22 @@ export default function Login(){
     }
   }, [selectedCountryCallingCode, mobileNumber]);
 
-  const handleRequestOtp = async (captchaToken: string) => {
+  const handleRequestOtp = async (/*captchaToken: string*/) => {
     if(completeMobileNumber){
       setFullMobileNumber(completeMobileNumber);
       const auth0 = new Auth0({
-        domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN!,
-        clientId: process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID!,
-      });
-      await auth0.auth.passwordlessWithSMS({
-        phoneNumber: completeMobileNumber, 
-      });
+          domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN!,
+          clientId: process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID!,
+        });
+      try{
+        
+        await auth0.auth.passwordlessWithSMS({
+          phoneNumber: completeMobileNumber, 
+        });
+      } catch(e){
+        console.log(e)
+      }
+      
       router.push('/auth/otp-screen');
     }
   }
@@ -112,19 +118,19 @@ export default function Login(){
             <View style={styles.loginButtonsContainer}>
               <Button
                 label={isRegisterMode ? t('login_screen_signup_button') : t('login_screen_login_button')}
-                onPress={() => setShowCaptcha(true)}
+                onPress={async () => handleRequestOtp()}
               />
             </View>
           </View>
         </View>
       </KeyboardAvoidingView>
-      <CloudflareTurnstile
+      {/* <CloudflareTurnstile
         show={showCaptcha}
         setIsShow={setShowCaptcha}
         successFn={async (token) => {
           await handleRequestOtp(token);
         }}
-      />
+      /> */}
     </SafeAreaView>
   );
 }
