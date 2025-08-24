@@ -12,10 +12,17 @@ type Props = {
   appointment: Appointment;
   style?: StyleProp<ViewStyle>;
   onConfirm : ()=>Promise<void>;
-  isTaken?: boolean;
+  isTaken: boolean;
+  isAvailable: boolean;
 }
 
-export default function ConfirmTakenPregnancyModal({appointment, onConfirm, style, isTaken=false}: Props){
+export default function ConfirmTakenPregnancyModal({
+  appointment,
+  onConfirm,
+  style,
+  isTaken,
+  isAvailable
+}: Props){
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const [isTakenBefore, setIsTakenBefore] = useState(isTaken);
   const {t} = useTranslation();
@@ -28,14 +35,22 @@ export default function ConfirmTakenPregnancyModal({appointment, onConfirm, styl
   };
   return (
     <View style={style}>
-      {!isTakenBefore && 
+      {!isAvailable && (
+        <MarkAsDoneButton 
+          style={{paddingHorizontal: Spacing.small, borderColor: Colors.disabled}}
+          textStyle={{color: Colors.disabledtext}}
+          label={t('my_appointments_screen_i_attend_this_btn')}
+          onPress={() => {}}
+        />
+      )}
+      {!isTakenBefore && isAvailable &&
         <MarkAsDoneButton 
           style={{paddingHorizontal: Spacing.small}}
           label={t('my_appointments_screen_i_attend_this_btn')}
           onPress={() => setIsPickerVisible(!isPickerVisible)}
         />
       }
-      {isTakenBefore && 
+      {isTakenBefore && isAvailable &&
         <MarkAsDoneButton 
           style={
             {
@@ -61,7 +76,7 @@ export default function ConfirmTakenPregnancyModal({appointment, onConfirm, styl
                 <View style={{flex: 1, padding: Spacing.medium, marginTop: Spacing.large}}>
                   <Text style={GlobalStyles.SubHeadingText}>
                     {locale === 'tr' && appointment.date + t('my_appointments_screen_prenatal_attend_label')}
-                    {locale !== 'tr' && t('my_appointments_screen_prenatal_attend_label') + appointment.date + "?"}
+                    {locale !== 'tr' && t('my_appointments_screen_prenatal_attend_label') + " " + appointment.date + "?"}
                   </Text>
                 </View>
                 <View style={{paddingHorizontal: Spacing.medium}}>
