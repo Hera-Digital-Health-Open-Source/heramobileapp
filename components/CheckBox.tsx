@@ -1,4 +1,4 @@
-import { color, GlobalStyles } from "@/assets/theme";
+import { Colors, GlobalStyles } from "@/assets/theme";
 import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   checkedCheckbox: {
-    backgroundColor: color.primary,
-    borderColor: color.primary,
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
   },
   checkmark: {
     color: "#fff",

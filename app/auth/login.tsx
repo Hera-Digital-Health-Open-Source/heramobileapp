@@ -1,30 +1,31 @@
-import { imgLoginMain } from "@/assets/images/images";
+import { imgHeraIcon, imgLoginMain } from "@/assets/images/images";
 import { Image } from "expo-image";
 import { View , Text, StyleSheet, TextInput, Pressable, KeyboardAvoidingView, Alert} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import DropDownPicker from "@/components/DropDownPicker"; 
 import CountryModalPicker from "@/components/CountryModalPicker";
-import { GlobalStyles } from "@/assets/theme";
+import { GlobalStyles, Spacing } from "@/assets/theme";
 import Button, {ButtonStyles} from "@/components/Button";
-import { useAuth } from "@/context/AuthContext";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { Platform } from "react-native";
-import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
-import { useHttpClient } from "@/context/HttpClientContext";
+// import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useI18n } from "@/context/I18nContext";
+import Auth0 from 'react-native-auth0';
+
+import { useAuthStore } from "@/store/authStore";
 
 export default function Login(){
   const [selectedCountryCallingCode, setSelectedCountryCallingCode] = useState<string | null>("+90");
   const [mobileNumber, setMobileNumber] = useState<string | undefined>(undefined);
-  const [completeMobileNumber, setCompleteMobileNumber] = useState<string | undefined>(undefined);
+  const [completeMobileNumber, updateFullMobileNumber] = useState<string | undefined>(undefined);
   const [isRegisterMode, setIsRegisterMode] = useState(true);
-  const { setCompletePhoneNumber: setCPhoneNumber, session, profile1, requestOtp } = useAuth();
-  const [showCaptcha, setShowCaptcha] = useState(false);
-  const {sendRequestFetch} = useHttpClient();
+  const { session, userProfile, setFullMobileNumber } = useAuthStore();
+  // const [showCaptcha, setShowCaptcha] = useState(false);
   const { t } = useTranslation();
   const { setAppLanguage, locale } = useI18n();
+  const router = useRouter();
 
   const languages = [
     {label: t('language_dropdown_arabic_text'), key: 'ar'},
@@ -35,33 +36,44 @@ export default function Login(){
   const setCurrentLanguage = async (language: string) => {
     await setAppLanguage(language as 'ar' | 'en' | 'tr');
   }
-
+ 
+  // If the user is signed-in before and complete his profile,
+  // Then re-route him to the home screen.
   useEffect(() => {
-    if(session && profile1){
+    if(session && userProfile){
       router.replace('/');
     }
-  }, [session, profile1]);
+  }, [session, userProfile]);
 
+  
   useEffect(() => {
     if(selectedCountryCallingCode && mobileNumber){
-      setCompleteMobileNumber(`${selectedCountryCallingCode}${mobileNumber}`);
+      updateFullMobileNumber(`${selectedCountryCallingCode}${mobileNumber}`);
     }
   }, [selectedCountryCallingCode, mobileNumber]);
 
-  const handleRequestOtp = async (captchaToken: string) => {
+  const handleRequestOtp = async (/*captchaToken: string*/) => {
     if(completeMobileNumber){
-      setCPhoneNumber(completeMobileNumber);
-      const response = await requestOtp(completeMobileNumber, captchaToken);
-      if(response){
-        router.push('/auth/otp-screen');
-      } else {
-        Alert.alert("OTP Request", "Failed! Please check the internet connection and try again.");
+      setFullMobileNumber(completeMobileNumber);
+      const auth0 = new Auth0({
+          domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN!,
+          clientId: process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID!,
+        });
+      try{
+        
+        await auth0.auth.passwordlessWithSMS({
+          phoneNumber: completeMobileNumber, 
+        });
+      } catch(e){
+        console.log(e)
       }
+      
+      router.push('/auth/otp-screen');
     }
   }
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={{alignItems: 'flex-end', padding: 16}}>
           <Button 
@@ -71,9 +83,12 @@ export default function Login(){
           />
         </View>
         <View style={styles.loginContainer}>
-          <Image source={imgLoginMain} style={{width: 93, height:86}} />
+          <Image source={imgHeraIcon} style={{width: 250, height:150}}/>
+          <Text style={GlobalStyles.HeadingText}>{t('hera_official_name')}</Text>
+          {/* <Text style={{...GlobalStyles.NormalText, marginTop: Spacing.large}}>{t('login_screen_title')}</Text> */}
           <View style={styles.loginInputsContainer}>
-            <Text style={GlobalStyles.NormalText}>{t('login_screen_select_language_dropdown_hint')}</Text>
+            <View>
+            <Text style={{marginTop: Spacing.large, marginBottom: Spacing.medium, ...GlobalStyles.NormalText}}>{t('login_screen_select_language_dropdown_hint')}</Text>
             <DropDownPicker 
               items={languages}
               style={{marginTop: 8}}
@@ -81,7 +96,9 @@ export default function Login(){
               initialKeySelection={locale}
               onItemSelectionChanged={(key) => setCurrentLanguage(key)}
             />
-            <Text style={{marginTop: 16, ...GlobalStyles.NormalText}}>{t('login_screen_phone_number_hint')}</Text>
+            </View>
+            <View>
+            <Text style={{marginTop: Spacing.large, marginBottom: Spacing.medium, ...GlobalStyles.NormalText}}>{t('login_screen_phone_number_hint')}</Text>
             <View style={{flexDirection: 'row', gap: 8 , alignContent: 'space-between', marginTop: 8}}>
               <CountryModalPicker
                 style={{width:75}}
@@ -97,22 +114,23 @@ export default function Login(){
                 keyboardType="number-pad"
               />
             </View>
+            </View>
             <View style={styles.loginButtonsContainer}>
               <Button
                 label={isRegisterMode ? t('login_screen_signup_button') : t('login_screen_login_button')}
-                onPress={() => setShowCaptcha(true)}
+                onPress={async () => handleRequestOtp()}
               />
             </View>
           </View>
         </View>
       </KeyboardAvoidingView>
-      <CloudflareTurnstile
+      {/* <CloudflareTurnstile
         show={showCaptcha}
         setIsShow={setShowCaptcha}
         successFn={async (token) => {
           await handleRequestOtp(token);
         }}
-      />
+      /> */}
     </SafeAreaView>
   );
 }
@@ -122,15 +140,14 @@ const styles = StyleSheet.create({
     marginTop: 26,
   },
   loginContainer: {
-    padding: 16,
-    justifyContent: 'center',
+    paddingHorizontal: 16,
     alignItems: 'center',
     flex: 1,
-    // backgroundColor: '#faa'
   },
   loginInputsContainer: {
     marginTop: 32,
     width: '100%',
+    gap: Spacing.large,
     alignSelf: 'flex-start',
   }
 })

@@ -1,6 +1,6 @@
 import {View, Text, StyleSheet} from 'react-native';
 // import {useTranslation} from 'react-i18next';
-import { color } from '@/assets/theme';
+import { Colors } from '@/assets/theme';
 import { GlobalStyles } from '@/assets/theme';
 
 export function NoAppointments() {
@@ -39,12 +39,12 @@ const styles = StyleSheet.create({
   itemDate: {
     fontSize: 18,
     fontWeight: '700',
-    color: color.primary,
+    color: Colors.primary,
   },
   itemEvent: {
     fontSize: 16,
     fontWeight: '700',
-    color: color.black,
+    color: Colors.black,
     textAlign: textAlign,
   },
   itemEventTarget: {
@@ -58,13 +58,13 @@ const styles = StyleSheet.create({
   markAsDoneBtn: {
     flex: 1,
     borderWidth: 1,
-    borderColor: color.primary,
+    borderColor: Colors.primary,
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 8,
   },
   markAsDoneText: {
-    color: color.primary,
+    color: Colors.primary,
     fontSize: 16,
     textAlign: 'center',
     fontWeight: 'bold',

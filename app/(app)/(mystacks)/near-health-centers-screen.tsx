@@ -17,7 +17,11 @@ import MapView, { MarkerPressEvent, PROVIDER_GOOGLE } from 'react-native-maps';
 import {Marker, Callout} from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useHttpClient } from '@/context/HttpClientContext';
-import { GlobalStyles, Spacing } from "@/assets/theme";
+import { Colors, GlobalStyles, Spacing } from "@/assets/theme";
+import { MaterialIcons } from '@expo/vector-icons';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useRouter } from 'expo-router';
+
 // import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 // import Toast from 'react-native-toast-message';
 // import {useTranslation} from 'react-i18next';
@@ -40,25 +44,55 @@ type HealthCenter = {
   type: string;
 }
 
-const CalloutContent = ({name, address}: {name: string, address: string}) => {
+const CalloutContent = ({label, address, lat, lng}: {label: string, address: string, lat: string, lng: string}) => {
+  const {t} = useTranslation();
+
+  const openInMaps = () => {
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lng);
+    
+    if (isNaN(latitude) || isNaN(longitude)) {
+      console.warn('Invalid coordinates:', { lat, lng, latitude, longitude });
+      return;
+    }
+
+    const scheme = Platform.select({
+      ios: 'maps:0,0?q=',
+      android: 'geo:0,0?q=',
+    });
+    const latLng = `${latitude},${longitude}`;
+    const url = Platform.select({
+      ios: `${scheme}${label}@${latLng}`,
+      android: `${scheme}${latLng}(${label})`,
+    });
+    
+    if (url) {
+      Linking.openURL(url).catch(err => console.error('Error opening maps:', err));
+    }
+  };
+
   return (
-    <View style={styles.mapMarkerPopup}>
-      <Text style={styles.mapMarkerTitle} numberOfLines={1}>
-        {name}
-      </Text>
-      <Text style={styles.mapMarkerAddress} numberOfLines={1}>
-        {address}
-      </Text>
-    </View>
+    <Pressable onPress={openInMaps} style={{padding: Spacing.medium, flex: 1, gap: Spacing.medium}}>
+        <Text style={GlobalStyles.SubHeadingText}>
+          {label}
+        </Text>
+        <Text style={GlobalStyles.NormalText}>
+          {address}
+        </Text>
+        <View style={{flex: 1, padding: Spacing.small}}></View>
+        <Text style={[GlobalStyles.NormalText, {color: Colors.primary, textAlign: 'center', marginBottom: Spacing.xlarge}]}>
+          {t('nearby_health_centers_tap_to_open_in_maps')}
+        </Text>
+    </Pressable>
   );
 }
 
 export default function NearHealthCentersScreen() {
-  // const {t} = useTranslation();
-
   const {sendRequestFetch} = useHttpClient();
   const [markers, setMarkers] = useState<HealthCenter[]>([]);
   const [region, setRegion] = useState<RegionGeolocation | undefined>(undefined);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const router = useRouter();
 
   const INITIAL_REGION: RegionGeolocation = {
     latitude: 41.0082,
@@ -66,9 +100,8 @@ export default function NearHealthCentersScreen() {
     latitudeDelta: 0.05,
     longitudeDelta: 0.05,
   };
-  const [showModal, setShowModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [tappedMarkerAndroid, setTappedMarkerAndroid] = useState<{name: string, address: string} | null>(null);
+  const [tappedMarkerAndroid, setTappedMarkerAndroid] = useState<{name: string, address: string, lat: string, lng: string} | null>(null);
 
   const getHealthCenters = useCallback(async () => {
     try {
@@ -83,7 +116,12 @@ export default function NearHealthCentersScreen() {
         },
       });
       
-      setMarkers(result.data!);
+      if(result.isTokenExpired){
+        return router.replace('/auth/login');
+      }
+
+      const data = result.data!
+      setMarkers(data ? data : []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -125,23 +163,11 @@ export default function NearHealthCentersScreen() {
     getHealthCenters();
   }, [getHealthCenters]);
 
-  // const showToast = useCallback(() => {
-  //   Toast.show({
-  //     type: 'error',
-  //     text2: t('location_error_message_text'),
-  //   });
-  // }, [t]);
-
-  // useEffect(() => {
-  //   getHealthCenters();
-  // }, [getHealthCenters]);
-  const dummy = (e: MarkerPressEvent, name:string, address: string) => {
-    if(Platform.OS === 'android'){
-      // console.log(e.nativeEvent.position);
-      setTappedMarkerAndroid({name, address});
-      setShowModal(true);
-    }
+  const handleOnHealthCenterIsTapped = (e: MarkerPressEvent, name:string, address: string, lat: string, lng: string) => {
+    setTappedMarkerAndroid({name, address, lat, lng});
+    setIsModalVisible(true);
   }
+
   return (
     <SafeAreaView style={{flex:1}}>
       <MapView 
@@ -153,8 +179,15 @@ export default function NearHealthCentersScreen() {
         // provider={PROVIDER_GOOGLE}
       >
         {markers.map((marker, index) => {
-          const lat = +marker.geolocation.split(',')[0];
-          const lng = +marker.geolocation.split(',')[1];
+          const geoComponents = marker.geolocation.split(',');
+          const lat = parseFloat(geoComponents[0]?.trim() || '0');
+          const lng = parseFloat(geoComponents[1]?.trim() || '0');
+          
+          if (isNaN(lat) || isNaN(lng)) {
+            console.warn('Invalid marker coordinates:', { marker: marker.name, geolocation: marker.geolocation, lat, lng });
+            return null;
+          }
+          
           return (
             <Marker
               key={index}
@@ -163,29 +196,46 @@ export default function NearHealthCentersScreen() {
                 longitude: lng,
               }}
               title={marker.name}
-              onPress={(e) => dummy(e, marker.name, marker.address)}>
-              {Platform.OS === 'ios' && <Callout
-                tooltip={true}
-                onPress={() => {
-                  const scheme = Platform.select({
-                    ios: 'maps:0,0?q=',
-                    android: 'geo:0,0?q=',
-                  });
-                  const latLng = `${lat},${lng}`;
-                  const label = `${marker.name}`;
-                  const url = Platform.select({
-                    ios: `${scheme}${label}@${latLng}`,
-                    android: `${scheme}${latLng}(${label})`,
-                  });
-                  Linking.openURL(url!);
-                }}>
-                <CalloutContent name={marker.name} address={marker.address}/>
-              </Callout>}
+              onPress={(e) => {
+                e.preventDefault();
+                handleOnHealthCenterIsTapped(e, marker.name, marker.address, lat.toString(), lng.toString());
+              }}>
             </Marker>
           );
         })}
       </MapView>
-    
+
+      <Modal animationType="slide" transparent={true} visible={isModalVisible}>
+        <Pressable 
+          style={styles.modalBackdrop} 
+          onPress={() => setIsModalVisible(false)}
+        >
+          <Pressable 
+            style={styles.modalContainer}
+            onPress={(e) => e.stopPropagation()}
+          >
+            <View style={styles.modalTitleContainer}>
+              {/* <Text style={styles.title}>Choose an option</Text> */}
+              <Pressable 
+                onPress={() => setIsModalVisible(false)}
+                style={styles.closeButton}
+              >
+                <MaterialIcons name="close" color="#464C55" size={16}/>
+              </Pressable>
+            </View>
+            <View style={{flex:1}}>
+              {tappedMarkerAndroid && (
+                <CalloutContent 
+                  label={tappedMarkerAndroid.name} 
+                  address={tappedMarkerAndroid.address}
+                  lat={tappedMarkerAndroid.lat}
+                  lng={tappedMarkerAndroid.lng}
+                />
+              )}
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -195,13 +245,6 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     height: Dimensions.get('window').height-80,
   },
-  mapMarkerPopup: {
-    backgroundColor: '#fff',
-    padding: 8,
-    borderRadius: 8,
-    width: 200,
-    height: 70,
-  },
   mapMarkerTitle: {
     fontWeight: 'bold',
   },
@@ -210,4 +253,53 @@ const styles = StyleSheet.create({
     marginTop: 8,
     color: '#828282',
   },
+
+  modalBackdrop: {
+    flex: 1,
+    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContainer: {
+    height: '40%',
+    width: '100%',
+    backgroundColor: '#fff',
+    borderTopRightRadius: 18,
+    borderTopLeftRadius: 18,
+  },
+  modalTitleContainer: {
+    height: 35,
+    backgroundColor: '#464C55',
+    borderTopRightRadius: 10,
+    borderTopLeftRadius: 10,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  closeButton: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  title: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  modalBodyContainer: {
+    justifyContent: 'center',
+    height: '84%',
+  }
 });

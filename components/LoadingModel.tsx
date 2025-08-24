@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Modal, ActivityIndicator, StyleSheet, Text, Platform, Dimensions } from 'react-native';
 import { useLoading } from '@/context/LoadingContext';
-import { color } from '@/assets/theme';
+import { Colors } from '@/assets/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const LoadingModal = () => {
@@ -13,7 +13,7 @@ const LoadingModal = () => {
       <View style={styles1.modalWrapper}>
         <View style={styles1.modalBackground}>
           <View style={styles1.loaderContainer}>
-            <ActivityIndicator size="large" color={color.primary} />
+            <ActivityIndicator size="large" color={Colors.primary} />
             <Text style={styles1.loadingText}>{t('general_loading_title')}</Text>
           </View>
         </View>
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: color.primary,
+    color: Colors.primary,
   },
 });
 

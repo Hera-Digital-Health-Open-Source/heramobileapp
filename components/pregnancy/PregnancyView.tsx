@@ -4,10 +4,10 @@ import Button, { ButtonStyles } from "@/components/Button";
 import { useEffect, useState } from "react";
 import DateModalPicker from "@/components/DateModalPicker";
 import DropDownPicker from "@/components/DropDownPicker";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { RequestConfig, useHttpClient } from "@/context/HttpClientContext";
-import { useAuth } from "@/context/AuthContext";
-import IPregnancy from "@/models/IPregnancy";
+import { useAuthStore } from '@/store/authStore';
+import IPregnancy from "@/interfaces/IPregnancy";
 import { useTranslation } from "@/hooks/useTranslation";
 
 export default function PregnancyView({introduceText, pregnancy, isInRegistrationProcess} : {introduceText: string, pregnancy? : IPregnancy, isInRegistrationProcess: boolean}){
@@ -16,8 +16,9 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
   const [prentalVisits, setPrentalVisits] = useState<string>("");
   const [pregnancyWeek, setPregnancyWeek] = useState<string>("");
   const {sendRequestFetch} = useHttpClient();
-  const {session} = useAuth();
+  const {session} = useAuthStore();
   const {t} = useTranslation();
+  const router = useRouter();
 
   const info = !introduceText ? t('your_pregnancy_screen_description_1') : introduceText;
   const enableContinue = (pregnancyCalculationMethod === 'lastMenstrualDate' && lastMenstrualDate && prentalVisits && prentalVisits !== '-1') || 
@@ -68,6 +69,10 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
     };
 
     const response = await sendRequestFetch<null>(requestConfig);
+
+    if(response.isTokenExpired){
+      return router.replace('/auth/login');
+    }
 
     if(response.error){
       console.log(response.error)

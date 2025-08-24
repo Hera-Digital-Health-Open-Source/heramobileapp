@@ -5,15 +5,16 @@ import CheckBox from "@/components/CheckBox";
 import { useState } from "react";
 import { useRegistration } from "@/context/RegistrationContext";
 import { useHttpClient } from "@/context/HttpClientContext";
-import { router } from "expo-router";
-import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "expo-router";
+import { useAuthStore } from '@/store/authStore';
 
 
 export default function PrivacyPolicy(){
   const [isAccept, setIsAccept] = useState(false);
   const {name, gender, dateOfBirth, setOnBoardingProgress} = useRegistration();
   const {sendRequestFetch} = useHttpClient();
-  const {session, setProfile} = useAuth();
+  const {session, setUserProfile} = useAuthStore();
+  const router = useRouter();
 
   const privacyPolicy = `“HERA” User Agreement
 
@@ -85,6 +86,10 @@ This agreement, which includes the above rules, which you will be deemed to have
       },
     });
 
+    if(response.isTokenExpired){
+      return router.replace('/auth/login');
+    }
+
     if(response.error){
       console.log(response.error)
     }
@@ -94,17 +99,10 @@ This agreement, which includes the above rules, which you will be deemed to have
         name: name!,
         gender: gender?.toUpperCase() as 'MALE' | 'FEMALE',
         date_of_birth: dateOfBirth!.toISOString().split("T")[0],
-        language_code: 'en',
+        language_code: 'en' as 'en',
         time_zone: 'UTC',
       }
-      setProfile(JSON.stringify(p));
-      // setProfile({
-      //   name: name!,
-      //   gender: gender?.toUpperCase() as 'MALE' | 'FEMALE',
-      //   date_of_birth: dateOfBirth!.toISOString().split("T")[0],
-      //   language_code: 'en',
-      //   time_zone: 'UTC',
-      // });
+      setUserProfile(p);
       router.replace('/registration/pregnancy-yes-no');
     }
   };
@@ -124,7 +122,10 @@ This agreement, which includes the above rules, which you will be deemed to have
       },
     });
 
-    console.log(response.data);
+    if(response.isTokenExpired){
+      return router.replace('/auth/login');
+    }
+
     if(response.error){
       console.log(response.error)
     }

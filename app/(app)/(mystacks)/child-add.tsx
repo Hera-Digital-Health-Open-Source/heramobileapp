@@ -1,17 +1,17 @@
 import ChildView from "@/components/children/ChildView";
-import Child from "@/models/Child";
-import { useLocalSearchParams } from "expo-router";
+import Child from "@/interfaces/IChild";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useHttpClient } from "@/context/HttpClientContext";
-import { useAuth } from "@/context/AuthContext";
-
+import { useAuthStore } from "@/store/authStore";
 
 export default function ChildAdd(){
   const { childId } = useLocalSearchParams();
   const [child, setChild] = useState<Child | undefined>(undefined);
   const { sendRequestFetch } = useHttpClient();
-  const { session } = useAuth();
-  
+  const { session } = useAuthStore();
+  const router = useRouter();
+
   const id = childId ? Number(childId) : undefined;
 
   
@@ -26,6 +26,10 @@ export default function ChildAdd(){
       },
     });
 
+    if(result.isTokenExpired){
+      return router.replace('/auth/login');
+    }
+  
     const data = result.data!;
     let children = data.filter(c => c.id === childId);
     if(children.length > 0){
@@ -34,8 +38,6 @@ export default function ChildAdd(){
     } else {
       setChild(undefined);
     }
-    
-    // setRefreshing(false);
   };
 
   useEffect(() => {

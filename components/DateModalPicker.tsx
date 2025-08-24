@@ -2,6 +2,7 @@ import { StyleSheet, View, Text, Pressable, StyleProp, ViewStyle } from "react-n
 import {AntDesign} from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { GlobalStyles } from "@/assets/theme";
 
 
 type Props = {
@@ -40,8 +41,8 @@ export default function DateModalPicker({initialDate, onDateSelected, onCancel, 
   return (
     <View style={style}>
       <Pressable onPress={() => setIsPickerVisible((prev) => !prev)}>
-        <View style={styles.dropDownContainer}>
-          <Text>{date?.toLocaleDateString()}</Text>
+        <View style={GlobalStyles.InputBoxWithIconStyle}>
+          <Text style={GlobalStyles.NormalText}>{date?.toLocaleDateString()}</Text>
           <AntDesign name={"calendar"} size={22} />
         </View>
       </Pressable>
@@ -61,19 +62,6 @@ export default function DateModalPicker({initialDate, onDateSelected, onCancel, 
 }
 
 const styles = StyleSheet.create({
-  dropDownContainer: {
-    width: '100%',
-    height: 48,
-    paddingHorizontal: 10,
-    paddingVertical: 11,
-    flexDirection: 'row',
-    borderRadius: 10,
-    borderColor: '#eee',
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    // backgroundColor: '#fa5'
-  },
   modalContainer: {
     height: '25%',
     width: '100%',

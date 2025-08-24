@@ -11,16 +11,15 @@ import {
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import GenderSwitcher from "@/components/GenderSwitcher";
 import { useEffect, useState } from "react";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Button, { ButtonStyles } from "@/components/Button";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { useRegistration } from "@/context/RegistrationContext";
-import { UserProfile } from "@/context/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import DropDownPicker from "../DropDownPicker";
 import { useI18n } from "@/context/I18nContext";
 import { useHttpClient } from "@/context/HttpClientContext";
-import { useAuth } from "@/context/AuthContext";
+import { useAuthStore, UserProfile } from "@/store/authStore";
+import DateModalPicker from "../DateModalPicker";
 
 export default function ProfileView({ profile }: { profile?: UserProfile }) {
   const now = new Date();
@@ -30,15 +29,12 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
   const { t } = useTranslation();
   const { setAppLanguage, locale } = useI18n();
   const [selectedName, setSelectedName] = useState("");
-  const [selectedDateOfBirth, setSelectedDateOfBirth] =
-    useState(date18YearsAgo);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedGender, setSelectedGender] = useState<
-    "MALE" | "FEMALE" | undefined
-  >(undefined);
+  const [selectedDateOfBirth, setSelectedDateOfBirth] = useState(date18YearsAgo);
+  const [selectedGender, setSelectedGender] = useState<"MALE" | "FEMALE" | undefined>(undefined);
   const { setGender, setName, setDateOfBirth } = useRegistration();
   const { sendRequestFetch } = useHttpClient();
-  const { session, userId, setProfile } = useAuth();
+  const { session, userId, setUserProfile } = useAuthStore();
+  const router = useRouter();
 
   useEffect(() => {
     if (profile) {
@@ -51,7 +47,7 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
   const enableContinue =
     selectedName.length > 0 && selectedGender !== undefined;
 
-  const updateUserProfile = async () => {
+  const updateUserProfile = async (useSpecificLanguage: string | null = null) => {
     const response = await sendRequestFetch<{}>({
       url: `/user_profiles/${userId}/`,
       method: "PATCH",
@@ -59,7 +55,7 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
         name: selectedName,
         gender: selectedGender,
         date_of_birth: selectedDateOfBirth.toISOString().split("T")[0],
-        language_code: locale,
+        language_code: useSpecificLanguage ? useSpecificLanguage : locale,
       },
       headers: {
         "Accept-Language": "en",
@@ -68,6 +64,10 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
         Authorization: "Token " + session,
       },
     });
+
+    if(response.isTokenExpired){
+      return router.replace('/auth/login');
+    }
 
     if (response.error) {
       Alert.alert(
@@ -85,20 +85,38 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
       router.push("/registration/terms-of-use");
     } else {
       await updateUserProfile();
-      setProfile(
-        JSON.stringify({
+      setUserProfile(
+        {
           name: selectedName,
-          gender: selectedGender,
+          gender: selectedGender!,
           date_of_birth: selectedDateOfBirth.toISOString().split("T")[0],
-          language_code: locale,
+          language_code: locale as 'en' | 'tr' | 'ar',
           time_zone: profile.time_zone,
-        })
+        }
       );
     }
   };
 
   const setCurrentLanguage = async (language: string) => {
+    await updateUserProfile(language as "ar" | "en" | "tr");
+    setUserProfile(
+      {
+        name: selectedName,
+        gender: selectedGender!,
+        date_of_birth: selectedDateOfBirth.toISOString().split("T")[0],
+        language_code: language as 'en' | 'tr' | 'ar',
+        time_zone: profile?.time_zone!, // profile?.time_zone is garanteed to have a valid value.
+      }
+    );
     await setAppLanguage(language as "ar" | "en" | "tr");
+    
+    // For non-Arabic languages, show a brief confirmation since the app doesn't restart
+    if (language !== 'ar') {
+      // Wait a brief moment for the translation to take effect
+      setTimeout(() => {
+        Alert.alert(t("language_changed_successfully"));
+      }, 100);
+    }
   };
 
   const languages = [
@@ -148,13 +166,14 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
             <Text style={GlobalStyles.NormalText}>
               {t("my_profile_screen_date_of_birth_hint")}
             </Text>
-            <TextInput
+            {/* <TextInput
               onPress={() => setShowDatePicker((prev) => !prev)}
               style={GlobalStyles.InputBoxStyle}
               // onChangeText={(t) => setName(t)}
               value={selectedDateOfBirth.toLocaleDateString()}
               placeholder="Your birth date"
-            />
+            /> */}
+            <DateModalPicker initialDate={selectedDateOfBirth} onDateSelected={(date)=>setSelectedDateOfBirth(date)} />
           </View>
           {profile && (
             <View style={{ gap: Spacing.medium }}>
@@ -192,18 +211,6 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
                   : t("complete_profile_screen_continue_button")
               }
               onPress={handleContinueSave}
-            />
-          )}
-
-          {showDatePicker && (
-            <DateTimePickerModal
-              isVisible={showDatePicker}
-              mode="date"
-              onConfirm={(date) => {
-                setSelectedDateOfBirth(date);
-                setShowDatePicker(false);
-              }}
-              onCancel={() => setShowDatePicker(false)}
             />
           )}
         </View>

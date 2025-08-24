@@ -4,7 +4,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {Picker} from '@react-native-picker/picker';
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
-import { GlobalStyles } from "@/assets/theme";
+import { Colors, GlobalStyles, Spacing } from "@/assets/theme";
 
 type DropDownItem = {
   label: string;
@@ -44,8 +44,13 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
 
   if(Platform.OS === 'android'){
     return (
-      <View style={style}>
+      <View style={GlobalStyles.InputBoxStyle}>
         <Picker
+          style={{ 
+            marginVertical: -Spacing.standard,
+            marginHorizontal: -Spacing.standard + 2,
+            fontSize: 50
+          }}
           selectedValue={`${currentKeySelected}`}
           onValueChange={(itemValue, itemIndex) => {
             setCurrentKeySelected(itemValue);
@@ -63,45 +68,57 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
     return (
       <View style={style}>
         <Pressable onPress={() => setIsPickerVisible(!isPickerVisible)}>
-          <View style={styles.dropDownContainer}>
+          <View style={GlobalStyles.InputBoxWithIconStyle}>
             <Text style={GlobalStyles.NormalText}>{label ? label : ""}</Text>
             <AntDesign name={isPickerVisible ? "caretup" : "caretdown"} />
           </View>
         </Pressable>
   
         <Modal animationType="slide" transparent={true} visible={isPickerVisible}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalTitleContainer}>
-              {/* <Text style={styles.title}>Choose an option</Text> */}
-              <Pressable onPress={() => setIsPickerVisible(false)}>
-                <MaterialIcons name="close" color="#fff" size={22}/>
-              </Pressable>
-            </View>
-            <View style={styles.modalBodyContainer}>
-              {!items && (
-                <Text style={{textAlign: 'center'}}>
-                  No items are available
-                </Text>
-              )}
-              {items && (
-                <Picker
-                  selectedValue={`${currentKeySelected}`}
-                  onValueChange={(itemValue, itemIndex) => {
-                    setCurrentKeySelected(itemValue);
-                    setIsPickerVisible(false);
-                    if(onItemSelectionChanged){
-                      setTimeout(() => {
-                        onItemSelectionChanged(itemValue!);
-                      }, 500);
-                    }
-                  }}>
-                    {items?.map((item, index) => (
-                      <Picker.Item label={item.label} value={item.key} key={item.key} />
-                    ))}
-                </Picker>
-              )}
-            </View>
-          </View>
+          <Pressable 
+            style={styles.modalBackdrop} 
+            onPress={() => setIsPickerVisible(false)}
+          >
+            <Pressable 
+              style={styles.modalContainer}
+              onPress={(e) => e.stopPropagation()}
+            >
+              <View style={styles.modalTitleContainer}>
+                {/* <Text style={styles.title}>Choose an option</Text> */}
+                <Pressable 
+                  onPress={() => setIsPickerVisible(false)}
+                  style={styles.closeButton}
+                >
+                  <MaterialIcons name="close" color="#464C55" size={16}/>
+                </Pressable>
+              </View>
+              <View style={styles.modalBodyContainer}>
+                {!items && (
+                  <Text style={{textAlign: 'center'}}>
+                    No items are available
+                  </Text>
+                )}
+                {items && (
+                  <Picker
+                    itemStyle={Platform.OS === 'ios' ? { color: Colors.black } : undefined}
+                    selectedValue={`${currentKeySelected}`}
+                    onValueChange={(itemValue, itemIndex) => {
+                      setCurrentKeySelected(itemValue);
+                      setIsPickerVisible(false);
+                      if(onItemSelectionChanged){
+                        setTimeout(() => {
+                          onItemSelectionChanged(itemValue!);
+                        }, 500);
+                      }
+                    }}>
+                      {items?.map((item, index) => (
+                        <Picker.Item color={Colors.black} label={item.label} value={item.key} key={item.key} />
+                      ))}
+                  </Picker>
+                )}
+              </View>
+            </Pressable>
+          </Pressable>
         </Modal>
       </View>
   
@@ -111,18 +128,10 @@ export default function DropDownPicker({items, initialKeySelection, onItemSelect
 }
 
 const styles = StyleSheet.create({
-  dropDownContainer: {
-    width: '100%',
-    height: 48,
-    paddingHorizontal: 10,
-    paddingVertical: 11,
-    flexDirection: 'row',
-    borderRadius: 10,
-    borderColor: '#eee',
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    // backgroundColor: '#fa5'
+  modalBackdrop: {
+    flex: 1,
+    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
   },
   modalContainer: {
     height: '25%',
@@ -130,8 +139,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopRightRadius: 18,
     borderTopLeftRadius: 18,
-    position: 'absolute',
-    bottom: 0,
   },
   modalTitleContainer: {
     height: '16%',
@@ -142,6 +149,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  closeButton: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
   title: {
     color: '#fff',

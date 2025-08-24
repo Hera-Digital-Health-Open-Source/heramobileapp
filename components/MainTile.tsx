@@ -1,6 +1,6 @@
 import {Image, type ImageSource } from "expo-image";
-import { View, StyleSheet, Pressable, Text} from "react-native";
-import { color, GlobalStyles, Spacing } from "@/assets/theme";
+import { View, StyleSheet, Pressable, Text, StyleProp, ViewStyle, TextStyle} from "react-native";
+import { Colors, GlobalStyles, Spacing } from "@/assets/theme";
 
 type Props = {
   title: string;
@@ -9,6 +9,7 @@ type Props = {
   textColor: string;
   backgroundColor: string;
   requireSignedIn: boolean;
+  textStyle?: StyleProp<TextStyle>;
   onPress?: (key: string, requireSignIn: boolean) => void;
 }
 
@@ -20,6 +21,7 @@ export default function MainTile(
     textColor,
     backgroundColor,
     requireSignedIn,
+    textStyle,
     onPress
   }: Props){
     return (
@@ -27,7 +29,7 @@ export default function MainTile(
         <View >
             <View style={styles.tileInnerContainer}>
               <Image source={image} style={styles.tileImage} contentFit="contain"/>
-              <Text style={[styles.tileText, {color: textColor}]}>{title}</Text>
+              <Text style={textStyle ? textStyle : [styles.tileText, {color: textColor}]}>{title}</Text>
             </View>
         </View>
       </Pressable>
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     paddingTop:16,
     borderRadius: 8,
-    shadowColor: color.black,
+    shadowColor: Colors.black,
     shadowOpacity: 0.2,
     elevation: 6,
     shadowOffset: {
@@ -54,6 +56,7 @@ const styles = StyleSheet.create({
   },
   tileInnerContainer: {
     alignItems: 'center',
+    gap: Spacing.small,
     padding:0,
     margin:0,
   },
@@ -62,8 +65,6 @@ const styles = StyleSheet.create({
     width: 50,
   },
   tileText: {
-    // fontSize: 13,
-    // fontFamily: 'Roboto-Medium',
     ...GlobalStyles.IconTitleText,
     textAlign: 'center',
     marginTop: Spacing.medium,

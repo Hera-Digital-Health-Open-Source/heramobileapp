@@ -1,7 +1,10 @@
-import { createContext, useContext, useState, ReactNode, useCallback } from "react";
+import { createContext, useContext, useState, ReactNode, useCallback, useRef } from "react";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { baseURL } from "@/constants";
 import { useLoading } from "./LoadingContext";
+import { useAuthStore } from "@/store/authStore";
+import { Alert } from "react-native";
+import { useTranslation } from '@/hooks/useTranslation';
 
 export interface RequestConfig {
   url: string;
@@ -20,7 +23,7 @@ interface HttpClientContextType {
   // The following line defines a generic function type,
   // where T is a generic type parameter. It acts as a placeholder for the type of the response data.
   // When calling the function, you can specify what T represents, making the function flexible and type-safe for different types of responses.
-  sendRequest: <T>(requestObj: RequestConfig) => Promise<ClientResponse<T>>;
+  // sendRequest: <T>(requestObj: RequestConfig) => Promise<ClientResponse<T>>;
   sendRequestFetch: <T>(requestObj: RequestConfig) => Promise<ClientResponse<T>>;
 }
 
@@ -28,6 +31,9 @@ const HttpClientContext = createContext<HttpClientContextType | undefined>(undef
 
 export default function HttpClientProvider({children}:{children: ReactNode}){
     const {setLoading} = useLoading();
+    const {setSession} = useAuthStore();
+    const isAlertShowing = useRef(false);
+    const {t} = useTranslation();
 
     const axiosInstance = axios.create({
       baseURL: baseURL,
@@ -40,27 +46,57 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
 
     const sendRequestFetch = async <T,> (requestObj: RequestConfig): Promise<ClientResponse<T>> => {
       setLoading(true);
-      try{
-        const requestOptions = {
-          method: requestObj.method || 'GET',
-          headers: requestObj.headers || {},
-          body: JSON.stringify(requestObj.data),
-        };
-        const response = await fetch(baseURL + requestObj.url, requestOptions);
-        const data = await response.json();
-        if(response.status >= 400 && response.status < 500){
-          return { data: null, isTokenExpired: true, error: null};
+        try{
+          const requestOptions = {
+            method: requestObj.method || 'GET',
+            headers: requestObj.headers || {},
+            body: JSON.stringify(requestObj.data),
+          };
+
+          const response = await fetch(baseURL + requestObj.url, requestOptions);
+
+          if (response.status >= 400) {
+            const isTokenExpired = response.status >= 401 && response.status <= 403;
+            if(isTokenExpired){
+              setSession('');
+            }
+            if(!isTokenExpired && !isAlertShowing.current){
+              isAlertShowing.current = true;
+              Alert.alert(t('connection_error_title'), t('connection_error_message'));
+              // Reset the flag after 3 seconds to allow new alerts if connection issues persist
+              setTimeout(() => {
+                isAlertShowing.current = false;
+              }, 3000);
+            }
+            return {
+              data: null,
+              isTokenExpired,
+              error: response.statusText || "Request failed",
+            };
+          }
+      
+          const data = await response.json();
+          return {data: data, error: null};
+        } catch(error: any){
+          console.log(`Error when sending HTTP(s) request: ${error}`);
+          
+          // Handle network errors in catch block (no server response)
+          if(!isAlertShowing.current){
+            isAlertShowing.current = true;
+            Alert.alert("Connection Error", "Please make sure you are connecting to the internet, and you are not behind a firewall.");
+            // Reset the flag after 3 seconds to allow new alerts if connection issues persist
+            setTimeout(() => {
+              isAlertShowing.current = false;
+            }, 3000);
+          }
+          
+          return { data: null, error: error.message || error};
+        } finally {
+          setLoading(false);
         }
-        return {data: data, error: null};
-      } catch(error){
-        console.log(`Error: ${error}`);
-        return { data: null, error};
-      } finally {
-        setLoading(false);
-      }
     };
 
-    const sendRequest = async <T,> (requestObj: RequestConfig): Promise<ClientResponse<T>> => {
+    /*const sendRequest = async <T,> (requestObj: RequestConfig): Promise<ClientResponse<T>> => {
       setLoading(true);
       try{
         const response = await axiosInstance({
@@ -70,16 +106,41 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
           headers: requestObj.headers || {},
         });
         return { data: response.data, error: null };
-      } catch(error){
-        console.log(JSON.parse(JSON.stringify(error)))
-        return { data: null, error};
+      } catch(error: any){
+        console.log(JSON.parse(JSON.stringify(error)));
+        
+        // Check if it's a network/connection error
+        const isNetworkError = error.code === 'NETWORK_ERROR' || 
+                              error.code === 'ECONNABORTED' || 
+                              !error.response;
+        
+        const isTokenExpired = error.response?.status >= 401 && error.response?.status <= 403;
+        
+        if(isTokenExpired){
+          setSession('');
+        }
+        
+        if(isNetworkError && !isTokenExpired && !isAlertShowing.current){
+          isAlertShowing.current = true;
+          Alert.alert("Connection Error", "Please make sure you are connecting to the internet, and you are not behind a firewall.");
+          // Reset the flag after 3 seconds to allow new alerts if connection issues persist
+          setTimeout(() => {
+            isAlertShowing.current = false;
+          }, 3000);
+        }
+        
+        return { 
+          data: null, 
+          error,
+          isTokenExpired
+        };
       } finally {
         setLoading(false);
       }
-    };
+    };*/
 
     return(
-      <HttpClientContext.Provider value={{sendRequest, sendRequestFetch}}>
+      <HttpClientContext.Provider value={{sendRequestFetch}}>
           {children}
       </HttpClientContext.Provider>
     );

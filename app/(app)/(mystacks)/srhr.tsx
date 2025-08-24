@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import { useTranslation } from "@/hooks/useTranslation";
 import {
   View,
   Text,
@@ -14,15 +15,16 @@ import {
   TextInput
 } from 'react-native';
 // import {color, styles, gifLoading, imgHomeWhatsappHotline} from '../../theme';
-import { color, GlobalStyles, Spacing } from '@/assets/theme';
+import { Colors, GlobalStyles, Spacing } from '@/assets/theme';
 // import {useTranslation} from 'react-i18next';
 // import {t} from 'i18next';
 // import {ToolBar} from '../../components/toolbar';
 // import {userService} from '@services/user-service';
 // import {TouchableOpacity} from 'react-native-gesture-handler';
 import { useHttpClient } from '@/context/HttpClientContext';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthStore } from '@/store/authStore';
 import { imgHomeWhatsappHotline } from '@/assets/images/images';
+import { useRouter } from 'expo-router';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -41,17 +43,19 @@ interface ISection {
 }
 export default function SrhrScreen() {
   // const {i18n} = useTranslation();
+  const { t } = useTranslation();
   const [sections, setSections] = useState<ISection[]>([]);
   const [isEmptySections, setIsEmptySections] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [filteredSections, setFilteredSections] = useState<ISection[]>([]);
   const {sendRequestFetch} = useHttpClient();
-  const { session } = useAuth();
+  const { session, userProfile } = useAuthStore();
+  const router = useRouter();
 
   useEffect(() => {
     async function getSectionsOfConcept() {
       const result = await sendRequestFetch<ISection[]>({
-        url: `/concepts/${1}/${'en'}/sections/`,
+        url: `/concepts/${1}/${userProfile?.language_code}/sections/`,
         method: 'GET',
         headers: {
           'Accept-Language': 'en',
@@ -59,6 +63,10 @@ export default function SrhrScreen() {
         },
       });
 
+      if(result.isTokenExpired){
+        return router.replace('/auth/login');
+      }
+  
       if(result.data){
         setSections(result.data);
         setFilteredSections(result.data);
@@ -110,14 +118,17 @@ export default function SrhrScreen() {
         <View>
           <View style={localStyles.searchContainer}>
           <TextInput
-              // textAlign={'left'} //i18n.language === 'ar' ? 'right' : 'left'
-              style={[GlobalStyles.InputBoxStyle, {width: '80%'}]}
-              // editable={true}
-              value={searchInput}
-              onChangeText={setSearchInput}
-              placeholder={'Filter'} //t('shrh_screen_search_hint')
-              keyboardType="default"
-            />
+            // textAlign={'left'} //i18n.language === 'ar' ? 'right' : 'left'
+            style={[GlobalStyles.InputBoxStyle, {width: '80%'}]}
+            // editable={true}
+            value={searchInput}
+            onChangeText={setSearchInput}
+            placeholder={t('shrh_screen_search_hint')}
+            placeholderTextColor={Colors.disabledtext}
+            keyboardType="default"
+          />
+            
+            {/*
             <Pressable
               style={localStyles.askAmtiContainer}
               onPress={() => Linking.openURL(`https://wa.me/13613147388`)}>
@@ -130,12 +141,13 @@ export default function SrhrScreen() {
                   style={localStyles.askAmtiImage}
                   source={imgHomeWhatsappHotline}
                 />
-                  {/* `${i18n.t('shrh_screen_ask_amti_title')}` */}
+                  
                 <Text style={localStyles.askAmti}>
                   {'Ask Amti!'} 
                 </Text>
               </View>
             </Pressable>
+            */}
           </View>
           <ScrollView>
             <View style={localStyles.sectionContainer}>
@@ -159,7 +171,7 @@ export default function SrhrScreen() {
           }}>
           <Text
             style={{
-              color: color.disabledtext,
+              color: Colors.disabledtext,
               textAlign: 'center',
             }}>
             No content
@@ -172,14 +184,15 @@ export default function SrhrScreen() {
 
 function Section({section}:{section: ISection}) {
   const [open, setopen] = useState(false);
+  const router = useRouter();
+  
   const onPress = (value: number, title: string) => {
     if (value === 0) {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setopen(!open);
     } else {
-      // props.navigation.navigate('srhrItemDetailsScreen', {
-      //   id: value,
-      // });
+      // Navigate to article details screen
+      router.push(`./article-details?id=${value}&title=${encodeURIComponent(title)}`);
     }
   };
   return (
@@ -194,12 +207,12 @@ function Section({section}:{section: ISection}) {
           style={{
             flexDirection: 'column',
             justifyContent: 'center',
-            backgroundColor: color.background,
+            backgroundColor: Colors.background,
             borderRadius: 13,
             width: 26,
             height: 26,
           }}>
-          <Text style={{textAlign: 'center', color: color.black}}>
+          <Text style={{textAlign: 'center', color: Colors.black}}>
             {section.articles.length}
           </Text>
         </View>
@@ -235,12 +248,12 @@ const localStyles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     marginVertical: 0,
-    backgroundColor: color.whatsappgreen,
+    backgroundColor: Colors.whatsappgreen,
     borderRadius: 8,
     justifyContent: 'center',
   },
   askAmti: {
-    color: color.green,
+    color: Colors.green,
     fontSize: 16,
     marginHorizontal: 8,
   },
@@ -262,29 +275,31 @@ const localStyles = StyleSheet.create({
     marginBottom: 5,
   },
   sectionHeaderText: {
+    ...GlobalStyles.NormalText,
     fontSize: 16,
-    color: color.white,
+    color: Colors.white,
   },
   sectionHeaderContainer: {
-    backgroundColor: color.primary,
+    backgroundColor: Colors.primary,
     margin: 0,
-    paddingVertical: 4,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+    paddingVertical: Spacing.medium,
+    paddingHorizontal: Spacing.standard,
+    borderRadius: Spacing.medium,
     flexDirection: 'row',
     alignItems: 'center',
-    height: 60,
+    // height: 60,
   },
   item: {
+    ...GlobalStyles.NormalText,
     fontSize: 16,
   },
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: color.disabled,
-    paddingLeft: 8,
+    borderBottomColor: Colors.disabled,
+    paddingLeft: Spacing.medium,
     paddingRight: 32,
-    paddingVertical: 8,
+    paddingVertical: Spacing.standard,
   },
 });

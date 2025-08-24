@@ -4,6 +4,7 @@ import { StyleSheet } from "react-native";
 export const Spacing = {
   small: 4,
   medium: 8,
+  standard: 12,
   large: 16,
   xlarge: 24,
   xxlarge: 32,
@@ -16,7 +17,7 @@ export const Spacing = {
 //   extra: 16,
 // };
 
-export const color = {
+export const Colors = {
   primary: '#68207E',
   background: '#F2F2F2',
   white: '#FFFFFF',
@@ -33,14 +34,56 @@ export const color = {
   purple: '#800080',
 };
 
+const NormalText = {
+  fontFamily: 'SpaceMono-Regular',
+  fontSize: 18,
+  color: Colors.black,
+}
+
+const SubHeadingText = {
+  ...NormalText,
+  fontFamily: 'Roboto-ExtraBold',
+  fontSize: 24,
+  color: Colors.primary,
+}
+
+const HeadingText = {
+  ...NormalText,
+  // fontFamily: 'Roboto-Black',
+  fontFamily: 'Roboto-Medium',
+  fontSize: 32,
+  color: Colors.primary,
+}
+
+const TitleText = {
+  ...NormalText,
+  fontFamily: 'Roboto-Medium',
+  fontSize: 45,
+  color: Colors.primary,
+}
+
 const InputBoxStyle = {
-  height: 48,
-  paddingHorizontal: 10,
-  paddingVertical: 11,
-  borderRadius: 10,
-  borderColor: '#eee',
+  ...NormalText,
+  paddingHorizontal: Spacing.standard,
+  paddingVertical: Spacing.standard,
+  borderRadius: Spacing.medium,
+  borderColor: '#ddd',
   borderWidth: 1,
+  backgroundColor: '#f9f9f9',
+}
+
+const InputBoxWithIconStyle = {
+  ...InputBoxStyle,
+  flexDirection: 'row' as 'row',
   alignItems: 'center' as 'center', // Explicitly specify the type (not as a string)
+  justifyContent: 'space-between' as 'space-between'
+}
+
+const DropDownContainerStyle = {
+  ...InputBoxStyle,
+    width: '100%' as '100%',
+    flexDirection: 'row' as 'row',
+    justifyContent: 'space-between' as 'space-between',
 }
 
 const ButtonBasic = {
@@ -52,8 +95,8 @@ const ButtonBasic = {
 const Button = {
   ...ButtonBasic,
   borderRadius: 24,
-  backgroundColor: color.primary,
-  shadowColor: color.black,
+  backgroundColor: Colors.primary,
+  shadowColor: Colors.black,
   shadowOpacity: 0.2,
   elevation: 6,
   shadowOffset: {
@@ -64,12 +107,12 @@ const Button = {
 
 const ButtonALT = {
   ...Button,
-  backgroundColor: color.white,
+  backgroundColor: Colors.white,
 };
 
 const ButtonDisabled = {
   ...Button,
-  backgroundColor: color.disabled,
+  backgroundColor: Colors.disabled,
   fontFamily: 'Roboto-Bold',
 };
 
@@ -84,60 +127,33 @@ const ButtonTextBasic = {
 
 const ButtonText = {
   ...ButtonTextBasic,
-  color: color.white,
+  color: Colors.white,
 };
 
 const ButtonTextALT = {
   ...ButtonText,
-  color: color.primary,
+  color: Colors.primary,
 };
 
 const ButtonTextDisabled = {
   ...ButtonText,
-  color: color.disabledtext,
+  color: Colors.disabledtext,
   fontFamily: 'Roboto-Bold',
 };
 
 const IconTitleText = {
   fontFamily: 'Roboto-Medium',
   fontSize: 14,
-  color: color.black,
-}
-
-const NormalText = {
-  fontFamily: 'Roboto-Medium',
-  fontSize: 18,
-  color: color.black,
-}
-
-const SubHeadingText = {
-  ...NormalText,
-  fontFamily: 'Roboto-ExtraBold',
-  fontSize: 24,
-  color: color.primary,
-}
-
-const HeadingText = {
-  ...NormalText,
-  fontFamily: 'Roboto-Black',
-  fontSize: 32,
-  color: color.primary,
-}
-
-const TitleText = {
-  ...NormalText,
-  fontFamily: 'Roboto-Medium',
-  fontSize: 45,
-  color: color.primary,
+  color: Colors.black,
 }
 
 const WhiteContainerNoHorizontalPadding = {
-  backgroundColor: color.white,
+  backgroundColor: Colors.white,
   flex: 1,
 };
 
 const WhiteContainer = {
-  backgroundColor: color.white,
+  backgroundColor: Colors.white,
   flex: 1,
   paddingHorizontal: 16,
 };
@@ -158,7 +174,9 @@ export const GlobalStyles = StyleSheet.create({
   WhiteContainer,
   ButtonTextBasic,
   IconTitleText,
-  TitleText
+  TitleText,
+  DropDownContainerStyle,
+  InputBoxWithIconStyle
   // Spacing,
 });
 

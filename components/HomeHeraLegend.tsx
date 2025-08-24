@@ -11,7 +11,7 @@ export default function HomeHeraLegend(){
     <View style={styles.legendContainer}>
       <View style={styles.headerContainer}>
         <Image source={heraIcon} style={{width: 38, height: 35, marginRight: 10}} />
-        <Text style={styles.titleText}>{t('visit_hera_web_screen_toolbar_title')}</Text>
+        <Text style={styles.titleText}>{t('hera_official_name')}</Text>
       </View>
       <Text style={styles.headerText}>{t('home_screen_legend')}</Text>
     </View>

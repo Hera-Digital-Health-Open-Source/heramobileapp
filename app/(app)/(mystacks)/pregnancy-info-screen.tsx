@@ -1,16 +1,18 @@
 import { useHttpClient } from "@/context/HttpClientContext";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
-import IPregnancy from "@/models/IPregnancy";
+import { useAuthStore } from "@/store/authStore";
+import IPregnancy from "@/interfaces/IPregnancy";
 import PregnancyView from "@/components/pregnancy/PregnancyView";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useRouter } from "expo-router";
 
 export default function PregnancyInfoScreen() {
   const {sendRequestFetch} = useHttpClient();
-  const { session } = useAuth();
+  const { session } = useAuthStore();
   const [pregnancy, setPregnancy] = useState<IPregnancy | undefined>(undefined);
   const {t} = useTranslation();
-  
+  const router = useRouter();
+
   useEffect(() => {
     sendRequestFetch<IPregnancy[]>({
       url: '/pregnancies/',
@@ -20,6 +22,9 @@ export default function PregnancyInfoScreen() {
         Authorization: 'Token ' + session,
       },
     }).then(response => {
+      if(response.isTokenExpired){
+        return router.replace('/auth/login');
+      }
       if(response.data){
         setPregnancy(response.data[0]);
       }

@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, Pressable, Modal, StyleProp, ViewStyle, ScrollView, TouchableWithoutFeedback } from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useState } from "react";
-import Appointment from "@/models/IAppointment";
+import Appointment from "@/interfaces/IAppointment";
 import MarkAsDoneButton from "./MarkAsDoneButton";
 import Checkbox from "../CheckBox";
 import Button, { ButtonStyles } from "../Button";
@@ -16,7 +16,7 @@ type Props = {
   initTakenVaccines: string[];
 }
 
-export default function MarkAsDoneModal({appointment, onSave, style, initTakenVaccines}: Props){
+export default function ConfirmTakenPastVaccinesModal({appointment, onSave, style, initTakenVaccines}: Props){
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const [takenVaccines, setTakenVaccines] = useState<string[]>(initTakenVaccines);
   const {t} = useTranslation();
@@ -36,7 +36,11 @@ export default function MarkAsDoneModal({appointment, onSave, style, initTakenVa
 
   return (
     <View style={style}>
-      <MarkAsDoneButton style={{paddingHorizontal: 4}} label={t('my_appointments_screen_mark_as_done_btn')} onPress={() => setIsPickerVisible(!isPickerVisible)} />
+      <MarkAsDoneButton 
+        style={{paddingHorizontal: Spacing.small}}
+        label={t('my_appointments_screen_mark_as_done_btn')}
+        onPress={() => setIsPickerVisible(!isPickerVisible)}
+      />
 
       <Modal animationType="fade" transparent={true} visible={isPickerVisible}>
         <TouchableWithoutFeedback onPress={() => setIsPickerVisible(false)}>
@@ -67,7 +71,7 @@ export default function MarkAsDoneModal({appointment, onSave, style, initTakenVa
                       ))}
                     </ScrollView>
                     <Button buttonType={ButtonStyles.FILLED} label={t('child_info_screen_save_button')} onPress={handleOnSave}/>
-                    <Button buttonType={ButtonStyles.UNFILLED} label={t('child_info_screen_remove_button')} onPress={() => setIsPickerVisible(!isPickerVisible)} />
+                    <Button buttonType={ButtonStyles.UNFILLED} label={t('mark_as_done_modal_cancel_btn')} onPress={() => setIsPickerVisible(!isPickerVisible)} />
                   </View>
                 )}
               </View>
