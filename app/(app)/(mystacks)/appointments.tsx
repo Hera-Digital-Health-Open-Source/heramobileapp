@@ -8,24 +8,16 @@ import { useHttpClient } from '@/context/HttpClientContext';
 import { useAuthStore } from '@/store/authStore';
 import { ScrollView } from 'react-native-gesture-handler';
 import {PregnancyAppointmentView, VaccineAppointmentView, NoAppointmentView} from '@/components/appointments-screen/AppointmentView';
-import Appointment from '@/models/IAppointment';
+import Appointment from '@/interfaces/IAppointment';
 import ConfirmTakenPastVaccinesModal from '@/components/appointments-screen/ConfirmTakenPastVaccinesModal';
 import ConfirmTakenPregnancyModel from '@/components/appointments-screen/ConfirmTakenPregnancyModal';
-import Vaccine from '@/models/Vaccine';
-import Child from '@/models/Child';
+import Vaccine from '@/interfaces/IVaccine';
+import Child from '@/interfaces/IChild';
 import { useRouter } from 'expo-router';
 import { useTranslation } from '@/hooks/useTranslation';
-import { usePregnancyStore } from '@/store/pregnancyStore';
 import DynamicNavigationHeader from '@/components/DynamicNavigationHeader';
-
-
-interface DateObject {
-  dateString: string;
-  day: number;
-  month: number;
-  year: number;
-  timestamp: number;
-}
+import ISurvey from '@/interfaces/ISurvey';
+import IDateObject from '@/interfaces/IDateObject';
 
 function getVaccineId(vaccines: Vaccine[], vaccineName: string) {
   if (vaccines) {
@@ -51,9 +43,30 @@ export default function Appointments() {
   const [refreshing, setRefreshing] = useState(false);
   const [children, setChildren] = useState<Child[]>([]);
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
+  const [pregnancySruveys, setPregnancySurvyes] = useState<ISurvey[]>();
   const router = useRouter();
   const {t} = useTranslation();
-  const { addPregnancyCheck, pregnancyChecks} = usePregnancyStore();
+
+  const getPregnancySurveys = async () => {
+    setRefreshing(true);
+    let result = await sendRequestFetch<ISurvey[]>({
+      url: '/surveys/',
+      method: 'GET',
+      headers: {
+        'Accept-Language': 'en',
+        Authorization: 'Token ' + session,
+      },
+    });
+
+    if(result.isTokenExpired){
+      return router.replace('/auth/login');
+    }
+
+    const data = result.data!;
+    setPregnancySurvyes(data.filter(i => i.context.event_type == 'prenatal_checkup'));
+
+    setRefreshing(false);
+  };
 
   const getVaccines = async () => {
     setRefreshing(true);
@@ -154,9 +167,28 @@ export default function Appointments() {
     }
   };
 
-  const saveTakenPregnancyOffline = async (date: string) => {
-    console.log(date)
-    addPregnancyCheck(date);
+  const updatePregnancySurvey = async (survey_id: number) => {
+    const response = await sendRequestFetch<{}>({
+      url: `/surveys/${survey_id}/response/`,
+      method: 'POST',
+      data: {
+        response: 'pregnancyyes',
+      },
+      headers: {
+        'Accept-Language': 'en',
+        'Content-Type': 'application/json',
+        Authorization: 'Token ' + session,
+      },
+    });
+
+    if(response.isTokenExpired){
+      return router.replace('/auth/login');
+    }
+
+    if(response.error){
+      console.log('Error when updating pregnancy survey: ', response.error);
+      return;
+    }
   };
 
   useEffect(() => {
@@ -164,6 +196,7 @@ export default function Appointments() {
     .then(() => {
       getVaccines().then(() => {
         getChildren();
+        getPregnancySurveys();
       });
     })
     .catch((e) => {
@@ -205,8 +238,11 @@ export default function Appointments() {
         <View style={{alignItems: 'center', flex: 3}}>
           <ConfirmTakenPregnancyModel
             appointment={item}
-            onConfirm={async () => {saveTakenPregnancyOffline(item.date)}}
-            isTaken={!!pregnancyChecks?.find(pc => pc === item.date)}
+            onConfirm={async () => {updatePregnancySurvey(pregnancySruveys!.find(ps => ps.context.date === item.date)?.id!)}}
+            isTaken={
+              !!pregnancySruveys!.find(ps => ps.response == 'pregnancyyes' && ps.context.date === item.date)
+            }
+            isAvailable={!!pregnancySruveys!.find(ps => ps.context.date === item.date)}
           />
         </View>
       </View>
@@ -307,7 +343,7 @@ export default function Appointments() {
           >
              <Calendar
               markedDates={markedDates}
-              onDayPress={(day: DateObject) => {
+              onDayPress={(day: IDateObject) => {
                 setSelectedAppointments(appointments.filter(a => a.date === day.dateString));
                 setSelectedDay(day.dateString);
               }}
