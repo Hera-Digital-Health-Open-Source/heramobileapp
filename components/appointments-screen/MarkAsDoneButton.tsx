@@ -1,17 +1,18 @@
 import { Colors, Spacing } from "@/assets/theme";
-import { Pressable, Text, StyleProp, ViewStyle, StyleSheet } from "react-native";
+import { Pressable, Text, StyleProp, ViewStyle, StyleSheet, TextStyle } from "react-native";
 import { GlobalStyles } from "@/assets/theme";
 
 type Props = {
   label: string;
-  style?: StyleProp<ViewStyle>; 
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
   onPress?: () => void;
 }
 
-export default function MarkAsDoneButton({style, onPress, label}: Props){
+export default function MarkAsDoneButton({style, textStyle, onPress, label}: Props){
   return (
     <Pressable onPress={onPress} style={[styles.button, style]}>
-      <Text style={styles.text}>{label}</Text>
+      <Text style={[styles.text, textStyle]}>{label}</Text>
     </Pressable>
   );
 }
