@@ -120,7 +120,8 @@ export default function NearHealthCentersScreen() {
         return router.replace('/auth/login');
       }
 
-      setMarkers(result.data!);
+      const data = result.data!
+      setMarkers(data ? data : []);
     } catch (err) {
       console.error(err);
     } finally {
