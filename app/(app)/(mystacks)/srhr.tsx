@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import { useTranslation } from "@/hooks/useTranslation";
 import {
   View,
   Text,
@@ -42,6 +43,7 @@ interface ISection {
 }
 export default function SrhrScreen() {
   // const {i18n} = useTranslation();
+  const { t } = useTranslation();
   const [sections, setSections] = useState<ISection[]>([]);
   const [isEmptySections, setIsEmptySections] = useState(false);
   const [searchInput, setSearchInput] = useState('');
@@ -116,14 +118,17 @@ export default function SrhrScreen() {
         <View>
           <View style={localStyles.searchContainer}>
           <TextInput
-              // textAlign={'left'} //i18n.language === 'ar' ? 'right' : 'left'
-              style={[GlobalStyles.InputBoxStyle, {width: '80%'}]}
-              // editable={true}
-              value={searchInput}
-              onChangeText={setSearchInput}
-              placeholder={'Filter'} //t('shrh_screen_search_hint')
-              keyboardType="default"
-            />
+            // textAlign={'left'} //i18n.language === 'ar' ? 'right' : 'left'
+            style={[GlobalStyles.InputBoxStyle, {width: '80%'}]}
+            // editable={true}
+            value={searchInput}
+            onChangeText={setSearchInput}
+            placeholder={t('shrh_screen_search_hint')}
+            placeholderTextColor={Colors.disabledtext}
+            keyboardType="default"
+          />
+            
+            {/*
             <Pressable
               style={localStyles.askAmtiContainer}
               onPress={() => Linking.openURL(`https://wa.me/13613147388`)}>
@@ -136,12 +141,13 @@ export default function SrhrScreen() {
                   style={localStyles.askAmtiImage}
                   source={imgHomeWhatsappHotline}
                 />
-                  {/* `${i18n.t('shrh_screen_ask_amti_title')}` */}
+                  
                 <Text style={localStyles.askAmti}>
                   {'Ask Amti!'} 
                 </Text>
               </View>
             </Pressable>
+            */}
           </View>
           <ScrollView>
             <View style={localStyles.sectionContainer}>
@@ -269,20 +275,22 @@ const localStyles = StyleSheet.create({
     marginBottom: 5,
   },
   sectionHeaderText: {
+    ...GlobalStyles.NormalText,
     fontSize: 16,
     color: Colors.white,
   },
   sectionHeaderContainer: {
     backgroundColor: Colors.primary,
     margin: 0,
-    paddingVertical: 4,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+    paddingVertical: Spacing.medium,
+    paddingHorizontal: Spacing.standard,
+    borderRadius: Spacing.medium,
     flexDirection: 'row',
     alignItems: 'center',
-    height: 60,
+    // height: 60,
   },
   item: {
+    ...GlobalStyles.NormalText,
     fontSize: 16,
   },
   itemContainer: {
@@ -290,8 +298,8 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: Colors.disabled,
-    paddingLeft: 8,
+    paddingLeft: Spacing.medium,
     paddingRight: 32,
-    paddingVertical: 8,
+    paddingVertical: Spacing.standard,
   },
 });
