@@ -1,4 +1,6 @@
 export default {
+  connection_error_title: "خطأ في الاتصال",
+  connection_error_message: "تأكد من فضلك أنّك متصل بالانترنت، وأنك لست خلف جدار ناري",
   general_loading_title: "تحميل",
   general_permissions_title: "السماحيات",
   general_permissions_not_granted_message: "لم تُمنح السماحيات المطلوبة",
@@ -81,7 +83,7 @@ export default {
   child_info_screen_save_button: "حفظ",
   child_info_screen_remove_button: "إزالة",
   child_info_screen_description: "Alright! Let’s fill in the details and we will assist you by adding important doctor visit dates into “My Appointments”!",
-  home_screen_whatsapp_hotline_title: "الخط الساخن للاستشارات المجانية",
+  home_screen_whatsapp_hotline_title: "بوت الذكاء الصنعي الصحي",
   home_screen_sos_title: "تعلم الإسعافات الأولية",
   home_screen_feedback_title: "تعليقات",
   home_screen_my_appointments_title: "مواعيدي",

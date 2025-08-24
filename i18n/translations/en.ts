@@ -1,4 +1,6 @@
 export default {
+  connection_error_title: "Connection Error",
+  connection_error_message: "Please make sure you are connected to the internet and not behind a firewall",
   general_loading_title: "Loading",
   general_permissions_title: "Permissions",
   general_permissions_not_granted_message: "Permissions not granted!",
@@ -81,7 +83,7 @@ export default {
   child_info_screen_save_button: "Save",
   child_info_screen_remove_button: "Remove",
   child_info_screen_description: "Alright! Let’s fill in the details and we will assist you by adding important doctor visit dates into “My Appointments”!",
-  home_screen_whatsapp_hotline_title: "Free Advice Online",
+  home_screen_whatsapp_hotline_title: "AI Health Chatbot",
   home_screen_sos_title: "Learn First Aid",
   home_screen_feedback_title: "Feedback",
   home_screen_my_appointments_title: "My Appointments",

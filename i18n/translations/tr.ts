@@ -1,4 +1,6 @@
 export default {
+  connection_error_title: "Bağlantı Hatası",
+  connection_error_message: "Lütfen internete bağlı olduğunuzdan ve bir güvenlik duvarının arkasında olmadığınızdan emin olun",
   general_loading_title: "Yükleniyor",
   general_permissions_title: "İzinler",
   general_permissions_not_granted_message: "İzinler verilmedi!",
@@ -81,7 +83,7 @@ export default {
   child_info_screen_save_button: "Kaydet",
   child_info_screen_remove_button: "Kaldır",
   child_info_screen_description: "Harika! Detayları doldurun, önemli doktor ziyaret tarihlerini 'Randevularım'a ekleyeceğiz!",
-  home_screen_whatsapp_hotline_title: "Ücretsiz Danışma Hattı",
+  home_screen_whatsapp_hotline_title: "AI Sağlık Botu",
   home_screen_sos_title: "İlk Yardım Öğren",
   home_screen_feedback_title: "Geri Bildirim",
   home_screen_my_appointments_title: "Randevularım",
