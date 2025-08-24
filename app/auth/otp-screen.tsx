@@ -80,7 +80,7 @@ const OTPScreen = () => {
         }
 
         if(response.error){
-          console.log('login.tsx: Error in fetching user profile: ', response.error);
+          console.log('Error in otp-screen.tsx: ', response.error);
           return;
         }
         if(response.data){
