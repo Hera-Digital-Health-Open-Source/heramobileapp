@@ -1,7 +1,7 @@
 import { useHttpClient } from "@/context/HttpClientContext";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authStore";
-import IPregnancy from "@/models/IPregnancy";
+import IPregnancy from "@/interfaces/IPregnancy";
 import PregnancyView from "@/components/pregnancy/PregnancyView";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useRouter } from "expo-router";

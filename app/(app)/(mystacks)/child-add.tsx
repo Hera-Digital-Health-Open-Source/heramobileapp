@@ -1,5 +1,5 @@
 import ChildView from "@/components/children/ChildView";
-import Child from "@/models/Child";
+import Child from "@/interfaces/IChild";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useHttpClient } from "@/context/HttpClientContext";

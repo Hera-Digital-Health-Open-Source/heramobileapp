@@ -5,7 +5,7 @@ import { useRouter, useFocusEffect } from "expo-router";
 import Button, { ButtonStyles } from "@/components/Button";
 import { useCallback, useEffect, useState } from "react";
 import { useHttpClient } from "@/context/HttpClientContext";
-import Child from "@/models/Child";
+import Child from "@/interfaces/IChild";
 import { useAuthStore } from '@/store/authStore';
 import { ScrollView } from "react-native-gesture-handler";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -40,8 +40,8 @@ export default function ChildrenView({showIamDone}: { showIamDone: boolean}) {
       return router.replace('/auth/login');
     }
 
-    const s = result.data!;
-    setChildren(s);
+    const data = result.data!;
+    setChildren(data ? data : []);
 
     // setRefreshing(false);
   };

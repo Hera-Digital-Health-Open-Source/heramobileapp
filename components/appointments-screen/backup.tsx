@@ -2,7 +2,7 @@ import { StyleSheet, View, Text, Pressable, Modal, StyleProp, ViewStyle, ScrollV
 import {AntDesign} from "@expo/vector-icons";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useEffect, useState } from "react";
-import Appointment from "@/models/IAppointment";
+import Appointment from "@/interfaces/IAppointment";
 import MarkAsDoneButton from "./MarkAsDoneButton";
 import Checkbox from "../CheckBox";
 import Button, { ButtonStyles } from "../Button";

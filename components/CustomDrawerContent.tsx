@@ -117,7 +117,7 @@ export default function CustomDrawerContent(props: any) {
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="chatbox-ellipses-outline" size={size} color={color} />
           )}
-          label={t('feedback_screen_toolbar_title')} onPress={() => router.push({
+          label={t('faq_screen_toolbar_title')} onPress={() => router.push({
             pathname: '/web-view-screen',
             params: { uri: `https://heradigitalhealth.org/${locale}/frequently-asked-questions/` },
           })}

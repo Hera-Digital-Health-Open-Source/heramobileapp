@@ -7,7 +7,7 @@ import DropDownPicker from "@/components/DropDownPicker";
 import { useRouter } from "expo-router";
 import { RequestConfig, useHttpClient } from "@/context/HttpClientContext";
 import { useAuthStore } from '@/store/authStore';
-import IPregnancy from "@/models/IPregnancy";
+import IPregnancy from "@/interfaces/IPregnancy";
 import { useTranslation } from "@/hooks/useTranslation";
 
 export default function PregnancyView({introduceText, pregnancy, isInRegistrationProcess} : {introduceText: string, pregnancy? : IPregnancy, isInRegistrationProcess: boolean}){

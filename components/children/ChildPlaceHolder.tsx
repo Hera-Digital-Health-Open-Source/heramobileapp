@@ -1,5 +1,5 @@
 import { Colors, Spacing } from "@/assets/theme";
-import Child from "@/models/Child";
+import Child from "@/interfaces/IChild";
 import { AntDesign } from "@expo/vector-icons";
 import { View, StyleSheet, Text, StyleProp, ViewStyle, Pressable } from "react-native";
 

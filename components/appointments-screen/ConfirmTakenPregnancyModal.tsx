@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, Pressable, Modal, StyleProp, ViewStyle, ScrollView, TouchableWithoutFeedback } from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useState } from "react";
-import Appointment from "@/models/IAppointment";
+import Appointment from "@/interfaces/IAppointment";
 import MarkAsDoneButton from "./MarkAsDoneButton";
 import Button, { ButtonStyles } from "../Button";
 import { Colors, GlobalStyles, Spacing } from "@/assets/theme";
