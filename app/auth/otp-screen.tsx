@@ -1,25 +1,57 @@
 import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import {OtpInput} from 'react-native-otp-entry';
-import { useAuthStore, UserProfile } from '@/store/authStore';
+import { useAuthStore } from '@/store/authStore';
 import Button, { ButtonStyles } from '@/components/Button';
 import { useRouter } from 'expo-router';
 import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
 import { useTranslation } from '@/hooks/useTranslation';
 import Auth0 from 'react-native-auth0';
 import { useHttpClient } from '@/context/HttpClientContext';
+import { useProfileStore } from '@/store/profileStore';
+import { UserProfile } from '@/interfaces/IUserProfile';
 
 type OtpHandle = React.ElementRef<typeof OtpInput>;
 
 const OTPScreen = () => {
   const [otp, setOtp] = useState('');
-  const { fullMobileNumber, setSession, setUserProfile, setUserId } = useAuthStore();
+  const { fullMobileNumber, setSession, setUserId, userId, session } = useAuthStore();
   // const [showCaptcha, setShowCaptcha] = useState(false);
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { sendRequestFetch } = useHttpClient();
   const [enableSendOTP, setEnableSendOTP] = useState(true);
   const otpRef = useRef<OtpHandle>(null);
   const router = useRouter();
+  const { setUserProfile } = useProfileStore();
+
+  const patchUserProfile = async (
+    userProfile: UserProfile, 
+    theSession: string,
+    theUserId: number
+  ) => {
+    const response = await sendRequestFetch<{}>({
+      url: `/user_profiles/${theUserId}/`,
+      method: "PATCH",
+      data: userProfile,
+      headers: {
+        "Accept-Language": "en",
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Token " + theSession,
+      },
+    });
+
+    if(response.isTokenExpired){
+      return router.replace('/auth/login');
+    }
+
+    if (response.error) {
+      Alert.alert(
+        t('connection_error_title'),
+        t('connection_error_message')
+      );
+    }
+  };
 
   const handleResendOTP = async (/*captchaToken: string*/) => {
     if(fullMobileNumber){
@@ -33,13 +65,6 @@ const OTPScreen = () => {
       await auth0.auth.passwordlessWithSMS({
         phoneNumber: fullMobileNumber, 
       });
-      // const response = await requestOtp(fullMobileNumber, captchaToken);
-      // if(response){
-      //   console.log('login.tsx: Requested OTP successfully');
-      //   setOtp('');
-      // } else {
-      //   console.error('login.tsx: Could not requested OTP! something went wrong!');
-      // }
     }
   }
 
@@ -87,12 +112,17 @@ const OTPScreen = () => {
           setSession(response.data.token);
           setUserId(response.data.user_id);
           if(response.data.user_profile){
+            if(response.data.user_profile.language_code !== locale){
+              response.data.user_profile.language_code = locale as 'tr' | 'en' | 'ar';
+              await patchUserProfile(
+                response.data.user_profile,
+                response.data.token,
+                response.data.user_id
+              );
+            }
             setUserProfile(response.data.user_profile);
-
-            // setIsProfileCreated(true);
             router.replace('/');
           } else if(response.data.is_new_user) {
-            // setIsProfileCreated(false);
             router.replace('/registration/user-details');
           } else {
             return;

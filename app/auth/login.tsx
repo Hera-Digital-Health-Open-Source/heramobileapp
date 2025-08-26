@@ -1,6 +1,6 @@
 import { imgHeraIcon, imgLoginMain } from "@/assets/images/images";
 import { Image } from "expo-image";
-import { View , Text, StyleSheet, TextInput, Pressable, KeyboardAvoidingView, Alert} from "react-native";
+import { View , Text, StyleSheet, TextInput, Pressable, KeyboardAvoidingView, Alert, Keyboard, TouchableWithoutFeedback, ScrollView} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import DropDownPicker from "@/components/DropDownPicker"; 
@@ -13,15 +13,16 @@ import { Platform } from "react-native";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useI18n } from "@/context/I18nContext";
 import Auth0 from 'react-native-auth0';
-
 import { useAuthStore } from "@/store/authStore";
+import { useProfileStore } from "@/store/profileStore";
 
 export default function Login(){
   const [selectedCountryCallingCode, setSelectedCountryCallingCode] = useState<string | null>("+90");
   const [mobileNumber, setMobileNumber] = useState<string | undefined>(undefined);
   const [completeMobileNumber, updateFullMobileNumber] = useState<string | undefined>(undefined);
   const [isRegisterMode, setIsRegisterMode] = useState(true);
-  const { session, userProfile, setFullMobileNumber } = useAuthStore();
+  const { session, setFullMobileNumber } = useAuthStore();
+  const { userProfile } = useProfileStore();
   // const [showCaptcha, setShowCaptcha] = useState(false);
   const { t } = useTranslation();
   const { setAppLanguage, locale } = useI18n();
@@ -82,47 +83,61 @@ export default function Login(){
             onPress={()=>setIsRegisterMode((prev) => !prev)}
           />
         </View>
-        <View style={styles.loginContainer}>
-          <Image source={imgHeraIcon} style={{width: 250, height:150}}/>
-          <Text style={GlobalStyles.HeadingText}>{t('hera_official_name')}</Text>
-          {/* <Text style={{...GlobalStyles.NormalText, marginTop: Spacing.large}}>{t('login_screen_title')}</Text> */}
-          <View style={styles.loginInputsContainer}>
-            <View>
-            <Text style={{marginTop: Spacing.large, marginBottom: Spacing.medium, ...GlobalStyles.NormalText}}>{t('login_screen_select_language_dropdown_hint')}</Text>
-            <DropDownPicker 
-              items={languages}
-              style={{marginTop: 8}}
-              // label={languages.filter(l => l.key===selectedLanguage)[0].label} 
-              initialKeySelection={locale}
-              onItemSelectionChanged={(key) => setCurrentLanguage(key)}
-            />
-            </View>
-            <View>
-            <Text style={{marginTop: Spacing.large, marginBottom: Spacing.medium, ...GlobalStyles.NormalText}}>{t('login_screen_phone_number_hint')}</Text>
-            <View style={{flexDirection: 'row', gap: 8 , alignContent: 'space-between', marginTop: 8}}>
-              <CountryModalPicker
-                style={{width:75}}
-                preferredCountries={['TR', 'US']}
-                defaultCallingCode="+90"
-                onCountrySelectionChanged={(v) => setSelectedCountryCallingCode(v)}
+        <ScrollView 
+          style={{flex: 1}} 
+          contentContainerStyle={{paddingBottom: 50}}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={true}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.loginContainer}>
+              <Image source={imgHeraIcon} style={{width: 250, height:150}}/>
+              <Text style={GlobalStyles.HeadingText}>{t('hera_official_name')}</Text>
+              {/* <Text style={{...GlobalStyles.NormalText, marginTop: Spacing.large}}>{t('login_screen_title')}</Text> */}
+              <View style={styles.loginInputsContainer}>
+              <View>
+              <Text style={{marginTop: Spacing.large, marginBottom: Spacing.medium, ...GlobalStyles.NormalText}}>{t('login_screen_select_language_dropdown_hint')}</Text>
+              <DropDownPicker 
+                items={languages}
+                style={{marginTop: 8}}
+                // label={languages.filter(l => l.key===selectedLanguage)[0].label} 
+                initialKeySelection={locale}
+                onItemSelectionChanged={(key) => setCurrentLanguage(key)}
               />
-              <TextInput
-                style={[GlobalStyles.InputBoxStyle, GlobalStyles.NormalText, {flex:1}]}
-                onChangeText={(t) => setMobileNumber(t)}
-                value={mobileNumber}
-                placeholder={t('login_screen_phone_number_hint')}
-                keyboardType="number-pad"
-              />
-            </View>
-            </View>
-            <View style={styles.loginButtonsContainer}>
-              <Button
-                label={isRegisterMode ? t('login_screen_signup_button') : t('login_screen_login_button')}
-                onPress={async () => handleRequestOtp()}
-              />
+              </View>
+              <View>
+              <Text style={{marginTop: Spacing.large, marginBottom: Spacing.medium, ...GlobalStyles.NormalText}}>{t('login_screen_phone_number_hint')}</Text>
+              <View style={{flexDirection: 'row', gap: 8 , alignContent: 'space-between', marginTop: 8}}>
+                <CountryModalPicker
+                  style={{width:75}}
+                  preferredCountries={['TR', 'US']}
+                  defaultCallingCode="+90"
+                  onCountrySelectionChanged={(v) => setSelectedCountryCallingCode(v)}
+                />
+                <TextInput
+                  style={[GlobalStyles.InputBoxStyle, GlobalStyles.NormalText, {flex:1}]}
+                  onChangeText={(t) => setMobileNumber(t)}
+                  value={mobileNumber}
+                  placeholder={t('login_screen_phone_number_hint')}
+                  keyboardType="number-pad"
+                  returnKeyType="done"
+                  onSubmitEditing={() => Keyboard.dismiss()}
+                />
+              </View>
+              </View>
+              <View style={styles.loginButtonsContainer}>
+                <Button
+                  label={isRegisterMode ? t('login_screen_signup_button') : t('login_screen_login_button')}
+                  onPress={async () => {
+                    Keyboard.dismiss();
+                    handleRequestOtp();
+                  }}
+                />
+              </View>
             </View>
           </View>
-        </View>
+          </TouchableWithoutFeedback>
+        </ScrollView>
       </KeyboardAvoidingView>
       {/* <CloudflareTurnstile
         show={showCaptcha}
@@ -138,11 +153,13 @@ export default function Login(){
 const styles = StyleSheet.create({
   loginButtonsContainer:{
     marginTop: 26,
+    marginBottom: 20,
   },
   loginContainer: {
     paddingHorizontal: 16,
     alignItems: 'center',
-    flex: 1,
+    paddingTop: 20,
+    paddingBottom: 40,
   },
   loginInputsContainer: {
     marginTop: 32,

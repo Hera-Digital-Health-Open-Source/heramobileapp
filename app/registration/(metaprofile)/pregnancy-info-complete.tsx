@@ -4,24 +4,25 @@ import { GlobalStyles, Spacing } from "@/assets/theme";
 import { imgPregnancyInfoComplete } from "@/assets/images/images";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function PregnancyInfoComplete() {
   const router = useRouter();
+  const { t } = useTranslation();
 
-  const info = `During your pregnancy, it is important to visit your doctor at least 4 times. Your appointment dates have been added in “My Appointments”!`;
+  const info = `${t('your_pregnancy_screen_description_3')} ${t('your_pregnancy_screen_description_4')}`;
   
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex:1, backgroundColor: 'white'}}>
       <View style={styles.container}>
         <View style={{flex:1, gap: Spacing.large}}>
-          <Text style={GlobalStyles.HeadingText}>Pregnancy</Text>
+          <Text style={GlobalStyles.HeadingText}>{t('your_pregnancy_screen_toolbar_title')}</Text>
           <Text style={GlobalStyles.NormalText}>{info}</Text>
           <Image source={imgPregnancyInfoComplete} style={{width: 278, height: 400, marginHorizontal: 'auto'}} />
         </View>
         <Button
           style={styles.continueButton}
-          label="Proceed to Next Step"
+          label={t('your_pregnancy_screen_proceed_button')}
           buttonType={ButtonStyles.FILLED}
           onPress={() => router.replace('/registration/child-info')}
         />

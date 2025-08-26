@@ -202,7 +202,7 @@ export default function Index() {
 const styles = StyleSheet.create({
   linesContainer: {
     flex:1,
-    top: -50,
+    top: -30,
     width: '100%',
     paddingHorizontal: 16,
     gap: 9,

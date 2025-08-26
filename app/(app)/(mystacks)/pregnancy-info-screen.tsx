@@ -34,6 +34,10 @@ export default function PregnancyInfoScreen() {
   }, []);
 
   return(
-    <PregnancyView introduceText={t('your_pregnancy_screen_description_5')} pregnancy={pregnancy} isInRegistrationProcess={false}/>
+    pregnancy && <PregnancyView 
+      introduceText={t('your_pregnancy_screen_description_5')}
+      pregnancy={pregnancy}
+      isInRegistrationProcess={false}
+    />
   );
 }

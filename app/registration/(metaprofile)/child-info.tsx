@@ -4,15 +4,16 @@ import { GlobalStyles, Spacing } from "@/assets/theme";
 import { imgFamily } from "@/assets/images/images";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function ChildInfo() {
+  const { t } = useTranslation();
   const router = useRouter();
 
-  const info = `Enter your child’s information and we will add their recommended vaccination dates on your calendar!`;
+  const info = t('children_info_screen_description');
 
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex:1, backgroundColor: 'white'}}>
       <View style={styles.container}>
         <View style={{flex:1, gap: Spacing.large}}>
           <Text style={GlobalStyles.HeadingText}>Child Info</Text>
@@ -24,13 +25,13 @@ export default function ChildInfo() {
             <Button
               style={{flex: 1}}
               buttonType={ButtonStyles.UNFILLED}
-              label="I'm done"
+              label={t('children_info_screen_done_button')}
               onPress={() => router.replace('/')}
             />
             <Button
               style={{flex: 1}}
               buttonType={ButtonStyles.FILLED}
-              label="Add a Child"
+              label={t('children_info_screen_add_a_child_button')}
               onPress={() => router.push('/registration/child-add')}
             />
           </View>

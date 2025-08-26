@@ -18,8 +18,10 @@ import { useTranslation } from "@/hooks/useTranslation";
 import DropDownPicker from "../DropDownPicker";
 import { useI18n } from "@/context/I18nContext";
 import { useHttpClient } from "@/context/HttpClientContext";
-import { useAuthStore, UserProfile } from "@/store/authStore";
+import { useAuthStore } from "@/store/authStore";
 import DateModalPicker from "../DateModalPicker";
+import { UserProfile } from "@/interfaces/IUserProfile";
+import { useProfileStore } from "@/store/profileStore";
 
 export default function ProfileView({ profile }: { profile?: UserProfile }) {
   const now = new Date();
@@ -31,9 +33,11 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
   const [selectedName, setSelectedName] = useState("");
   const [selectedDateOfBirth, setSelectedDateOfBirth] = useState(date18YearsAgo);
   const [selectedGender, setSelectedGender] = useState<"MALE" | "FEMALE" | undefined>(undefined);
+  const [isUpdating, setIsUpdating] = useState(false);
   const { setGender, setName, setDateOfBirth } = useRegistration();
   const { sendRequestFetch } = useHttpClient();
-  const { session, userId, setUserProfile } = useAuthStore();
+  const { session, userId } = useAuthStore();
+  const {setUserProfile} = useProfileStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -45,18 +49,13 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
   }, [profile]);
 
   const enableContinue =
-    selectedName.length > 0 && selectedGender !== undefined;
+    selectedName.length > 0 && selectedGender !== undefined && !isUpdating;
 
-  const updateUserProfile = async (useSpecificLanguage: string | null = null) => {
+  const patchUserProfile = async (userProfile: UserProfile): Promise<boolean> => {
     const response = await sendRequestFetch<{}>({
       url: `/user_profiles/${userId}/`,
       method: "PATCH",
-      data: {
-        name: selectedName,
-        gender: selectedGender,
-        date_of_birth: selectedDateOfBirth.toISOString().split("T")[0],
-        language_code: useSpecificLanguage ? useSpecificLanguage : locale,
-      },
+      data: userProfile,
       headers: {
         "Accept-Language": "en",
         "Content-Type": "application/json",
@@ -66,56 +65,74 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
     });
 
     if(response.isTokenExpired){
-      return router.replace('/auth/login');
+      router.replace('/auth/login');
+      return false;
     }
 
     if (response.error) {
       Alert.alert(
-        "Update Profile",
-        "Failed! Please check the internet connection and try again."
+        t('connection_error_title'),
+        t('connection_error_message')
       );
+      return false;
     }
+
+    // Update the profile store with the new data
+    setUserProfile(userProfile);
+    
+    return true;
   };
 
   const handleContinueSave = async () => {
+    if (isUpdating) return; // Prevent multiple submissions
+    
     if (!profile) {
       setGender(selectedGender);
       setName(selectedName);
       setDateOfBirth(selectedDateOfBirth);
       router.push("/registration/terms-of-use");
     } else {
-      await updateUserProfile();
-      setUserProfile(
-        {
+      setIsUpdating(true);
+      try {
+        await patchUserProfile({
           name: selectedName,
           gender: selectedGender!,
           date_of_birth: selectedDateOfBirth.toISOString().split("T")[0],
           language_code: locale as 'en' | 'tr' | 'ar',
           time_zone: profile.time_zone,
-        }
-      );
+        });
+      } finally {
+        setIsUpdating(false);
+      }
     }
   };
 
   const setCurrentLanguage = async (language: string) => {
-    await updateUserProfile(language as "ar" | "en" | "tr");
-    setUserProfile(
-      {
+    if (isUpdating || !profile) return; // Prevent updates if already updating or no profile
+    
+    setIsUpdating(true);
+    try {
+      const success = await patchUserProfile({
         name: selectedName,
         gender: selectedGender!,
         date_of_birth: selectedDateOfBirth.toISOString().split("T")[0],
         language_code: language as 'en' | 'tr' | 'ar',
-        time_zone: profile?.time_zone!, // profile?.time_zone is garanteed to have a valid value.
+        time_zone: profile.time_zone || 'UTC', // Provide fallback for time_zone
+      });
+
+      if (success) {
+        await setAppLanguage(language as "ar" | "en" | "tr");
+        
+        // For non-Arabic languages, show a brief confirmation since the app doesn't restart
+        if (language !== 'ar') {
+          // Wait a brief moment for the translation to take effect
+          setTimeout(() => {
+            Alert.alert(t("language_changed_successfully"));
+          }, 100);
+        }
       }
-    );
-    await setAppLanguage(language as "ar" | "en" | "tr");
-    
-    // For non-Arabic languages, show a brief confirmation since the app doesn't restart
-    if (language !== 'ar') {
-      // Wait a brief moment for the translation to take effect
-      setTimeout(() => {
-        Alert.alert(t("language_changed_successfully"));
-      }, 100);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -196,9 +213,11 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
             <Button
               buttonType={ButtonStyles.FILLED}
               label={
-                profile
-                  ? t("general_save_button")
-                  : t("complete_profile_screen_continue_button")
+                isUpdating 
+                  ? ""
+                  : profile
+                    ? t("general_save_button")
+                    : t("complete_profile_screen_continue_button")
               }
               onPress={handleContinueSave}
             />
@@ -206,9 +225,11 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
             <Button
               buttonType={ButtonStyles.DISABLED}
               label={
-                profile
-                  ? t("general_save_button")
-                  : t("complete_profile_screen_continue_button")
+                isUpdating 
+                  ? ""
+                  : profile
+                    ? t("general_save_button")
+                    : t("complete_profile_screen_continue_button")
               }
               onPress={handleContinueSave}
             />

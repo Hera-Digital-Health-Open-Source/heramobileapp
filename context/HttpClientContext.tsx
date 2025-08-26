@@ -54,12 +54,13 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
           };
 
           const response = await fetch(baseURL + requestObj.url, requestOptions);
-
           if (response.status >= 400) {
             const isTokenExpired = response.status >= 401 && response.status <= 403;
             if(isTokenExpired){
               setSession('');
             }
+            console.log('~'.repeat(100))
+            console.log(response)
             if(!isTokenExpired && !isAlertShowing.current){
               isAlertShowing.current = true;
               Alert.alert(t('connection_error_title'), t('connection_error_message'));
