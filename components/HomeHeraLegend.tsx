@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 100,
     left: 16,
-    width: '60%',
+    width: '63%',
     borderRadius: Spacing.small,
     padding: Spacing.large,
     backgroundColor: 'rgba(0, 0, 0, 0.3)' // Semi-transparent black overlay
