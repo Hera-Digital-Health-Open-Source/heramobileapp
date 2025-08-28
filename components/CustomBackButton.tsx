@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, Text, Platform, I18nManager } from 'react-native';
+import { TouchableOpacity, TouchableNativeFeedback, Text, Platform, I18nManager, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -17,7 +17,7 @@ export const CustomBackButton: React.FC<CustomBackButtonProps> = ({
   const navigation = useNavigation();
   const { t, locale } = useTranslation();
 
-  const handleGoBack = () => {
+  const handlePress = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();
     }
@@ -34,9 +34,66 @@ export const CustomBackButton: React.FC<CustomBackButtonProps> = ({
     }
   };
 
+  if (Platform.OS === 'android') {
+    const androidButtonContent = (
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'transparent',
+          width: 48,
+          height: 48,
+          borderRadius: 24,
+        }}
+      >
+        <Ionicons 
+          name={getBackIcon()} 
+          size={24} 
+          color={Colors.primary} 
+        />
+        {showText && (
+          <Text 
+            style={[
+              { 
+                color: Colors.primary, 
+                fontSize: 16,
+                marginLeft: 4 
+              }, 
+              textStyle
+            ]}
+          >
+            {t('intro_screen_back')}
+          </Text>
+        )}
+      </View>
+    );
+
+    return (
+      <TouchableNativeFeedback
+        onPressOut={handlePress}
+        background={TouchableNativeFeedback.Ripple('#eee', true)}
+        accessibilityRole="button"
+        accessibilityLabel="Back button"
+        useForeground={true}
+        delayPressIn={0}
+        delayPressOut={0}
+        delayLongPress={500}
+      >
+        <View style={{ overflow: 'hidden', borderRadius: 24, width: 48, height: 48 }}>
+          {androidButtonContent}
+        </View>
+      </TouchableNativeFeedback>
+    );
+  }
+
+  // iOS button content - more traditional iOS styling
   return (
-    <Pressable 
-      onPress={handleGoBack}
+    <TouchableOpacity 
+      onPress={handlePress}
+      activeOpacity={0.6}
+      accessibilityRole="button"
+      accessibilityLabel="Back button"
+      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -63,7 +120,7 @@ export const CustomBackButton: React.FC<CustomBackButtonProps> = ({
           {t('intro_screen_back')}
         </Text>
       )}
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 
