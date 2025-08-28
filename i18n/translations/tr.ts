@@ -1,4 +1,5 @@
 export default {
+  continue_word: "Devam",
   and_word: "ve",
   connection_error_title: "Bağlantı Hatası",
   connection_error_message: "Lütfen internete bağlı olduğunuzdan ve bir güvenlik duvarının arkasında olmadığınızdan emin olun",
@@ -198,7 +199,7 @@ export default {
   no_appointments_note_title: "Önerilen randevunuz yok",
   no_appointments_note_description: "Önerilen randevuları almak için bir çocuk ekleyin veya hamilelik ayrıntılarınızı girin",
   my_appointments_screen_mark_as_done_btn: "Tamamlananı Seç",
-  my_appointments_screen_i_attend_this_btn: "Katılıyorum",
+  my_appointments_screen_i_attend_this_btn: "Katıldım",
   my_appointments_screen_prenatal_attend_label: "’te doğum öncesi kontrole gittin mi?",
   get_reminders_on_whatsapp_home_screen: "WhatsApp'ta randevu hatırlatıcıları alın. Buraya dokunun!",
   get_healthcare_tips_on_whatsapp_home_screen: "WhatsApp botumuzdan sağlıkla ilgili ipuçları alın! Buraya dokunun!",

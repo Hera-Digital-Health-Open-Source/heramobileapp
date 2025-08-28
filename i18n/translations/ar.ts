@@ -1,4 +1,5 @@
 export default {
+  continue_word: "استمر",
   and_word: "و",
   connection_error_title: "خطأ في الاتصال",
   connection_error_message: "تأكد من فضلك أنّك متصل بالانترنت، وأنك لست خلف جدار ناري",

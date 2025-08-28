@@ -1,4 +1,5 @@
 export default {
+  continue_word: "Continue",
   and_word: "and",
   connection_error_title: "Connection Error",
   connection_error_message: "Please make sure you are connected to the internet and not behind a firewall",
@@ -198,7 +199,7 @@ export default {
   no_appointments_note_title: "You have no recommended appointments",
   no_appointments_note_description: "Add a child or enter your pregnancy details to get recommended appointments",
   my_appointments_screen_mark_as_done_btn: "Vaccine Done",
-  my_appointments_screen_i_attend_this_btn: "I Attend This",
+  my_appointments_screen_i_attend_this_btn: "Attended This",
   my_appointments_screen_prenatal_attend_label: "Did you go to the prenatal checkup on",
   get_reminders_on_whatsapp_home_screen: "Get appointment reminders on WhatsApp. Tap here!",
   get_healthcare_tips_on_whatsapp_home_screen: "Get healthcare tips from our WhatsApp bot! Tap here!",
