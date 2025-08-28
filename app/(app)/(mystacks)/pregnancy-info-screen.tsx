@@ -25,8 +25,10 @@ export default function PregnancyInfoScreen() {
       if(response.isTokenExpired){
         return router.replace('/auth/login');
       }
-      if(response.data){
+      if(response.data && response.data.length > 0){
         setPregnancy(response.data[0]);
+      } else {
+        setPregnancy(undefined);
       }
     }).catch((err) => {
       console.log(err);
@@ -34,9 +36,14 @@ export default function PregnancyInfoScreen() {
   }, []);
 
   return(
-    pregnancy && <PregnancyView 
+    pregnancy 
+    ? <PregnancyView 
       introduceText={t('your_pregnancy_screen_description_5')}
       pregnancy={pregnancy}
+      isInRegistrationProcess={false}
+    />
+    : <PregnancyView 
+      introduceText={t('your_pregnancy_screen_description_5')}
       isInRegistrationProcess={false}
     />
   );
