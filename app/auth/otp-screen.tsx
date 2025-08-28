@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import {OtpInput} from 'react-native-otp-entry';
 import { useAuthStore } from '@/store/authStore';
@@ -20,9 +20,23 @@ const OTPScreen = () => {
   const { t, locale } = useTranslation();
   const { sendRequestFetch } = useHttpClient();
   const [enableSendOTP, setEnableSendOTP] = useState(true);
+  const [resendTimer, setResendTimer] = useState(30);
+  const [canResend, setCanResend] = useState(false);
   const otpRef = useRef<OtpHandle>(null);
   const router = useRouter();
   const { setUserProfile } = useProfileStore();
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (resendTimer === 0) {
+      setCanResend(true);
+    }
+    return () => clearInterval(interval);
+  }, [resendTimer]);
 
   const patchUserProfile = async (
     userProfile: UserProfile, 
@@ -54,9 +68,11 @@ const OTPScreen = () => {
   };
 
   const handleResendOTP = async (/*captchaToken: string*/) => {
-    if(fullMobileNumber){
+    if(fullMobileNumber && canResend){
       setOtp("");
       otpRef.current?.clear();
+      setCanResend(false);
+      setResendTimer(30);
 
       const auth0 = new Auth0({
         domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN!,
@@ -157,9 +173,9 @@ const OTPScreen = () => {
         />
         <Button
           style={{flex: 1}}
-          buttonType={ButtonStyles.UNFILLED}
-          label={t('otp_screen_resend_otp_button')}
-          onPress={async () => handleResendOTP()}
+          buttonType={!canResend ? ButtonStyles.DISABLED : ButtonStyles.UNFILLED}
+          label={!canResend ? `${t('otp_screen_resend_otp_button')} (${resendTimer}s)` : t('otp_screen_resend_otp_button')}
+          onPress={canResend ? async () => handleResendOTP() : () => {}}
         />
       </View>
       {/* <CloudflareTurnstile
