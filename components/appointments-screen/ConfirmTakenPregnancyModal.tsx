@@ -35,14 +35,14 @@ export default function ConfirmTakenPregnancyModal({
   };
   return (
     <View style={style}>
-      {!isAvailable && (
+      {/* {!isAvailable && (
         <MarkAsDoneButton 
           style={{paddingHorizontal: Spacing.small, borderColor: Colors.disabled}}
           textStyle={{color: Colors.disabledtext}}
           label={t('my_appointments_screen_i_attend_this_btn')}
           onPress={() => {}}
         />
-      )}
+      )} */}
       {!isTakenBefore && isAvailable &&
         <MarkAsDoneButton 
           style={{paddingHorizontal: Spacing.small}}
