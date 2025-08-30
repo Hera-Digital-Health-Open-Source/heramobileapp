@@ -1,7 +1,10 @@
 import PregnancyView from "@/components/pregnancy/PregnancyView";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function PregnancyInfo(){
-  const info = `Alright! Let’s fill in the details and we will assist you by adding important doctor visit dates into “My Appointments”!`;
+  const { t } = useTranslation();
+
+  const info = t('your_pregnancy_screen_description_1');
 
   return (
     <PregnancyView introduceText={info} isInRegistrationProcess={true}/>

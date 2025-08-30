@@ -35,14 +35,14 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
     const isAlertShowing = useRef(false);
     const {t} = useTranslation();
 
-    const axiosInstance = axios.create({
-      baseURL: baseURL,
-      timeout: 10000, // Optional: request timeout
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    });
+    // const axiosInstance = axios.create({
+    //   baseURL: baseURL,
+    //   timeout: 10000, // Optional: request timeout
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Accept: 'application/json',
+    //   },
+    // });
 
     const sendRequestFetch = async <T,> (requestObj: RequestConfig): Promise<ClientResponse<T>> => {
       setLoading(true);
@@ -54,12 +54,12 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
           };
 
           const response = await fetch(baseURL + requestObj.url, requestOptions);
-
           if (response.status >= 400) {
             const isTokenExpired = response.status >= 401 && response.status <= 403;
             if(isTokenExpired){
               setSession('');
             }
+
             if(!isTokenExpired && !isAlertShowing.current){
               isAlertShowing.current = true;
               Alert.alert(t('connection_error_title'), t('connection_error_message'));
@@ -75,15 +75,22 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
             };
           }
       
-          const data = await response.json();
-          return {data: data, error: null};
+          try{
+            const data = await response.json();
+            return {data: data, error: null};
+          } catch {
+            return {
+              data: null,
+              error: null
+            }
+          }
         } catch(error: any){
           console.log(`Error when sending HTTP(s) request: ${error}`);
           
           // Handle network errors in catch block (no server response)
           if(!isAlertShowing.current){
             isAlertShowing.current = true;
-            Alert.alert("Connection Error", "Please make sure you are connecting to the internet, and you are not behind a firewall.");
+            Alert.alert(t('connection_error_title'), t('connection_error_message'));
             // Reset the flag after 3 seconds to allow new alerts if connection issues persist
             setTimeout(() => {
               isAlertShowing.current = false;

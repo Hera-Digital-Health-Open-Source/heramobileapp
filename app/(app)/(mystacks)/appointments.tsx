@@ -45,7 +45,7 @@ export default function Appointments() {
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
   const [pregnancySruveys, setPregnancySurvyes] = useState<ISurvey[]>();
   const router = useRouter();
-  const {t} = useTranslation();
+  const { t, locale } = useTranslation();
 
   const getPregnancySurveys = async () => {
     setRefreshing(true);
@@ -208,13 +208,23 @@ export default function Appointments() {
   const renderAppointmentVaccineListItem = (item : Appointment) => {
     const takenVaccineIds = children.filter(c => c.id === item.child_id)[0].past_vaccinations;
     const takenVaccineNames = takenVaccineIds.map(i => getVaccineName(vaccines, i)!);
-    //style={{marginEnd: Spacing.xlarge}}
+    const formatVaccineNames = (vaccine_names: string[]) => {
+      if(vaccine_names.length === 0) return "";
+      if(vaccine_names.length === 1){
+        return vaccine_names[0];
+      } else if(vaccine_names.length === 2){
+        return `${vaccine_names[0]} ${t('and_word')} ${vaccine_names[1]}`
+      } else {
+        return `${vaccine_names.slice(0, -1).join(', ')} ${t('and_word')} ${vaccine_names[vaccine_names.length - 1]}`;
+      }
+    };
+
     return (
       <View style={[styles.item, {flexDirection: 'row', alignItems: 'center'}]}>
-        <View style={{flex: 5, gap: Spacing.medium}}>
+        <View style={{flex: 5, gap: Spacing.medium, alignItems: 'flex-start'}}>
           <Text style={ GlobalStyles.SubHeadingText }>{item.date}</Text>
           <Text style={styles.title}>{ item.person_name }</Text>
-          <Text style={{}}>{ item.vaccine_names}</Text>
+          <Text style={{}}>{ formatVaccineNames(item.vaccine_names) }</Text>
         </View>
         <View style={{alignItems: 'center', flex: 3}}>
           <ConfirmTakenPastVaccinesModal

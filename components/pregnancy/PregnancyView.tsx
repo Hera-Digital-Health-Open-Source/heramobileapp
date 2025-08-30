@@ -13,7 +13,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 export default function PregnancyView({introduceText, pregnancy, isInRegistrationProcess} : {introduceText: string, pregnancy? : IPregnancy, isInRegistrationProcess: boolean}){
   const [pregnancyCalculationMethod, setPregnancyCalculationMethod] = useState<'lastMenstrualDate' | 'pregnancyWeek' | undefined>(undefined);
   const [lastMenstrualDate, setLastMenstrualDate] = useState<Date | undefined>(undefined);
-  const [prentalVisits, setPrentalVisits] = useState<string>("");
+  const [prenatalVisits, setPrenatalVisits] = useState<string>("");
   const [pregnancyWeek, setPregnancyWeek] = useState<string>("");
   const {sendRequestFetch} = useHttpClient();
   const {session} = useAuthStore();
@@ -21,14 +21,14 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
   const router = useRouter();
 
   const info = !introduceText ? t('your_pregnancy_screen_description_1') : introduceText;
-  const enableContinue = (pregnancyCalculationMethod === 'lastMenstrualDate' && lastMenstrualDate && prentalVisits && prentalVisits !== '-1') || 
-                          (pregnancyCalculationMethod === 'pregnancyWeek' && pregnancyWeek && pregnancyWeek !== '-1' && prentalVisits && prentalVisits !== '-1')
+  const enableContinue = (pregnancyCalculationMethod === 'lastMenstrualDate' && lastMenstrualDate && prenatalVisits && prenatalVisits !== '-1') || 
+                          (pregnancyCalculationMethod === 'pregnancyWeek' && pregnancyWeek && pregnancyWeek !== '-1' && prenatalVisits && prenatalVisits !== '-1')
   const pregnancyWeekItems = [{key: '-1', label: ''}, ...Array.from({ length: 42 }, (_, i) => i + 1).map(i => ({key: String(i), label: String(i)}))];
 
   useEffect(() => {
     if(pregnancy){
       setLastMenstrualDate(!pregnancy.declared_pregnancy_week ? new Date(pregnancy.declared_date_of_last_menstrual_period) : undefined);
-      setPrentalVisits(pregnancy.declared_number_of_prenatal_visits);
+      setPrenatalVisits(pregnancy.declared_number_of_prenatal_visits+"");
       setPregnancyWeek(pregnancy.declared_pregnancy_week);
       setPregnancyCalculationMethod(pregnancy.declared_pregnancy_week ? 'pregnancyWeek' : 'lastMenstrualDate');
     }
@@ -54,7 +54,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
     const data = {
       declared_pregnancy_week: !pregnancyWeek ? null : pregnancyWeek,
       declared_date_of_last_menstrual_period: !pregnancyWeek ? lastMenstrualDate?.toISOString().split('T')[0] : null,
-      declared_number_of_prenatal_visits: prentalVisits,
+      declared_number_of_prenatal_visits: prenatalVisits,
     };
 
     requestConfig = {
@@ -94,12 +94,15 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
             <Text style={GlobalStyles.NormalText}>{info}</Text>
           </View>
           <View style={{flex: 1}}>
-            <View style={{}}>
+            <View style={{gap: Spacing.small}}>
               <Button
                 buttonType={ pregnancyCalculationMethod === 'lastMenstrualDate' ? ButtonStyles.FILLED : ButtonStyles.UNFILLED}
                 label={t('my_pregnancy_screen_menstrual_title')}
                 onPress={() => flipPregnancyCalculationMethod('lastMenstrualDate')}
               />
+              <Text style={[GlobalStyles.ButtonTextALT, { alignSelf: 'center'}]}>
+                {t('your_pregnancy_screen_or_word')}
+              </Text>
               <Button
                 buttonType={ pregnancyCalculationMethod === 'pregnancyWeek' ? ButtonStyles.FILLED : ButtonStyles.UNFILLED}
                 label={t('my_pregnancy_screen_pregnancy_week_title')}
@@ -122,7 +125,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
                   <View style={{gap: Spacing.medium}}>
                     <Text style={GlobalStyles.NormalText}>{t('your_pregnancy_screen_prenatal_visits_title')}</Text>
                     <DropDownPicker
-                      initialKeySelection={prentalVisits}
+                      initialKeySelection={prenatalVisits}
                       items={[
                         {key: '-1', label: ''},
                         {key: '0', label: '0'},
@@ -131,7 +134,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
                         {key: '3', label: '3'},
                         {key: '4', label: '4'}
                       ]}
-                      onItemSelectionChanged={(key) => setPrentalVisits(key)}
+                      onItemSelectionChanged={(key) => setPrenatalVisits(key)}
                     />
                   </View>
                 </View>
@@ -152,7 +155,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
                   <View style={{gap: Spacing.medium}}>
                     <Text style={GlobalStyles.NormalText}>{t('your_pregnancy_screen_prenatal_visits_title')}</Text>
                     <DropDownPicker
-                      initialKeySelection={prentalVisits}
+                      initialKeySelection={prenatalVisits}
                       items={[
                         {key: '-1', label: ''},
                         {key: '0', label: '0'},
@@ -161,7 +164,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
                         {key: '3', label: '3'},
                         {key: '4', label: '4'}
                       ]}
-                      onItemSelectionChanged={(key) => setPrentalVisits(key)}
+                      onItemSelectionChanged={(key) => setPrenatalVisits(key)}
                     />
                   </View>
                 </View>

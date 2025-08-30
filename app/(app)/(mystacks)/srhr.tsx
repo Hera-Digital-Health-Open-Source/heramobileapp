@@ -25,6 +25,7 @@ import { useHttpClient } from '@/context/HttpClientContext';
 import { useAuthStore } from '@/store/authStore';
 import { imgHomeWhatsappHotline } from '@/assets/images/images';
 import { useRouter } from 'expo-router';
+import { useProfileStore } from '@/store/profileStore';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -49,8 +50,9 @@ export default function SrhrScreen() {
   const [searchInput, setSearchInput] = useState('');
   const [filteredSections, setFilteredSections] = useState<ISection[]>([]);
   const {sendRequestFetch} = useHttpClient();
-  const { session, userProfile } = useAuthStore();
+  const { session } = useAuthStore();
   const router = useRouter();
+  const { userProfile } = useProfileStore();
 
   useEffect(() => {
     async function getSectionsOfConcept() {

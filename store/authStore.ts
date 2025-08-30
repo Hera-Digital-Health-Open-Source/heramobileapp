@@ -1,22 +1,12 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { useLoadingStore } from './loadingStore';
-
-
-export interface UserProfile {
-  name: string;
-  gender: 'MALE' | 'FEMALE';
-  date_of_birth: string;
-  language_code: 'en' | 'ar' | 'tr';
-  time_zone: string;
-};
-
+// import { UserProfile } from '@/interfaces/IUserProfile';
 
 export interface AuthState {
   // persisted
   session: string | null;
-  userProfile: UserProfile | null;
+  // userProfile: UserProfile | null;
   userId: number | null;
 
   // runtime-only
@@ -29,7 +19,6 @@ export interface AuthState {
   signOut: () => void;
   setFullMobileNumber: (fullMobileNumber: string) => void;
   setSession: (newSession: string) => void;
-  setUserProfile: (newUserProfile: UserProfile) => void;
   setUserId: (newUserId: number) => void;
 };
 
@@ -47,13 +36,11 @@ export const useAuthStore = create<AuthState>()(
       // signIn: (token, profile, userId) => set({ session: token, userProfile: profile, userId: userId }),
       signOut: () => set({ 
         session: null, 
-        userProfile: null,
         userId: null,
         isHydrated: false
       }),
       setFullMobileNumber: (fullMobileNumber: string) => set({ fullMobileNumber: fullMobileNumber}),
       setSession: (newSession: string) => (set({session: newSession})),
-      setUserProfile: (newUserProfile: UserProfile) => set({userProfile: newUserProfile}),
       setUserId: (newUserId: number) => set({ userId: newUserId})
     }),
     {
@@ -62,7 +49,6 @@ export const useAuthStore = create<AuthState>()(
       // Only persist what you need:
       partialize: (state) => ({ 
         session: state.session,
-        userProfile: state.userProfile,
         userId: state.userId
       }),
       // (Optional) bump this when you change shape and write a migrate()

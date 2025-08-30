@@ -1,21 +1,13 @@
 // src/app/protected.tsx
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
+import { useProfileStore } from '@/store/profileStore';
 import { Redirect } from 'expo-router';
 
 const Protected = ({ children }: { children: React.ReactNode }) => {
-  const { session, userProfile } = useAuthStore();
+  const { session } = useAuthStore();
   const [status, setStatus] = useState<'undetermined' | 'denied' | 'allowed'>('undetermined');
-
-  // useEffect(() => {
-  //   if(!preparingProfile && !preparingSession){
-  //     if(session && profile){
-  //       setStatus('allowed');
-  //     } else {
-  //       setStatus('denied');
-  //     }
-  //   }
-  // }, [preparingProfile, preparingSession]);
+  const { userProfile } = useProfileStore();
 
   useEffect(() => {
     if(session && userProfile){

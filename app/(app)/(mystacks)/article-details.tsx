@@ -8,17 +8,16 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { Colors, GlobalStyles } from '@/assets/theme';
+import { Colors } from '@/assets/theme';
 import { useHttpClient } from '@/context/HttpClientContext';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'expo-router';
-
+import { useProfileStore } from '@/store/profileStore';
 
 interface IArticleDetails {
   id: number;
   title: string;
   content: string;
-  // Add other fields as needed based on your API response
 }
 
 export default function ArticleDetailsScreen() {
@@ -27,7 +26,8 @@ export default function ArticleDetailsScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { sendRequestFetch } = useHttpClient();
-  const { session, userProfile } = useAuthStore();
+  const { session } = useAuthStore();
+  const { userProfile } = useProfileStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -36,7 +36,6 @@ export default function ArticleDetailsScreen() {
       
       try {
         setLoading(true);
-        // Adjust this URL pattern based on your API structure
         const result = await sendRequestFetch<IArticleDetails>({
           url: `/articles/${id}/${userProfile?.language_code}/`,
           method: 'GET',

@@ -2,7 +2,7 @@ import { View, StyleSheet, Text } from "react-native";
 import { Image } from "expo-image";
 import { heraIcon } from "@/assets/images/images";
 import { useTranslation } from "@/hooks/useTranslation";
-import { GlobalStyles } from "@/assets/theme";
+import { GlobalStyles, Spacing } from "@/assets/theme";
 
 export default function HomeHeraLegend(){
   const { t } = useTranslation();
@@ -23,11 +23,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 100,
     left: 16,
-    width: '60%',
+    width: '63%',
+    borderRadius: Spacing.small,
+    padding: Spacing.large,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)' // Semi-transparent black overlay
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: Spacing.medium
   },
   titleText: {
     ...GlobalStyles.TitleText,
@@ -38,5 +42,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Robot-Medium',
     color: '#fff',
     marginTop: 8,
+    textAlign: 'left',
+    // writingDirection: 'rtl'
   }
 });
