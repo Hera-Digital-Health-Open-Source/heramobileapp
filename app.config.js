@@ -18,7 +18,7 @@ export default () => ({
     //   policy: "appVersion"
     // },
     ios: {
-      buildNumber: "9",
+      buildNumber: "21",
       icon: "./assets/images/ios-light.png",
       supportsTablet: true,
       bundleIdentifier: "com.heradigitalhealth.ios",
@@ -30,7 +30,7 @@ export default () => ({
       }
     },
     android: {
-      versionCode: 20,
+      versionCode: 21,
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff"
@@ -57,6 +57,16 @@ export default () => ({
       favicon: "./assets/images/favicon.png"
     },
     plugins: [
+      [
+        'expo-build-properties',
+        {
+          android: {
+            compileSdkVersion: 35,
+            targetSdkVersion: 35,
+            buildToolsVersion: '35.0.0',
+          },
+        },
+      ],
       "expo-router",
       [
         "expo-splash-screen",
