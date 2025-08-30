@@ -195,7 +195,7 @@ export default {
   my_appointments_screen_list_vaccination_mother: "Mother",
   my_appointments_screen_list_recommended_vaccination: "Recommended Vaccination",
   my_appointments_screen_calender_view: "Calender",
-  my_appointments_pregnancy_check: "Pregnancy Check",
+  my_appointments_pregnancy_check: "Pregnancy Check-Up",
   no_appointments_note_title: "You have no recommended appointments",
   no_appointments_note_description: "Add a child or enter your pregnancy details to get recommended appointments",
   my_appointments_screen_mark_as_done_btn: "Vaccine Done",
