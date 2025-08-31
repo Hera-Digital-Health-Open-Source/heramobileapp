@@ -1,4 +1,11 @@
-import 'dotenv/config';
+// Determine which environment file to load
+const environment = process.env.NODE_ENV || process.env.EXPO_PUBLIC_ENV || 'development';
+
+// Load the appropriate .env file
+const envFile = environment === 'production' ? '.env.production' : '.env.development';
+require('dotenv').config({ path: envFile });
+
+console.log(`🌍 Loading environment: ${environment} from ${envFile}`);
 
 export default () => ({
   expo: {
@@ -47,7 +54,7 @@ export default () => ({
         "android.permission.ACCESS_FINE_LOCATION"
       ],
       manifestPlaceholders: {
-        auth0Domain: "heradigitalhealth.eu.auth0.com",     // 🔁 use your real Auth0 domain
+        auth0Domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN || "heradigitalhealth.eu.auth0.com",
         auth0Scheme: "myapp",                    // 🔁 use your actual scheme
       },
     },
@@ -91,7 +98,7 @@ export default () => ({
       [
         "react-native-auth0",
         {
-          domain: "heradigitalhealth.eu.auth0.com"
+          domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN || "heradigitalhealth.eu.auth0.com"
         }
       ],
       "expo-secure-store",

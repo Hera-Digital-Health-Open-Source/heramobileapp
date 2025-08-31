@@ -8,7 +8,7 @@ import { I18nProvider } from './I18nContext';
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <Auth0Provider domain={"heradigitalhealth.eu.auth0.com"} clientId={"ZQyw1Cm4ht1Gpccd7aA12LgeIdfMGF99"}>
+    <Auth0Provider domain={process.env.EXPO_PUBLIC_AUTH0_DOMAIN || 'heradigitalhealth.eu.auth0.com'} clientId={process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID || 'ZQyw1Cm4ht1Gpccd7aA12LgeIdfMGF99'}>
       <LoadingProvider>
         <I18nProvider>
             <HttpClientProvider>

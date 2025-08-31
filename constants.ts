@@ -12,8 +12,8 @@ export const pregnancyWeekOptions = Array.from({length: 42}, (_, i) =>
 
 export const prenatalVisitsOptions = [...Array(10).keys()].map(String);
 // export const baseURL = 'https://exciting-simply-hippo.ngrok-free.app';
-export const baseURL =
-  'https://herav2-web-service.production-turkey.herav2.heradigitalhealth.com';
+// export const baseURL = 'https://herav2-web-service.production-turkey.herav2.heradigitalhealth.com';
+export const baseURL = process.env.EXPO_PUBLIC_BASE_URL || 'https://herav2-web-service.production-turkey.herav2.heradigitalhealth.com';
 // Home screen constants
 export const keyWhatsappHotline = 'whatsapphotline';
 export const keyFeedback = 'feedback';
