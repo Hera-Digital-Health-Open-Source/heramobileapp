@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, ReactNode, useCallback, useRef } from "react";
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { baseURL } from "@/constants";
 import { useLoading } from "./LoadingContext";
 import { useAuthStore } from "@/store/authStore";
