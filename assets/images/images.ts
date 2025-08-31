@@ -20,6 +20,7 @@ export const heraIcon = require('./hera_icon.png');
 
 // Login & Register Screen
 export const imgLoginMain = require('./login/img_login_main.png');
+export const imgBoarding02 = require('./login/img_boarding_02.png');
 
 // User Details Screen
 export const imgUserDetailsMale = require('./registration/male.png');
