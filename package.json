@@ -19,7 +19,9 @@
     "web:dev": "NODE_ENV=development expo start --web",
     "web:prod": "NODE_ENV=production expo start --web",
     "test": "jest --watchAll",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "jest": {
     "preset": "jest-expo"
