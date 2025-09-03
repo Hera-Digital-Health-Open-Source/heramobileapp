@@ -16,7 +16,6 @@ type OtpHandle = React.ElementRef<typeof OtpInput>;
 const OTPScreen = () => {
   const [otp, setOtp] = useState('');
   const { fullMobileNumber, setSession, setUserId, userId, session } = useAuthStore();
-  // const [showCaptcha, setShowCaptcha] = useState(false);
   const { t, locale } = useTranslation();
   const { sendRequestFetch } = useHttpClient();
   const [enableSendOTP, setEnableSendOTP] = useState(true);
