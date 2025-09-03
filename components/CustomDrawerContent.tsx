@@ -10,7 +10,7 @@ import { icoHeraIcon } from "@/assets/images/images";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useI18n } from "@/context/I18nContext";
 import { Colors } from "@/assets/theme";
-
+import {useAuth0, Auth0Provider} from 'react-native-auth0';
 
 export default function CustomDrawerContent(props: any) {
   const { bottom, top } = useSafeAreaInsets();
@@ -19,11 +19,18 @@ export default function CustomDrawerContent(props: any) {
   const { t } = useTranslation();
   const { locale } = useI18n();
   const router = useRouter();
+  const { clearSession, error } = useAuth0();
 
   const handleSignOut = async () => {
-    setUserProfile(null);
-    signOut();
-    router.replace('/auth/login');
+    try{
+      setUserProfile(null);
+      signOut();
+      await clearSession();
+      // router.replace('/auth/login');
+    } catch (e) {
+      console.log(`An error happens when trying to logout: ${e}`);
+      console.log(`Error from auth0: ${error}`);
+    }
   };
 
   const handleOpenFacebookGroup = async () => {
@@ -48,12 +55,7 @@ export default function CustomDrawerContent(props: any) {
           <Image source={icoHeraIcon} style={{width: 100, height: 100, borderRadius: 35, marginHorizontal: 'auto'}} />
           <Text style={{fontSize: 18, fontWeight: 'semibold'}}>{userProfile?.name}</Text>
         </View>
-        {/* <DrawerItem 
-          icon={({ color, size }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
-          )}
-          label={"Profile"} onPress={() => alert("Logout Pressed!")} 
-        /> */}
+        
         <DrawerItem
           style={{}}
           icon={({ color, size }: {color: any, size: any}) => (
@@ -74,7 +76,7 @@ export default function CustomDrawerContent(props: any) {
             params: { uri: locale === 'en' ? `https://heradigitalhealth.org/` : `https://heradigitalhealth.org/${locale}` },
           })} 
         />
-        <DrawerItem 
+        {/* <DrawerItem 
           style={{}}
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="newspaper-outline" size={size} color={color} />
@@ -93,7 +95,7 @@ export default function CustomDrawerContent(props: any) {
             pathname: '/web-view-screen',
             params: { uri: `https://heradigitalhealth.org/${locale}/blog/` },
           })} 
-        />
+        /> */}
         <DrawerItem 
           style={{}}
           icon={({ color, size }: {color: any, size: any}) => (
@@ -112,18 +114,6 @@ export default function CustomDrawerContent(props: any) {
           onPress={() => handleOpenFacebookGroup()} 
         />
         {/* <DrawerItem 
-          icon={({ color, size }) => (
-            <Ionicons name="language-outline" size={size} color={color} />
-          )}
-          label={"Change Language"} onPress={() => alert("Logout Pressed!")} 
-        /> */}
-        {/* <DrawerItem 
-          icon={({ color, size }) => (
-            <Ionicons name="settings-outline" size={size} color={color} />
-          )}
-          label={"Settings"} onPress={() => alert("Logout Pressed!")} 
-        /> */}
-        <DrawerItem 
           style={{}}
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="help-circle-outline" size={size} color={color} />
@@ -142,8 +132,8 @@ export default function CustomDrawerContent(props: any) {
             pathname: '/web-view-screen',
             params: { uri: `https://heradigitalhealth.org/${locale}/frequently-asked-questions/` },
           })}
-        />
-        <DrawerItem 
+        /> */}
+        {/* <DrawerItem 
           style={{}}
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="people-outline" size={size} color={color} />
@@ -162,8 +152,8 @@ export default function CustomDrawerContent(props: any) {
             pathname: '/web-view-screen',
             params: { uri: `https://heradigitalhealth.org/${locale}/data-protection-policy/` },
           })}
-        />
-        <DrawerItem 
+        /> */}
+        {/* <DrawerItem 
           style={{}}
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="document-text-outline" size={size} color={color} />
@@ -182,8 +172,8 @@ export default function CustomDrawerContent(props: any) {
             pathname: '/web-view-screen',
             params: { uri: `https://heradigitalhealth.org/${locale}/terms-and-conditions/` },
           })}
-        />
-        <DrawerItem 
+        /> */}
+        {/* <DrawerItem 
           style={{}}
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="chatbox-ellipses-outline" size={size} color={color} />
@@ -202,8 +192,8 @@ export default function CustomDrawerContent(props: any) {
             pathname: '/web-view-screen',
             params: { uri: `https://heradigitalhealth.org/${locale}/frequently-asked-questions/` },
           })}
-        />
-        <DrawerItem 
+        /> */}
+        {/* <DrawerItem 
           style={{}}
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="mail-outline" size={size} color={color} />
@@ -222,6 +212,23 @@ export default function CustomDrawerContent(props: any) {
             pathname: '/web-view-screen',
             params: { uri: `https://heradigitalhealth.org/${locale}/contact/` },
           })}
+        /> */}
+        <DrawerItem 
+          style={{}}
+          icon={({ color, size }: {color: any, size: any}) => (
+            <Ionicons name="mail-outline" size={size} color={color} />
+          )}
+          label={({ focused, color }) => (
+            <Text style={{ 
+              color: focused ? Colors.primary : color,
+              fontWeight: focused ? 'bold' : 'normal',
+              fontSize: 15,
+              textAlign: 'left'
+            }}>
+              {t('settings_screen_contact_us_title')}
+            </Text>
+          )}
+          onPress={() => Linking.openURL('mailto:aral@heradigitalhealth.org')}
         />
         <DrawerItem 
           style={{}}
