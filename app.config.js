@@ -7,6 +7,10 @@ require('dotenv').config({ path: envFile });
 
 console.log(`🌍 Loading environment: ${environment} from ${envFile}`);
 
+// console.log(process.env.EXPO_PUBLIC_AUTH0_DOMAIN)
+// console.log(process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID)
+// console.log(process.env.EXPO_PUBLIC_BASE_URL)
+
 export default () => ({
   expo: {
     name: "Hera Digital Health",
@@ -14,7 +18,7 @@ export default () => ({
     version: "1.0.33",
     orientation: "portrait",
     icon: "./assets/images/adaptive-icon.png",
-    scheme: "androidapp",
+    scheme: "androidapp", //myapp
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     // updates: {
