@@ -127,14 +127,16 @@ export default function Login(){
 
   const handleLogin = async () => {
     try{
-      await authorize();
-      // console.log(1)
+      await authorize({
+        // 👇 THIS makes the accessToken a JWT for the API
+        audience: process.env.EXPO_PUBLIC_API_IDENTIFIER,
+        scope: 'openid offline_access email', // add your API scopes here - the offline_access if for getting the refreshToken
+      });
       let credentials = await getCredentials();
-      // console.log(2)
 
-      // console.log('*'.repeat(100))
-      // console.log(credentials)
-      // console.log('^'.repeat(100))
+      console.log('*'.repeat(100))
+      console.log(credentials)
+      console.log('^'.repeat(100))
       if(credentials && credentials.idToken){
         const response = await sendRequestFetch<{
           token: string,
@@ -203,74 +205,75 @@ export default function Login(){
           bounces={true}
         >
           <View style={styles.headerContainer}>
-            <RNImage
-              source={imgBoarding02} 
-              style={{
-                width: imageSize.width,
-                height: imageSize.height,
-              }} 
-              resizeMode="contain"
-            />
-            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-              <Image source={imgHeraIcon} style={{width: 90, height:150/250 * 90}}/>
-              <Text style={[GlobalStyles.HeadingText, {left: -Spacing.standard}]}>{t('hera_official_name')}</Text>
-            </View>
+              <RNImage
+                source={imgBoarding02} 
+                style={{
+                  width: imageSize.width,
+                  height: imageSize.height,
+                }} 
+                resizeMode="contain"
+              />
+              <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                <Image source={imgHeraIcon} style={{width: 90, height:150/250 * 90}}/>
+                <Text style={[GlobalStyles.HeadingText, {left: -Spacing.standard}]}>{t('hera_official_name')}</Text>
+              </View>
             <View style={styles.changeLanguageContainer}>
-            <View>
-            <Text style={
-                {
-                  textAlign: 'left',
-                  marginTop: Spacing.large,
-                  marginBottom: Spacing.medium, 
-                  ...GlobalStyles.NormalText
+              <View>
+              <Text style={
+                  {
+                    textAlign: 'left',
+                    marginTop: Spacing.large,
+                    marginBottom: Spacing.medium, 
+                    ...GlobalStyles.NormalText
+                  }
                 }
-              }
-            >
-              {t('login_screen_select_language_dropdown_hint')}
-            </Text>
-            <DropDownPicker 
-              items={languages}
-              style={{marginTop: 8}}
-              initialKeySelection={locale}
-              onItemSelectionChanged={(key) => setCurrentLanguage(key)}
-            />
+              >
+                {t('login_screen_select_language_dropdown_hint')}
+              </Text>
+              <DropDownPicker 
+                items={languages}
+                style={{marginTop: 8}}
+                initialKeySelection={locale}
+                onItemSelectionChanged={(key) => setCurrentLanguage(key)}
+              />
+              </View>
             </View>
           </View>
-        </View>
           <View style={{flex: 1, minHeight: 100, backgroundColor: '#fff'}} />
           <View style={styles.footerContainer}>
-        <Text style={[GlobalStyles.HeadingText, {color: '#fff', textAlign: 'center'}]}>{t('login_screen_welcome')}</Text>
-        <Text style={[GlobalStyles.NormalText, {color: '#ddd', textAlign: 'center'}]}>{t('login_screen_introduce_hera')}</Text>
-        <View style={{marginTop: Spacing.large, gap: Spacing.standard}}>
-          <Button
-            buttonType={ButtonStyles.UNFILLED}
-            label={t('login_screen_get_started')}
-            onPress={async () => {
-              Keyboard.dismiss();
-              handleLogin();
-            }}
-          />
-          <View style={
-            {
-              flexDirection: 'row',
-              gap: Spacing.medium,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }
-          }>
-            <TextLink 
-              pathname="/auth/web-view-screen"
-              params={{ uri: `https://heradigitalhealth.org/${locale}/data-protection-policy/`, title: t('privacy_policy_toolbar_title')}}
-            />
-            <Text style={{fontSize: 8, color: Colors.disabled}}>|</Text>
-            <TextLink 
-              pathname="/auth/web-view-screen"
-              params={{ uri: `https://heradigitalhealth.org/${locale}/terms-and-conditions/`, title: t('terms_of_use_toolbar_title')}}
-            />
+            <Text style={[GlobalStyles.HeadingText, {color: '#fff', textAlign: 'center'}]}>{t('login_screen_welcome')}</Text>
+            <Text style={[GlobalStyles.NormalText, {color: '#ddd', textAlign: 'center'}]}>{t('login_screen_introduce_hera')}</Text>
+            <View style={{marginTop: Spacing.large, gap: Spacing.standard}}>
+              <Button
+                buttonType={ButtonStyles.UNFILLED}
+                label={t('login_screen_get_started')}
+                onPress={async () => {
+                  Keyboard.dismiss();
+                  handleLogin();
+                }}
+              />
+              <View style={
+                {
+                  flexDirection: 'row',
+                  gap: Spacing.medium,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }
+              }>
+                <TextLink 
+                  pathname="/auth/web-view-screen"
+                  params={{ uri: `https://heradigitalhealth.org/${locale}/data-protection-policy/`, title: t('privacy_policy_toolbar_title')}}
+                />
+                <Text style={{fontSize: 8, color: Colors.disabled}}>|</Text>
+                <TextLink 
+                  pathname="/auth/web-view-screen"
+                  params={{ uri: `https://heradigitalhealth.org/${locale}/terms-and-conditions/`, title: t('terms_of_use_toolbar_title')}}
+                />
+              </View>
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </View>
-    </View>
     </>
   );
 }
@@ -278,6 +281,7 @@ export default function Login(){
 const styles = StyleSheet.create({
   headerContainer: {
     // paddingHorizontal: 16,
+    backgroundColor: '#fff',
     alignItems: 'center',
     paddingTop: 20,
     gap: Spacing.xlarge
