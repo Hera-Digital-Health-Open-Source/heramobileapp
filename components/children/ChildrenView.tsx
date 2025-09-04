@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
     paddingHorizontal: Spacing.large,
-    marginTop: Spacing.xxlarge,
+    // marginTop: Spacing.xxlarge,
     gap: Spacing.xxlarge,
   },
   actionButtonsContainer: {

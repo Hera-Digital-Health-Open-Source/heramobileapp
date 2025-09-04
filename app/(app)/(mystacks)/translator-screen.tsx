@@ -167,7 +167,7 @@ export default function TranslatorScreen() {
   };
 
   return (
-    <View style={{ alignItems: "center", padding: 16, gap: 16 }}>
+    <View style={{ alignItems: "center", paddingHorizontal: 16, gap: 16, backgroundColor: '#fff' }}>
       <View style={styles.languagesContainer}>
         <View style={styles.singleLanguageContainer}>
           <Text style={GlobalStyles.IconTitleText}>{t('translator_screen_translate_from_text')}</Text>
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // justifyContent: "space-between",
     borderRadius: 8,
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     width: "100%",
     paddingVertical: 8,
     gap: 8,

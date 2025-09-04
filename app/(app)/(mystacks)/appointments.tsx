@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
   // },
   container: {
     flex: 1,
-    marginTop: Spacing.xxlarge,
+    marginTop: 0,
     gap: Spacing.medium,
   },
   header: {

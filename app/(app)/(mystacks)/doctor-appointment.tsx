@@ -51,8 +51,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: Spacing.large,
-    marginTop: Spacing.xxlarge,
+    // marginTop: Spacing.xxlarge,
     gap: Spacing.xxlarge,
+    backgroundColor: '#fff'
   },
   yesNoContainer: {
     flex:1,
