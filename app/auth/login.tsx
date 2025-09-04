@@ -194,14 +194,15 @@ export default function Login(){
   return (
     <>
       <StatusBar hidden={true} />
-      <View style={{flex: 1, backgroundColor: '#fff'}}>
+      <View style={{flex: 1, backgroundColor: Colors.primary}}>
         <ScrollView 
           style={{flex: 1}} 
-          contentContainerStyle={{paddingBottom: 50}}
+          contentContainerStyle={{flexGrow: 1}}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={true}
+          showsVerticalScrollIndicator={false}
+          bounces={true}
         >
-          <View style={styles.loginContainer}>
+          <View style={styles.headerContainer}>
             <RNImage
               source={imgBoarding02} 
               style={{
@@ -214,7 +215,7 @@ export default function Login(){
               <Image source={imgHeraIcon} style={{width: 90, height:150/250 * 90}}/>
               <Text style={[GlobalStyles.HeadingText, {left: -Spacing.standard}]}>{t('hera_official_name')}</Text>
             </View>
-          <View style={styles.loginInputsContainer}>
+            <View style={styles.changeLanguageContainer}>
             <View>
             <Text style={
                 {
@@ -236,19 +237,8 @@ export default function Login(){
             </View>
           </View>
         </View>
-      </ScrollView>
-      <View style={
-          {
-            backgroundColor: Colors.primary,
-            // flex:1,
-            padding: Spacing.large,
-            height: 280,
-            borderTopRightRadius: Spacing.xxlarge,
-            borderTopLeftRadius: Spacing.xxlarge,
-            gap: Spacing.large,
-            // marginTop: Spacing.xxxlarge
-          }
-      }>
+          <View style={{flex: 1, minHeight: 100, backgroundColor: '#fff'}} />
+          <View style={styles.footerContainer}>
         <Text style={[GlobalStyles.HeadingText, {color: '#fff', textAlign: 'center'}]}>{t('login_screen_welcome')}</Text>
         <Text style={[GlobalStyles.NormalText, {color: '#ddd', textAlign: 'center'}]}>{t('login_screen_introduce_hera')}</Text>
         <View style={{marginTop: Spacing.large, gap: Spacing.standard}}>
@@ -286,20 +276,26 @@ export default function Login(){
 }
 
 const styles = StyleSheet.create({
-  loginButtonsContainer:{
-    marginTop: 26,
-    marginBottom: 20,
-  },
-  loginContainer: {
+  headerContainer: {
     // paddingHorizontal: 16,
     alignItems: 'center',
     paddingTop: 20,
     gap: Spacing.xlarge
     // paddingBottom: 40,
   },
-  loginInputsContainer: {
+  changeLanguageContainer: {
     paddingHorizontal: Spacing.large,
     width: '100%',
     alignSelf: 'flex-start',
+  },
+  footerContainer: {
+    backgroundColor: Colors.primary,
+    // flex:1,
+    padding: Spacing.large,
+    height: 280,
+    borderTopRightRadius: Spacing.xxlarge,
+    borderTopLeftRadius: Spacing.xxlarge,
+    gap: Spacing.large,
+    marginTop: -50
   }
 })
