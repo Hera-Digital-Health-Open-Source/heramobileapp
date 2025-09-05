@@ -9,7 +9,7 @@ import { RelativePathString, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useI18n } from "@/context/I18nContext";
-import {useAuth0, Auth0Provider} from 'react-native-auth0';
+import {useAuth0, Auth0Provider, Credentials} from 'react-native-auth0';
 import { useAuthStore } from "@/store/authStore";
 import { useProfileStore } from "@/store/profileStore";
 import { useHttpClient } from '@/context/HttpClientContext';
@@ -43,7 +43,7 @@ export default function Login(){
   const router = useRouter();
   const { authorize, error, getCredentials, clearSession } = useAuth0();
   const { sendRequestFetch } = useHttpClient();
-  const { fullMobileNumber, setSession, setUserId, userId, session, setFullMobileNumber} = useAuthStore();
+  const { fullMobileNumber, setSession, setIdToken, setUserId, userId, session, setFullMobileNumber} = useAuthStore();
 
   const languages = [
     {label: t('language_dropdown_arabic_text'), key: 'ar'},
@@ -59,6 +59,7 @@ export default function Login(){
   // Then re-route him to the home screen.
   useEffect(() => {
     if(session && userProfile){
+      console.log(`----- Credentials are received from authStore: ${JSON.stringify(session).substring(0,40)}...`);
       router.replace('/');
     }
   }, [session, userProfile]);
@@ -99,6 +100,7 @@ export default function Login(){
   const patchUserProfile = async (
     userProfile: UserProfile, 
     theSession: string,
+    theIdToken: string,
     theUserId: number
   ) => {
     const response = await sendRequestFetch<{}>({
@@ -109,7 +111,8 @@ export default function Login(){
         "Accept-Language": "en",
         "Content-Type": "application/json",
         Accept: "application/json",
-        Authorization: "Token " + theSession,
+        Authorization: 'Bearer ' + theSession,
+        'Id-Authorization': 'Bearer ' + theIdToken
       },
     });
 
@@ -139,7 +142,6 @@ export default function Login(){
 
       // Run login flow
       await authorize({
-        // 👇 THIS makes the accessToken a JWT for the API
         audience: process.env.EXPO_PUBLIC_API_IDENTIFIER,
         scope: 'openid offline_access email', // include other API scopes as needed
       });
@@ -168,13 +170,11 @@ export default function Login(){
         }>({
           url: '/otp_auth/auth0_authentication/',
           method: 'POST',
-          // data: {
-          //   phone_number: fullMobileNumber!,
-          // },
           headers: {
             'Accept-Language': 'en',
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + credentials.idToken,
+            Authorization: 'Bearer ' + credentials.accessToken,
+            'Id-Authorization': 'Bearer ' + credentials.idToken
           },
         });
 
@@ -184,11 +184,13 @@ export default function Login(){
         }
 
         if(response.error){
-          console.log('Error in otp-screen.tsx: ', response.error);
+          console.log('Error in login.tsx: ', response.error);
           return;
         }
         if(response.data){
-          setSession(response.data.token);
+          // setSession(response.data.token);
+          setSession(credentials.accessToken);
+          setIdToken(credentials.idToken);
           setUserId(response.data.user_id);
           setFullMobileNumber(response.data.uid);
           if(response.data.user_profile){
@@ -197,6 +199,7 @@ export default function Login(){
               await patchUserProfile(
                 response.data.user_profile,
                 response.data.token,
+                credentials.idToken,
                 response.data.user_id
               );
             }
