@@ -25,7 +25,7 @@ export default function ChildView({introduceText, child} : {introduceText: strin
   const [gender, setGender] = useState<string>('n/a');
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
   const { sendRequestFetch } = useHttpClient();
-  const { session } = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const [takenVaccines, setTakenVaccines] = useState<string[]>([]);
   const {t} = useTranslation();
   const router = useRouter();
@@ -66,7 +66,8 @@ export default function ChildView({introduceText, child} : {introduceText: strin
       headers: {
         'Accept-Language': 'en',
         'Content-Type': 'application/json',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
       data: payloadData,
     });
@@ -113,7 +114,8 @@ export default function ChildView({introduceText, child} : {introduceText: strin
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 

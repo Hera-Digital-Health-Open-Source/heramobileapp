@@ -37,7 +37,7 @@ export default function Appointments() {
   const [isCalendarView, setIsCalendarView] = useState(true);
   const { sendRequestFetch } = useHttpClient();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const { session } = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const [ selectedAppointments, setSelectedAppointments ] = useState<Appointment[]>([]);
   const [ selectedDay, setSelectedDay ] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -54,7 +54,8 @@ export default function Appointments() {
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 
@@ -75,7 +76,8 @@ export default function Appointments() {
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 
@@ -96,7 +98,8 @@ export default function Appointments() {
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 
@@ -116,7 +119,8 @@ export default function Appointments() {
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 
@@ -138,7 +142,7 @@ export default function Appointments() {
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
       },
     });
 
@@ -157,7 +161,8 @@ export default function Appointments() {
       headers: {
         'Accept-Language': 'en',
         'Content-Type': 'application/json',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
       data: child,
     });
@@ -177,7 +182,8 @@ export default function Appointments() {
       headers: {
         'Accept-Language': 'en',
         'Content-Type': 'application/json',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 

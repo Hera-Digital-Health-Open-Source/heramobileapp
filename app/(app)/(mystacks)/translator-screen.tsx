@@ -30,7 +30,7 @@ export default function TranslatorScreen() {
   const [fromLanguageCode, setFromLanguageCode] = useState("ar-SA");
   const [toLanguageCode, setToLanguageCode] = useState("tr-TR");
   const {sendRequestFetch} = useHttpClient();
-  const { session } = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const {t} = useTranslation();
   const [hideRedButton, setHideRedButton] = useState(false);
   const router = useRouter();
@@ -71,11 +71,12 @@ export default function TranslatorScreen() {
         headers: {
           'Accept-Language': 'en',
           'Content-Type': 'application/json',
-          Authorization: 'Token ' + session,
+          Authorization: 'Bearer ' + session,
+          'Id-Authorization': 'Bearer ' + idToken!
         },
         data: {
           source_text: transcript,
-          dest_language: toLanguageCode
+          dest_language: toLanguageCode,
         }
       }).then(result => {
         if(result.isTokenExpired){

@@ -16,7 +16,7 @@ export default function PrivacyPolicy(){
   const [isAccept, setIsAccept] = useState(false);
   const {name, gender, dateOfBirth, setOnBoardingProgress} = useRegistration();
   const {sendRequestFetch} = useHttpClient();
-  const { session, userId } = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const { setUserProfile } = useProfileStore();
   const { t, locale } = useTranslation();
   const router = useRouter();
@@ -361,7 +361,6 @@ Yukarıda sayılan haklarınıza ilişkin taleplerinizi Derneğimize ait e-posta
       time_zone: 'UTC'
     };
 
-    console.log(session!)
     const response = await sendRequestFetch<{}>({
       url: '/user_profiles/',
       method: 'POST',
@@ -370,7 +369,8 @@ Yukarıda sayılan haklarınıza ilişkin taleplerinizi Derneğimize ait e-posta
         'Accept-Language': 'en',
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        Authorization: 'Token ' + session!,
+        Authorization: 'Bearer ' + session!,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 
@@ -413,7 +413,8 @@ Yukarıda sayılan haklarınıza ilişkin taleplerinizi Derneğimize ait e-posta
         'Accept-Language': 'en',
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        Authorization: 'Token ' + session!,
+        Authorization: 'Bearer ' + session!,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 

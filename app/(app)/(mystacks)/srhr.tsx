@@ -41,7 +41,7 @@ export default function SrhrScreen() {
   const [searchInput, setSearchInput] = useState('');
   const [filteredSections, setFilteredSections] = useState<ISection[]>([]);
   const {sendRequestFetch} = useHttpClient();
-  const { session } = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const router = useRouter();
   const { userProfile } = useProfileStore();
 
@@ -52,7 +52,8 @@ export default function SrhrScreen() {
         method: 'GET',
         headers: {
           'Accept-Language': 'en',
-          Authorization: 'Token ' + session,
+          Authorization: 'Bearer ' + session,
+          'Id-Authorization': 'Bearer ' + idToken!
         },
       });
 

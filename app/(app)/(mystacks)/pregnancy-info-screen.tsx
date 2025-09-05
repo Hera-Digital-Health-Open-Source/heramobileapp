@@ -8,7 +8,7 @@ import { useRouter } from "expo-router";
 
 export default function PregnancyInfoScreen() {
   const {sendRequestFetch} = useHttpClient();
-  const { session } = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const [pregnancy, setPregnancy] = useState<IPregnancy | undefined>(undefined);
   const {t} = useTranslation();
   const router = useRouter();
@@ -19,7 +19,8 @@ export default function PregnancyInfoScreen() {
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     }).then(response => {
       if(response.isTokenExpired){

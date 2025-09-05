@@ -16,7 +16,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
   const [prenatalVisits, setPrenatalVisits] = useState<string>("");
   const [pregnancyWeek, setPregnancyWeek] = useState<string>("");
   const {sendRequestFetch} = useHttpClient();
-  const {session} = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const {t} = useTranslation();
   const router = useRouter();
 
@@ -64,7 +64,8 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
       headers: {
         'Accept-Language': 'en',
         'Content-Type': 'application/json',
-        Authorization: 'Token ' + session
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       }
     };
 
