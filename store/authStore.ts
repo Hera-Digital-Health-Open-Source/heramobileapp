@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export interface AuthState {
   // persisted
   session: string | null;
+  idToken: string | null;
   // userProfile: UserProfile | null;
   userId: number | null;
 
@@ -19,6 +20,7 @@ export interface AuthState {
   signOut: () => void;
   setFullMobileNumber: (fullMobileNumber: string) => void;
   setSession: (newSession: string) => void;
+  setIdToken: (newIdToken: string) => void;
   setUserId: (newUserId: number) => void;
 };
 
@@ -26,6 +28,7 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       session: null,
+      idToken: null,
       userProfile: null,
       userId: null,
 
@@ -41,6 +44,7 @@ export const useAuthStore = create<AuthState>()(
       }),
       setFullMobileNumber: (fullMobileNumber: string) => set({ fullMobileNumber: fullMobileNumber}),
       setSession: (newSession: string) => (set({session: newSession})),
+      setIdToken: (newIdToken: string) => (set({idToken: newIdToken})),
       setUserId: (newUserId: number) => set({ userId: newUserId})
     }),
     {
@@ -49,6 +53,7 @@ export const useAuthStore = create<AuthState>()(
       // Only persist what you need:
       partialize: (state) => ({ 
         session: state.session,
+        idToken: state.idToken,
         userId: state.userId
       }),
       // (Optional) bump this when you change shape and write a migrate()
