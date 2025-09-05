@@ -125,18 +125,39 @@ export default function Login(){
     }
   };
 
-  const handleLogin = async () => {
-    try{
+  const ensureCredentials = async () => {
+    try {
+      // Try to reuse existing credentials
+      const currentCredentials = await getCredentials();
+      if(currentCredentials){
+        return currentCredentials;
+      } else {
+        throw new Error('No current credentials');
+      }
+    } catch (err) {
+      console.warn("No valid credentials found, authorizing...", err);
+
+      // Run login flow
       await authorize({
         // 👇 THIS makes the accessToken a JWT for the API
         audience: process.env.EXPO_PUBLIC_API_IDENTIFIER,
-        scope: 'openid offline_access email', // add your API scopes here - the offline_access if for getting the refreshToken
+        scope: 'openid offline_access email', // include other API scopes as needed
       });
-      let credentials = await getCredentials();
 
-      console.log('*'.repeat(100))
-      console.log(credentials)
-      console.log('^'.repeat(100))
+      // Fetch and return the fresh credentials
+      return await getCredentials();
+    }
+  }
+
+  const handleLogin = async () => {
+    try{      
+      const credentials = await ensureCredentials();
+      if (!credentials){
+        Alert.alert("Authentication Failed", "Auth process couldn't be completed, make sure your are connected to the internet");
+        return;
+      }
+      console.log(`----- Credentials are received from auth0: ${credentials ? JSON.stringify(credentials).substring(0,40) : ''}...`);
+
       if(credentials && credentials.idToken){
         const response = await sendRequestFetch<{
           token: string,
