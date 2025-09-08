@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
   actionButtonsContainer: {
     flexDirection: 'row',
     width: '100%',
-    gap: Spacing.xlarge
+    gap: Spacing.xlarge,
+    marginBottom: Spacing.xlarge
   },
 });

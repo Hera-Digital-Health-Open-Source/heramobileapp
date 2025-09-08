@@ -172,20 +172,22 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
               )}
             </View>
           </View>
-          {(pregnancy || !isInRegistrationProcess) && (
-            <Button
-              buttonType={ enableContinue ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
-              label={t('general_save_button')}
-              onPress={enableContinue ? addSavePregnancy : () => {}}
-            /> 
-          )}
-          {isInRegistrationProcess && (
-            <Button
-              buttonType={ enableContinue ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
-              label={t('otp_screen_continue_button')}
-              onPress={enableContinue ? addSavePregnancy : () => {}}
-            /> 
-          )}
+          <View style={{marginBottom: Spacing.xlarge}}>
+            {(pregnancy || !isInRegistrationProcess) && (
+              <Button
+                buttonType={ enableContinue ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
+                label={t('general_save_button')}
+                onPress={enableContinue ? addSavePregnancy : () => {}}
+              /> 
+            )}
+            {isInRegistrationProcess && (
+              <Button
+                buttonType={ enableContinue ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
+                label={t('otp_screen_continue_button')}
+                onPress={enableContinue ? addSavePregnancy : () => {}}
+              /> 
+            )}
+          </View>
         </View>
       </View>
     </SafeAreaView>

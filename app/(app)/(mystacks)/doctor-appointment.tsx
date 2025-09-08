@@ -37,7 +37,7 @@ export default function DoctorAppointment() {
           <Image source={imgDoctorAppointmentMain} style={{width: 330, height: 330, marginHorizontal: 'auto'}} />
         </View>
         <Button
-            // style={{flex: 1}}
+            style={{marginBottom: Spacing.xlarge}}
             buttonType={ButtonStyles.FILLED}
             label={t('doctor_appointment_screen_call_hotline')}
             onPress={openPhoneApp}
