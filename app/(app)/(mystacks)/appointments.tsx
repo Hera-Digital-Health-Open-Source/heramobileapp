@@ -339,7 +339,7 @@ export default function Appointments() {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <DynamicNavigationHeader />
+      {/* <DynamicNavigationHeader /> */}
       <View style={styles.container}>
       <Text style={[GlobalStyles.SubHeadingText, {textAlign: 'center'}]}>{t('home_screen_my_appointments_title')}</Text>
       <View style={{ flexDirection: 'row', gap: 10, width: '75%', marginLeft: Spacing.medium }}>
