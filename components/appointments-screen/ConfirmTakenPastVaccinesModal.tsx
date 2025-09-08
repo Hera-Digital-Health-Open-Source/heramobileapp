@@ -36,11 +36,15 @@ export default function ConfirmTakenPastVaccinesModal({appointment, onSave, styl
 
   return (
     <View style={style}>
-      <MarkAsDoneButton 
-        style={{paddingHorizontal: Spacing.small}}
-        label={t('my_appointments_screen_mark_as_done_btn')}
+      <Pressable 
         onPress={() => setIsPickerVisible(!isPickerVisible)}
-      />
+        style={[styles.markAsDoneButtonContainer, isAllTaken ? {borderColor: Colors.green} : {borderColor: Colors.primary,}]}
+      >
+        <Text style={[styles.markAsDoneText, isAllTaken ? {color: Colors.green} : {}]}>
+          {isAllTaken ? t('intro_screen_done') : t('my_appointments_screen_mark_as_done_btn')}
+        </Text>
+        {isAllTaken && <Ionicons name="checkmark-circle-outline" color={Colors.green} size={20}/> }
+      </Pressable>
 
       <Modal animationType="fade" transparent={true} visible={isPickerVisible}>
         <TouchableWithoutFeedback onPress={() => setIsPickerVisible(false)}>
