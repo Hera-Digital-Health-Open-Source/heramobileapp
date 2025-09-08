@@ -158,8 +158,10 @@ export default function Login(){
         Alert.alert("Authentication Failed", "Auth process couldn't be completed, make sure your are connected to the internet");
         return;
       }
-      console.log(`----- Credentials are received from auth0: ${credentials ? JSON.stringify(credentials).substring(0,40) : ''}...`);
-
+      // console.log('~'.repeat(100));
+      // console.log(new Date());
+      // console.log(`----- Credentials are received from auth0: ${credentials ? JSON.stringify(credentials).substring(0,40) : ''}...`);
+      // console.log(credentials.idToken)
       if(credentials && credentials.idToken){
         const response = await sendRequestFetch<{
           token: string,
@@ -178,6 +180,7 @@ export default function Login(){
           },
         });
 
+        // console.log(`----- ${response.isTokenExpired ? 'The id token is expired!' : 'The id token is ok!'}`)
         if(response.isTokenExpired){
           await clearSession();
           return router.replace('/auth/login');
@@ -189,6 +192,9 @@ export default function Login(){
         }
         if(response.data){
           // setSession(response.data.token);
+          // console.log(`----- ${response.data.user_profile ? 'User profile is ok' : 'User profile is missing!'}`)
+          // console.log('----- Setting importants values in the store')
+
           setSession(credentials.accessToken);
           setIdToken(credentials.idToken);
           setUserId(response.data.user_id);
