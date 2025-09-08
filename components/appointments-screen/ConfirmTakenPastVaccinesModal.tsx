@@ -78,7 +78,7 @@ export default function ConfirmTakenPastVaccinesModal({appointment, onSave, styl
                     <ScrollView>
                       {appointment.vaccine_names?.map( (vaccineName, index) => (
                         <Checkbox
-                          key={index}
+                          key={`${vaccineName}-${index}`}
                           initIsChecked={takenVaccines.filter(t => t == vaccineName).length === 1}
                           label={vaccineName}
                           onChange={(val) => {handleTakeVaccine(vaccineName, val)}}
