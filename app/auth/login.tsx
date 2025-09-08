@@ -43,7 +43,7 @@ export default function Login(){
   const router = useRouter();
   const { authorize, error, getCredentials, clearSession } = useAuth0();
   const { sendRequestFetch } = useHttpClient();
-  const { fullMobileNumber, setSession, setIdToken, setUserId, userId, session, setFullMobileNumber} = useAuthStore();
+  const { signOut, setSession, setIdToken, setUserId, userId, session, setFullMobileNumber} = useAuthStore();
 
   const languages = [
     {label: t('language_dropdown_arabic_text'), key: 'ar'},
@@ -135,19 +135,23 @@ export default function Login(){
       if(currentCredentials){
         return currentCredentials;
       } else {
-        throw new Error('No current credentials');
+        console.warn("No valid credentials found, authorizing...");
+
+        console.log(`Identifier: ${process.env.EXPO_PUBLIC_API_IDENTIFIER}`)
+        // Run login flow
+        await authorize({
+          audience: process.env.EXPO_PUBLIC_API_IDENTIFIER,
+          scope: 'openid profile offline_access email', // include other API scopes as needed
+        });
+
+        return await getCredentials();
       }
     } catch (err) {
-      console.warn("No valid credentials found, authorizing...", err);
-
-      // Run login flow
-      await authorize({
-        audience: process.env.EXPO_PUBLIC_API_IDENTIFIER,
-        scope: 'openid offline_access email', // include other API scopes as needed
-      });
-
-      // Fetch and return the fresh credentials
-      return await getCredentials();
+      console.error(err);
+      // setUserProfile(null);
+      // signOut();
+      // await clearSession();
+      return undefined;
     }
   }
 
@@ -155,7 +159,11 @@ export default function Login(){
     try{      
       const credentials = await ensureCredentials();
       if (!credentials){
-        Alert.alert("Authentication Failed", "Auth process couldn't be completed, make sure your are connected to the internet");
+        // console.log(credentials)
+        // Alert.alert("Authentication Failed", "Auth process couldn't be completed, make sure your are connected to the internet");
+        setUserProfile(null);
+        signOut();
+        await clearSession();
         return;
       }
       // console.log('~'.repeat(100));
