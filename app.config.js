@@ -5,11 +5,14 @@ const environment = process.env.NODE_ENV || process.env.EXPO_PUBLIC_ENV || 'deve
 const envFile = environment === 'production' ? '.env.production' : '.env.development';
 require('dotenv').config({ path: envFile });
 
-console.log(`🌍 Loading environment: ${environment} from ${envFile}`);
-
-// console.log(process.env.EXPO_PUBLIC_AUTH0_DOMAIN)
-// console.log(process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID)
-// console.log(process.env.EXPO_PUBLIC_BASE_URL)
+if(environment === 'development'){
+  console.log('='.repeat(100))
+  console.log(`🌍 Loading environment: ${environment} from ${envFile}`);
+  
+  console.log(process.env.EXPO_PUBLIC_AUTH0_DOMAIN)
+  console.log(process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID)
+  console.log(process.env.EXPO_PUBLIC_BASE_URL)
+}
 
 export default () => ({
   expo: {
@@ -29,7 +32,7 @@ export default () => ({
     //   policy: "appVersion"
     // },
     ios: {
-      buildNumber: "25",
+      buildNumber: "27",
       icon: "./assets/images/ios-light.png",
       supportsTablet: true,
       bundleIdentifier: "com.heradigitalhealth.ios",
@@ -41,7 +44,7 @@ export default () => ({
       }
     },
     android: {
-      versionCode: 25,
+      versionCode: 27,
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff"
