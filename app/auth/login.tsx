@@ -205,7 +205,7 @@ export default function Login(){
             }
             setUserProfile(response.data.user_profile);
             router.replace('/');
-          } else if(response.data.is_new_user) {
+          } else if(response.data.is_new_user || !response.data.user_profile) {
             router.replace('/registration/user-details');
           } else {
             return;
