@@ -1,5 +1,5 @@
 import { Colors, GlobalStyles } from "@/assets/theme";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 type CheckboxProps = {
@@ -12,8 +12,11 @@ function Checkbox({ initIsChecked, onChange, label }: CheckboxProps) {
   const [isChecked, setIsChecked] = useState(initIsChecked);
 
   const handlePress = () => {
-    setIsChecked((prev) => !prev);
-    onChange(!isChecked);
+    setIsChecked((prev) => {
+      const next = !prev;
+      onChange(next);
+      return next;
+    });
   };
 
   return (
