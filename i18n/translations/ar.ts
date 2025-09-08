@@ -235,5 +235,5 @@ export default {
   intro_screen_next: "التالي",
   intro_screen_back: "عودة",
   intro_screen_skip: "تخطي",
-  intro_screen_done: "تم / إنهاء"
+  intro_screen_done: "تم"
 };
