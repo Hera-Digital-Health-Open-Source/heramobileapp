@@ -48,7 +48,7 @@ export default function ConfirmTakenPastVaccinesModal({appointment, onSave, styl
   return (
     <View style={style}>
       <Pressable 
-        onPress={() => setIsPickerVisible(!isPickerVisible)}
+        onPress={() => setIsPickerVisible(!isPickerVisible)} 
         style={[styles.markAsDoneButtonContainer, isAllTaken ? {borderColor: Colors.green} : {borderColor: Colors.primary,}]}
       >
         <Text style={[styles.markAsDoneText, isAllTaken ? {color: Colors.green} : {}]}>
