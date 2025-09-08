@@ -21,6 +21,8 @@ export default function CustomDrawerContent(props: any) {
   const router = useRouter();
   const { clearSession, error } = useAuth0();
 
+  const localWord = locale === 'ar' ? 'arabic' : locale === 'tr' ? 'turkish' : 'english';
+
   const handleSignOut = async () => {
     try{
       setUserProfile(null);
@@ -113,7 +115,7 @@ export default function CustomDrawerContent(props: any) {
           )}
           onPress={() => handleOpenFacebookGroup()} 
         />
-        {/* <DrawerItem 
+        <DrawerItem 
           style={{}}
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="help-circle-outline" size={size} color={color} />
@@ -130,10 +132,11 @@ export default function CustomDrawerContent(props: any) {
           )}
           onPress={() => router.push({
             pathname: '/web-view-screen',
-            params: { uri: `https://heradigitalhealth.org/${locale}/frequently-asked-questions/` },
+            // params: { uri: `https://heradigitalhealth.org/${locale}/frequently-asked-questions/` },
+            params: { uri: `https://heradigitalhealth.org/faq-${localWord}/` },
           })}
-        /> */}
-        {/* <DrawerItem 
+        />
+        <DrawerItem 
           style={{}}
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="people-outline" size={size} color={color} />
@@ -150,10 +153,10 @@ export default function CustomDrawerContent(props: any) {
           )}
           onPress={() => router.push({
             pathname: '/web-view-screen',
-            params: { uri: `https://heradigitalhealth.org/${locale}/data-protection-policy/` },
+            params: { uri: `https://heradigitalhealth.org/data-protection-policy-${localWord}/` },
           })}
-        /> */}
-        {/* <DrawerItem 
+        />
+        <DrawerItem 
           style={{}}
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="document-text-outline" size={size} color={color} />
@@ -170,9 +173,9 @@ export default function CustomDrawerContent(props: any) {
           )}
           onPress={() => router.push({
             pathname: '/web-view-screen',
-            params: { uri: `https://heradigitalhealth.org/${locale}/terms-and-conditions/` },
+            params: { uri: `https://heradigitalhealth.org/terms-and-conditions-${localWord}/` },
           })}
-        /> */}
+        />
         {/* <DrawerItem 
           style={{}}
           icon={({ color, size }: {color: any, size: any}) => (
@@ -193,7 +196,7 @@ export default function CustomDrawerContent(props: any) {
             params: { uri: `https://heradigitalhealth.org/${locale}/frequently-asked-questions/` },
           })}
         /> */}
-        {/* <DrawerItem 
+        <DrawerItem 
           style={{}}
           icon={({ color, size }: {color: any, size: any}) => (
             <Ionicons name="mail-outline" size={size} color={color} />
@@ -210,25 +213,8 @@ export default function CustomDrawerContent(props: any) {
           )}
           onPress={() => router.push({
             pathname: '/web-view-screen',
-            params: { uri: `https://heradigitalhealth.org/${locale}/contact/` },
+            params: { uri: `https://heradigitalhealth.org/contact-${localWord}/` },
           })}
-        /> */}
-        <DrawerItem 
-          style={{}}
-          icon={({ color, size }: {color: any, size: any}) => (
-            <Ionicons name="mail-outline" size={size} color={color} />
-          )}
-          label={({ focused, color }) => (
-            <Text style={{ 
-              color: focused ? Colors.primary : color,
-              fontWeight: focused ? 'bold' : 'normal',
-              fontSize: 15,
-              textAlign: 'left'
-            }}>
-              {t('settings_screen_contact_us_title')}
-            </Text>
-          )}
-          onPress={() => Linking.openURL('mailto:aral@heradigitalhealth.org')}
         />
         <DrawerItem 
           style={{}}
