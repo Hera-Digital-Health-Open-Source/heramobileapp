@@ -246,7 +246,7 @@ export default function Appointments() {
   const renderAppointmentPregnancyListItem = (item : Appointment) => {
     return (
       <View style={[styles.item, {flexDirection: 'row', alignItems: 'center'}]}>
-        <View style={{flex: 5, gap: Spacing.medium}}>
+        <View style={{flex: 5, gap: Spacing.medium, alignItems:'flex-start'}}>
           <Text style={GlobalStyles.SubHeadingText}>{item.date}</Text>
           <Text style={styles.title}>{t('my_appointments_pregnancy_check')}</Text>
           <Text style={{}}>{''}</Text>
