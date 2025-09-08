@@ -231,6 +231,8 @@ export default function Login(){
     }
   }
 
+  const localWord = locale === 'ar' ? 'arabic' : locale === 'tr' ? 'turkish' : 'english';
+
   return (
     <>
       <StatusBar hidden={true} />
@@ -277,12 +279,19 @@ export default function Login(){
               </View>
             </View>
           </View>
-          <View style={{flex: 1, minHeight: 100, backgroundColor: '#fff'}} />
+          <View style={{ minHeight: 75, backgroundColor: '#fff'}} />
           <View style={styles.footerContainer}>
             <Text style={[GlobalStyles.HeadingText, {color: '#fff', textAlign: 'center'}]}>{t('login_screen_welcome')}</Text>
             <Text style={[GlobalStyles.NormalText, {color: '#ddd', textAlign: 'center'}]}>{t('login_screen_introduce_hera')}</Text>
             <View style={{marginTop: Spacing.large, gap: Spacing.standard}}>
               <Button
+                style={
+                  {
+                    width: '100%',
+                    paddingHorizontal: Spacing.large,
+                    marginTop: Spacing.large
+                  }
+                }
                 buttonType={ButtonStyles.UNFILLED}
                 label={t('login_screen_get_started')}
                 onPress={async () => {
@@ -300,12 +309,12 @@ export default function Login(){
               }>
                 <TextLink 
                   pathname="/auth/web-view-screen"
-                  params={{ uri: `https://heradigitalhealth.org/${locale}/data-protection-policy/`, title: t('privacy_policy_toolbar_title')}}
+                  params={{ uri: `https://heradigitalhealth.org/data-protection-policy-${localWord}/`, title: t('privacy_policy_toolbar_title')}}
                 />
                 <Text style={{fontSize: 8, color: Colors.disabled}}>|</Text>
                 <TextLink 
                   pathname="/auth/web-view-screen"
-                  params={{ uri: `https://heradigitalhealth.org/${locale}/terms-and-conditions/`, title: t('terms_of_use_toolbar_title')}}
+                  params={{ uri: `https://heradigitalhealth.org/terms-and-conditions-${localWord}/`, title: t('terms_of_use_toolbar_title')}}
                 />
               </View>
             </View>
@@ -334,7 +343,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     // flex:1,
     padding: Spacing.large,
-    height: 280,
+    // height: 700,
     borderTopRightRadius: Spacing.xxlarge,
     borderTopLeftRadius: Spacing.xxlarge,
     gap: Spacing.large,
