@@ -88,7 +88,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
 
   return(
     <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
-      <View style={{flex: 1, gap: Spacing.large}}>
+      <View style={{flex: 1, gap: Spacing.large, backgroundColor: '#fff'}}>
         <View style={styles.container}>
           <View style={{gap: Spacing.small}}>
             <Text style={GlobalStyles.HeadingText}>{t('my_pregnancy_screen_toolbar_title')}</Text>

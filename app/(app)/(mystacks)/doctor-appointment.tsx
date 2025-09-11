@@ -29,7 +29,7 @@ export default function DoctorAppointment() {
   }
 
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
       <View style={styles.container}>
         <View style={{flex:1, gap: Spacing.large}}>
           <Text style={GlobalStyles.HeadingText}>{t('doctor_appointment_screen_title')}</Text>

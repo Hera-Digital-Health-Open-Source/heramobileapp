@@ -250,6 +250,7 @@ const localStyles = StyleSheet.create({
   },
   sectionHeaderText: {
     ...GlobalStyles.NormalText,
+    maxWidth: 330,
     fontSize: 16,
     color: Colors.white,
   },

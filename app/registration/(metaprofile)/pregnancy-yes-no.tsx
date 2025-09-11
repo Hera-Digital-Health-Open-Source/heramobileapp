@@ -25,7 +25,7 @@ export default function PregnancyYesNo(){
   }
 
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
       <View style={styles.container}>
         <View style={{gap: Spacing.small}}>
           <Text style={GlobalStyles.HeadingText}>{t('your_pregnancy_screen_toolbar_title')}</Text>
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: Spacing.large,
-    marginTop: Spacing.xxlarge
+    // marginTop: Spacing.xxlarge
   },
   continueButton: {
     position: 'absolute',
