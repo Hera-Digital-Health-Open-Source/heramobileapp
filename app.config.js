@@ -32,7 +32,7 @@ export default () => ({
     //   policy: "appVersion"
     // },
     ios: {
-      buildNumber: "27",
+      buildNumber: "31",
       icon: "./assets/images/ios-light.png",
       supportsTablet: true,
       bundleIdentifier: "com.heradigitalhealth.ios",
@@ -44,7 +44,7 @@ export default () => ({
       }
     },
     android: {
-      versionCode: 27,
+      versionCode: 31,
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff"
