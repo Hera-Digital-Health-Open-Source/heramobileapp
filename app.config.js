@@ -18,7 +18,7 @@ export default () => ({
   expo: {
     name: "Hera Digital Health",
     slug: "hera-digital-health",
-    version: "1.0.33",
+    version: "1.1.0",
     orientation: "portrait",
     icon: "./assets/images/adaptive-icon.png",
     scheme: "androidapp", //myapp
@@ -32,7 +32,7 @@ export default () => ({
     //   policy: "appVersion"
     // },
     ios: {
-      buildNumber: "31",
+      buildNumber: "33",
       icon: "./assets/images/ios-light.png",
       supportsTablet: true,
       bundleIdentifier: "com.heradigitalhealth.ios",
@@ -44,7 +44,7 @@ export default () => ({
       }
     },
     android: {
-      versionCode: 31,
+      versionCode: 33,
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff"
