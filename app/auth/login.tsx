@@ -1,6 +1,6 @@
 import { imgBoarding02, imgHeraIcon } from "@/assets/images/images";
 import { Image } from "expo-image";
-import { View , Text, StyleSheet, Pressable, Alert, Keyboard, ScrollView, Image as RNImage} from "react-native";
+import { View , Text, StyleSheet, Pressable, Alert, Keyboard, ScrollView, Image as RNImage, Platform} from "react-native";
 import { useEffect, useState } from "react";
 import DropDownPicker from "@/components/DropDownPicker"; 
 import { Colors, GlobalStyles, Spacing } from "@/assets/theme";
@@ -13,6 +13,7 @@ import {useAuth0, Auth0Provider, Credentials} from 'react-native-auth0';
 import { useAuthStore } from "@/store/authStore";
 import { useProfileStore } from "@/store/profileStore";
 import { useHttpClient } from '@/context/HttpClientContext';
+import Constants from 'expo-constants';
 import { UserProfile } from "@/interfaces/IUserProfile";
 
 function TextLink({pathname, params}: {pathname: string, params: {uri: string, title: string}}){
@@ -316,6 +317,8 @@ export default function Login(){
                   pathname="/auth/web-view-screen"
                   params={{ uri: `https://heradigitalhealth.org/terms-and-conditions-${localWord}/`, title: t('terms_of_use_toolbar_title')}}
                 />
+                <Text style={{fontSize: 8, color: Colors.disabled}}>|</Text>
+                <Text style={{fontSize: 8, color: Colors.disabled}}>{`${Constants.expoConfig?.version} (${Platform.OS === 'ios' ? Constants.expoConfig?.ios?.buildNumber : Constants.expoConfig?.android?.versionCode})`}</Text>
               </View>
             </View>
           </View>
