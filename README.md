@@ -1,30 +1,57 @@
-# Welcome to your Expo app 👋
+# HERA Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Welcome to the HERA Mobile App repository! HERA is dedicated to connecting refugee communities with essential healthcare services through an open-source mobile health platform. By making our technology freely available, we hope to empower organizations like NGOs and local aid groups to customize and deploy healthcare solutions that meet the specific needs of refugees in their regions.
 
-## Get started
+## Overview
 
-1. Get the .env file from another developer and place it in the root folder.
+HERA’s mission is to support vulnerable populations, particularly refugees, by increasing access to vital healthcare services. As part of this mission, HERA focuses on preventive healthcare, with an initial goal to improve prenatal care and vaccination rates among refugees. This project began by addressing critical healthcare needs among Syrian refugees in Turkey, and HERA plans to extend support to refugees globally.
 
-2. Install dependencies
+Our technology stack includes a React Native (Expo) mobile app and [Django web backend](https://github.com/Hera-Digital-Health-Open-Source/herabackend) with robust APIs, and an admin panel, all of which can be adapted by organizations to provide tailored healthcare solutions.
+
+## Features
+
+- **Mobile Health Platform**: Connects refugees with available healthcare services.
+- **Customizable Solution**: Open-source codebase that NGOs and organizations can adapt to specific regions and needs.
+- **Focus on Maternal and Child Health**: Prioritizes prenatal care and childhood vaccinations.
+
+## Getting Started
+
+To set up the HERA Mobile App locally, follow these steps:
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/download/) (version 22.13.0)
+
+### Installation
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/Hera-Digital-Health-Open-Source/heramobileapp.git
+   cd heramobileapp
+   ```
+
+2. Get the .env file from another developer and place it in the root folder.
+
+3. Install dependencies
 
    ```bash
    npm install
    ```
 
-3. Install Expo
+4. Install Expo
 
    ```bash
    npx expo install
    ```
 
-4. Prebuild
+5. Prebuild
 
    ```bash
    npx expo prebuild
    ```
 
-4. Start the app
+6. Start the app
 
    ```bash
     npx expo start
@@ -47,18 +74,38 @@ When you're ready, run:
 npm run reset-project
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Note
 
-## Learn more
+- You have a set of predefined scripts (in the scripts section of the package.json file) that you can use to accelerate producing the required build target:
+   - android:dev -> Generates an Android build and run it based on the .env.development environment.
+   - android:prod -> Generates an Android build and run it based on the .env.production environment.
+   - release:android:dev -> Generates a release Android build and run it based on the .env.development environment.
+   - release:android:prod -> Generates a release Android build and run it based on the .env.production environment.
+   - ios:dev -> Generates an iOS build and run it based on the .env.development environment.
+   - ios:prod -> Generates an iOS build and run it based on the .env.production environment.
+   - release:ios:dev -> Generates a release iOS build and run it based on the .env.development environment.
+   - release:ios:prod -> Generates a release iOS build and run it based on the .env.production environment.
 
-To learn more about developing your project with Expo, look at the following resources:
+## Contributing
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+We welcome contributions from everyone! Please check out our Contributing Guide for instructions on how to get involved. We also encourage you to read our [Code of Conduct](CODE_OF_CONDUCT.md) to ensure a positive experience for all contributors.
 
-## Join the community
+## Community & Support
 
-Join our community of developers creating universal apps.
+Stay connected with HERA’s community:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- [Facebook](https://www.facebook.com/HeraDigitalHealth)
+- [Twitter](https://twitter.com/HERA_dHealth)
+- [Instagram](https://www.instagram.com/heradigitalhealth/)
+- [YouTube](https://www.youtube.com/channel/UCkQ1ovuIV8qg7lezNgc6w2w)
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](/LICENSE) file for details.
+
+## Acknowledgments
+
+Thank you to all the contributors who make HERA possible! Special thanks to the HERA team and community for their dedication to open-source development.
+
+- [Su Yuen](https://github.com/suyuen)
+- [Husam](https://github.com/husam79)
