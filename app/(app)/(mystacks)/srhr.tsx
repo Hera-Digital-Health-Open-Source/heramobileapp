@@ -10,20 +10,11 @@ import {
   Pressable,
   SafeAreaView,
   ScrollView,
-  Image,
-  Linking,
   TextInput
 } from 'react-native';
-// import {color, styles, gifLoading, imgHomeWhatsappHotline} from '../../theme';
 import { Colors, GlobalStyles, Spacing } from '@/assets/theme';
-// import {useTranslation} from 'react-i18next';
-// import {t} from 'i18next';
-// import {ToolBar} from '../../components/toolbar';
-// import {userService} from '@services/user-service';
-// import {TouchableOpacity} from 'react-native-gesture-handler';
 import { useHttpClient } from '@/context/HttpClientContext';
 import { useAuthStore } from '@/store/authStore';
-import { imgHomeWhatsappHotline } from '@/assets/images/images';
 import { useRouter } from 'expo-router';
 import { useProfileStore } from '@/store/profileStore';
 
@@ -50,7 +41,7 @@ export default function SrhrScreen() {
   const [searchInput, setSearchInput] = useState('');
   const [filteredSections, setFilteredSections] = useState<ISection[]>([]);
   const {sendRequestFetch} = useHttpClient();
-  const { session } = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const router = useRouter();
   const { userProfile } = useProfileStore();
 
@@ -61,7 +52,8 @@ export default function SrhrScreen() {
         method: 'GET',
         headers: {
           'Accept-Language': 'en',
-          Authorization: 'Token ' + session,
+          Authorization: 'Bearer ' + session,
+          'Id-Authorization': 'Bearer ' + idToken!
         },
       });
 
@@ -129,27 +121,6 @@ export default function SrhrScreen() {
             placeholderTextColor={Colors.disabledtext}
             keyboardType="default"
           />
-            
-            {/*
-            <Pressable
-              style={localStyles.askAmtiContainer}
-              onPress={() => Linking.openURL(`https://wa.me/13613147388`)}>
-              <View
-                style={{
-                  alignItems: 'center',
-                  flexDirection: 'row' //i18n.language === 'ar' ? 'row-reverse' : 'row',
-                }}>
-                <Image
-                  style={localStyles.askAmtiImage}
-                  source={imgHomeWhatsappHotline}
-                />
-                  
-                <Text style={localStyles.askAmti}>
-                  {'Ask Amti!'} 
-                </Text>
-              </View>
-            </Pressable>
-            */}
           </View>
           <ScrollView>
             <View style={localStyles.sectionContainer}>
@@ -161,6 +132,7 @@ export default function SrhrScreen() {
                   />
                 ))}
             </View>
+            <View style={{minHeight: 150}} />
           </ScrollView>
         </View>
       )}
@@ -278,6 +250,7 @@ const localStyles = StyleSheet.create({
   },
   sectionHeaderText: {
     ...GlobalStyles.NormalText,
+    maxWidth: 330,
     fontSize: 16,
     color: Colors.white,
   },
@@ -298,8 +271,8 @@ const localStyles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.disabled,
+    // borderBottomWidth: 1,
+    // borderBottomColor: Colors.disabled,
     paddingLeft: Spacing.medium,
     paddingRight: 32,
     paddingVertical: Spacing.standard,

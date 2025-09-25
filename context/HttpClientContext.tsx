@@ -1,10 +1,10 @@
 import { createContext, useContext, useState, ReactNode, useCallback, useRef } from "react";
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { baseURL } from "@/constants";
 import { useLoading } from "./LoadingContext";
 import { useAuthStore } from "@/store/authStore";
 import { Alert } from "react-native";
 import { useTranslation } from '@/hooks/useTranslation';
+import { useAuth0 } from "react-native-auth0";
 
 export interface RequestConfig {
   url: string;
@@ -34,7 +34,8 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
     const {setSession} = useAuthStore();
     const isAlertShowing = useRef(false);
     const {t} = useTranslation();
-
+    const { getCredentials } = useAuth0();
+  
     // const axiosInstance = axios.create({
     //   baseURL: baseURL,
     //   timeout: 10000, // Optional: request timeout
@@ -47,31 +48,58 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
     const sendRequestFetch = async <T,> (requestObj: RequestConfig): Promise<ClientResponse<T>> => {
       setLoading(true);
         try{
+          let isTokenExpired = false;
           const requestOptions = {
             method: requestObj.method || 'GET',
             headers: requestObj.headers || {},
             body: JSON.stringify(requestObj.data),
           };
 
-          const response = await fetch(baseURL + requestObj.url, requestOptions);
-          if (response.status >= 400) {
-            const isTokenExpired = response.status >= 401 && response.status <= 403;
-            if(isTokenExpired){
-              setSession('');
-            }
+          let response = await fetch(baseURL + requestObj.url, requestOptions);
+          let responseStatus = response.status;
 
-            if(!isTokenExpired && !isAlertShowing.current){
-              isAlertShowing.current = true;
-              Alert.alert(t('connection_error_title'), t('connection_error_message'));
-              // Reset the flag after 3 seconds to allow new alerts if connection issues persist
-              setTimeout(() => {
-                isAlertShowing.current = false;
-              }, 3000);
+          if(responseStatus == 406){
+            // This means the accessToken is expired
+            // so try to refresh the accessToken
+            console.warn('Token is exipred (from server) - try to refresh tokens')
+            const credentials = await getCredentials();
+            if(credentials && credentials.accessToken){
+              let headers = requestObj.headers;
+              headers = {
+                ...headers,
+                Authorization: 'Bearer ' + credentials.accessToken,
+                'Id-Authorization': 'Bearer ' + credentials.idToken
+              };
+              const newRequestObj = {...requestObj, headers};
+              const newRequestOptions = {...requestOptions, headers: newRequestObj.headers};
+              console.warn(newRequestObj)
+              response = await fetch(baseURL + newRequestObj.url, newRequestOptions);
+              responseStatus = response.status;
+            } else {
+              responseStatus = 401;
             }
+          } 
+          
+          if(responseStatus >= 401 && responseStatus <= 403){
+            isTokenExpired = true;
+            console.log('HttpClientContext.tsx: token is expired, respondStatus:', responseStatus)
+            setSession('');
+          }
+
+          if (responseStatus >= 400 && !isTokenExpired && !isAlertShowing.current) {
+            isAlertShowing.current = true;
+            Alert.alert(t('connection_error_title'), t('connection_error_message'));
+            // Reset the flag after 3 seconds to allow new alerts if connection issues persist
+            setTimeout(() => {
+              isAlertShowing.current = false;
+            }, 3000);
+          }
+
+          if (responseStatus >= 400){
             return {
               data: null,
               isTokenExpired,
-              error: response.statusText || "Request failed",
+              error: responseStatus || "Request failed",
             };
           }
       

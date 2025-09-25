@@ -25,7 +25,7 @@ export default function ChildView({introduceText, child} : {introduceText: strin
   const [gender, setGender] = useState<string>('n/a');
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
   const { sendRequestFetch } = useHttpClient();
-  const { session } = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const [takenVaccines, setTakenVaccines] = useState<string[]>([]);
   const {t} = useTranslation();
   const router = useRouter();
@@ -66,7 +66,8 @@ export default function ChildView({introduceText, child} : {introduceText: strin
       headers: {
         'Accept-Language': 'en',
         'Content-Type': 'application/json',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
       data: payloadData,
     });
@@ -113,7 +114,8 @@ export default function ChildView({introduceText, child} : {introduceText: strin
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 
@@ -140,10 +142,11 @@ export default function ChildView({introduceText, child} : {introduceText: strin
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <ScrollView style={{flex:1}}>
       <View style={styles.container}>
         <View style={{gap: Spacing.large}}>
-          <Text style={GlobalStyles.HeadingText}>{title}</Text>
-          <Text style={GlobalStyles.NormalText}>{info}</Text>
+          <Text style={GlobalStyles.HeadingText}>{introduceText}</Text>
+          {/* {!child && <Text style={GlobalStyles.NormalText}>{info}</Text>} */}
         </View>
 
         <View style={{gap: Spacing.xlarge, flex: 1}}>
@@ -174,7 +177,7 @@ export default function ChildView({introduceText, child} : {introduceText: strin
           </View>
           <View style={{flex: 1}}>
             <Text style={GlobalStyles.NormalText}>{t('add_a_child_screen_past_vaccinations_title')}</Text>
-            <ScrollView style={{height: '100%'}}>
+            <View style={{height: '100%'}}>
               {child && vaccines && vaccines.map( (vaccine, index) => (
                 <Checkbox
                   key={index}
@@ -191,7 +194,7 @@ export default function ChildView({introduceText, child} : {introduceText: strin
                   onChange={(val) => {handleTakeVaccine(vaccine.name, val)}}
                 />
               ))}
-            </ScrollView>
+            </View>
           </View>
         </View>
         <Button
@@ -200,6 +203,8 @@ export default function ChildView({introduceText, child} : {introduceText: strin
           onPress={() => handleAddSaveChild()}
         /> 
       </View>
+      <View style={{minHeight: 100}} />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -208,7 +213,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: Spacing.large,
-    marginTop: Spacing.xxlarge,
+    // marginTop: Spacing.xxlarge,
     gap: Spacing.xlarge,
     backgroundColor: '#fff',
   },

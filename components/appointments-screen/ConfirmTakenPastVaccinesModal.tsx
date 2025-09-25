@@ -1,11 +1,11 @@
 import { StyleSheet, View, Text, Pressable, Modal, StyleProp, ViewStyle, ScrollView, TouchableWithoutFeedback } from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from "react";
 import Appointment from "@/interfaces/IAppointment";
-import MarkAsDoneButton from "./MarkAsDoneButton";
 import Checkbox from "../CheckBox";
 import Button, { ButtonStyles } from "../Button";
-import { Spacing } from "@/assets/theme";
+import { Colors, Spacing } from "@/assets/theme";
 import { useTranslation } from "@/hooks/useTranslation";
 
 type Props = {
@@ -34,13 +34,28 @@ export default function ConfirmTakenPastVaccinesModal({appointment, onSave, styl
     setIsPickerVisible(false); //this line should be put after the async onSave function, otherwise the frontend will freeze.
   };
 
+  const checkIsAllTaken = () => {
+    for(let vaccine of appointment.vaccine_names){
+      if(initTakenVaccines.filter(i => i === vaccine).length === 0){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  const isAllTaken = checkIsAllTaken();
+
   return (
     <View style={style}>
-      <MarkAsDoneButton 
-        style={{paddingHorizontal: Spacing.small}}
-        label={t('my_appointments_screen_mark_as_done_btn')}
-        onPress={() => setIsPickerVisible(!isPickerVisible)}
-      />
+      <Pressable 
+        onPress={() => setIsPickerVisible(!isPickerVisible)} 
+        style={[styles.markAsDoneButtonContainer, isAllTaken ? {borderColor: Colors.green} : {borderColor: Colors.primary,}]}
+      >
+        <Text style={[styles.markAsDoneText, isAllTaken ? {color: Colors.green} : {}]}>
+          {isAllTaken ? t('intro_screen_done') : t('my_appointments_screen_mark_as_done_btn')}
+        </Text>
+        {isAllTaken && <Ionicons name="checkmark-circle-outline" color={Colors.green} size={20}/> }
+      </Pressable>
 
       <Modal animationType="fade" transparent={true} visible={isPickerVisible}>
         <TouchableWithoutFeedback onPress={() => setIsPickerVisible(false)}>
@@ -63,7 +78,7 @@ export default function ConfirmTakenPastVaccinesModal({appointment, onSave, styl
                     <ScrollView>
                       {appointment.vaccine_names?.map( (vaccineName, index) => (
                         <Checkbox
-                          key={index}
+                          key={`${vaccineName}-${index}`}
                           initIsChecked={takenVaccines.filter(t => t == vaccineName).length === 1}
                           label={vaccineName}
                           onChange={(val) => {handleTakeVaccine(vaccineName, val)}}
@@ -86,6 +101,25 @@ export default function ConfirmTakenPastVaccinesModal({appointment, onSave, styl
 }
 
 const styles = StyleSheet.create({
+  markAsDoneButtonContainer: {
+    // ...GlobalStyles.ButtonALT,
+    paddingHorizontal: Spacing.small,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.small, 
+    borderWidth: 1,
+    height: 36,
+    justifyContent: 'center',
+    borderRadius: Spacing.medium,
+    minWidth: 110,
+  },
+  markAsDoneText: {
+    fontWeight: "700",
+    textAlign: 'center',
+    fontSize: Spacing.large,
+    fontFamily: 'Roboto-Bold',
+    color: Colors.primary,
+  },
   modalContainer: {
     height: '50%',
     width: '100%',

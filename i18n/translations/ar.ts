@@ -13,11 +13,14 @@ export default {
   doctor_appointment_screen_call_hotline: "اتصل الآن",
   login_screen_title: "للحفاظ على صحة الأسرة",
   login_screen_select_language_dropdown_hint: "اختيار اللغة ",
-  language_dropdown_english_text: "الأنكليزية",
+  language_dropdown_english_text: "English",
   language_dropdown_arabic_text: "العربية",
-  language_dropdown_turkish_text: "التركية",
+  language_dropdown_turkish_text: "Türkçe",
   language_dropdown_dari_text: "داري",
   language_dropdown_pashto_text: "الباشتو",
+  login_screen_get_started: "لنبدأ",
+  login_screen_welcome: "مرحبًا بكم في هيرا!",
+  login_screen_introduce_hera: "نساعد اللاجئين في الحصول على الرعاية الصحية المجانية في تركيا وكيفية العيش كأسرة صحية!",
   login_screen_phone_number_hint: "رقم الهاتف",
   login_screen_login_button:  "تسجيل دخول ",
   login_screen_signup_button: "إنشاء حساب",
@@ -198,7 +201,7 @@ export default {
   my_appointments_pregnancy_check: "مراجعة الحمل",
   no_appointments_note_title: "لا يوجد لديك مواعيد مقترحة",
   no_appointments_note_description: "أضيفي طفلك او أدخلي تفاصيل حملك للحصول على مواعيدك المقترحة",
-  my_appointments_screen_mark_as_done_btn: "تحديد المكتمل",
+  my_appointments_screen_mark_as_done_btn: "اختر",
   my_appointments_screen_i_attend_this_btn: "حضرت هذا",
   my_appointments_screen_prenatal_attend_label: "هل ذهبتِ إلى فحص ما قبل الولادة في",
   get_reminders_on_whatsapp_home_screen: "احصل على تذكيرات بالمواعيد على WhatsApp. أنقر هنا!",
@@ -232,5 +235,5 @@ export default {
   intro_screen_next: "التالي",
   intro_screen_back: "عودة",
   intro_screen_skip: "تخطي",
-  intro_screen_done: "تم / إنهاء"
+  intro_screen_done: "تم"
 };

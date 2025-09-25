@@ -1,32 +1,50 @@
-import { imgHeraIcon, imgLoginMain } from "@/assets/images/images";
+import { imgBoarding02, imgHeraIcon } from "@/assets/images/images";
 import { Image } from "expo-image";
-import { View , Text, StyleSheet, TextInput, Pressable, KeyboardAvoidingView, Alert, Keyboard, TouchableWithoutFeedback, ScrollView} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View , Text, StyleSheet, Pressable, Alert, Keyboard, ScrollView, Image as RNImage, Platform} from "react-native";
 import { useEffect, useState } from "react";
 import DropDownPicker from "@/components/DropDownPicker"; 
-import CountryModalPicker from "@/components/CountryModalPicker";
-import { GlobalStyles, Spacing } from "@/assets/theme";
+import { Colors, GlobalStyles, Spacing } from "@/assets/theme";
 import Button, {ButtonStyles} from "@/components/Button";
-import { useRouter } from "expo-router";
-import { Platform } from "react-native";
-// import CloudflareTurnstile from "@/components/login/CloudflareTurnstile";
+import { RelativePathString, useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useI18n } from "@/context/I18nContext";
-import Auth0 from 'react-native-auth0';
+import {useAuth0, Auth0Provider, Credentials} from 'react-native-auth0';
 import { useAuthStore } from "@/store/authStore";
 import { useProfileStore } from "@/store/profileStore";
+import { useHttpClient } from '@/context/HttpClientContext';
+import Constants from 'expo-constants';
+import { UserProfile } from "@/interfaces/IUserProfile";
+
+function TextLink({pathname, params}: {pathname: string, params: {uri: string, title: string}}){
+  const router = useRouter();
+
+  return (
+    <Pressable 
+      onPress={() => {
+        router.push({
+          pathname: pathname as RelativePathString,
+          params: params
+        })
+      }}
+    >
+      <Text style={[GlobalStyles.NormalText, {fontSize: 8, color: Colors.disabled}]}>{params.title}</Text>
+    </Pressable>
+  )
+}
 
 export default function Login(){
   const [selectedCountryCallingCode, setSelectedCountryCallingCode] = useState<string | null>("+90");
   const [mobileNumber, setMobileNumber] = useState<string | undefined>(undefined);
   const [completeMobileNumber, updateFullMobileNumber] = useState<string | undefined>(undefined);
-  const [isRegisterMode, setIsRegisterMode] = useState(true);
-  const { session, setFullMobileNumber } = useAuthStore();
-  const { userProfile } = useProfileStore();
-  // const [showCaptcha, setShowCaptcha] = useState(false);
+  const [imageSize, setImageSize] = useState({ width: 200, height: 200 });
+  const { userProfile, setUserProfile } = useProfileStore();
   const { t } = useTranslation();
   const { setAppLanguage, locale } = useI18n();
   const router = useRouter();
+  const { authorize, error, getCredentials, clearSession } = useAuth0();
+  const { sendRequestFetch } = useHttpClient();
+  const { signOut, setSession, setIdToken, setUserId, userId, session, setFullMobileNumber} = useAuthStore();
 
   const languages = [
     {label: t('language_dropdown_arabic_text'), key: 'ar'},
@@ -42,9 +60,36 @@ export default function Login(){
   // Then re-route him to the home screen.
   useEffect(() => {
     if(session && userProfile){
+      console.log(`----- Credentials are received from authStore: ${JSON.stringify(session).substring(0,40)}...`);
       router.replace('/');
     }
   }, [session, userProfile]);
+
+  // Get the original image dimensions
+  useEffect(() => {
+    RNImage.getSize(
+      RNImage.resolveAssetSource(imgBoarding02).uri,
+      (width, height) => {
+        // Scale down if image is too large, but maintain aspect ratio
+        const maxWidth = 300;
+        const aspectRatio = width / height;
+        
+        if (width > maxWidth) {
+          setImageSize({
+            width: maxWidth,
+            height: maxWidth / aspectRatio
+          });
+        } else {
+          setImageSize({ width, height });
+        }
+      },
+      (error) => {
+        console.log('Error getting image size:', error);
+        // Fallback to default size
+        setImageSize({ width: 200, height: 200 });
+      }
+    );
+  }, []);
 
   
   useEffect(() => {
@@ -53,118 +98,258 @@ export default function Login(){
     }
   }, [selectedCountryCallingCode, mobileNumber]);
 
-  const handleRequestOtp = async (/*captchaToken: string*/) => {
-    if(completeMobileNumber){
-      setFullMobileNumber(completeMobileNumber);
-      const auth0 = new Auth0({
-          domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN!,
-          clientId: process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID!,
+  const patchUserProfile = async (
+    userProfile: UserProfile, 
+    theSession: string,
+    theIdToken: string,
+    theUserId: number
+  ) => {
+    const response = await sendRequestFetch<{}>({
+      url: `/user_profiles/${theUserId}/`,
+      method: "PATCH",
+      data: userProfile,
+      headers: {
+        "Accept-Language": "en",
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: 'Bearer ' + theSession,
+        'Id-Authorization': 'Bearer ' + theIdToken
+      },
+    });
+
+    if(response.isTokenExpired){
+      return router.replace('/auth/login');
+    }
+
+    if (response.error) {
+      Alert.alert(
+        t('connection_error_title'),
+        t('connection_error_message')
+      );
+    }
+  };
+
+  const ensureCredentials = async () => {
+    try {
+      // Try to reuse existing credentials
+      const currentCredentials = await getCredentials();
+      if(currentCredentials){
+        return currentCredentials;
+      } else {
+        console.warn("No valid credentials found, authorizing...");
+
+        console.log(`Identifier: ${process.env.EXPO_PUBLIC_API_IDENTIFIER}`)
+        // Run login flow
+        await authorize({
+          audience: process.env.EXPO_PUBLIC_API_IDENTIFIER,
+          scope: 'openid profile offline_access email', // include other API scopes as needed
         });
-      try{
-        
-        await auth0.auth.passwordlessWithSMS({
-          phoneNumber: completeMobileNumber, 
-        });
-      } catch(e){
-        console.log(e)
+
+        return await getCredentials();
       }
-      
-      router.push('/auth/otp-screen');
+    } catch (err) {
+      console.error(err);
+      // setUserProfile(null);
+      // signOut();
+      // await clearSession();
+      return undefined;
     }
   }
 
+  const handleLogin = async () => {
+    try{      
+      const credentials = await ensureCredentials();
+      if (!credentials){
+        // console.log(credentials)
+        // Alert.alert("Authentication Failed", "Auth process couldn't be completed, make sure your are connected to the internet");
+        setUserProfile(null);
+        signOut();
+        await clearSession();
+        return;
+      }
+      // console.log('~'.repeat(100));
+      // console.log(new Date());
+      // console.log(`----- Credentials are received from auth0: ${credentials ? JSON.stringify(credentials).substring(0,40) : ''}...`);
+      // console.log(credentials.idToken)
+      if(credentials && credentials.idToken){
+        const response = await sendRequestFetch<{
+          token: string,
+          is_new_user: boolean,
+          user_id: number,
+          user_profile: UserProfile,
+          uid: string
+        }>({
+          url: '/otp_auth/auth0_authentication/',
+          method: 'POST',
+          headers: {
+            'Accept-Language': 'en',
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + credentials.accessToken,
+            'Id-Authorization': 'Bearer ' + credentials.idToken
+          },
+        });
+
+        // console.log(`----- ${response.isTokenExpired ? 'The id token is expired!' : 'The id token is ok!'}`)
+        if(response.isTokenExpired){
+          await clearSession();
+          return router.replace('/auth/login');
+        }
+
+        if(response.error){
+          console.log('Error in login.tsx: ', response.error);
+          return;
+        }
+        if(response.data){
+          // setSession(response.data.token);
+          // console.log(`----- ${response.data.user_profile ? 'User profile is ok' : 'User profile is missing!'}`)
+          // console.log('----- Setting importants values in the store')
+
+          setSession(credentials.accessToken);
+          setIdToken(credentials.idToken);
+          setUserId(response.data.user_id);
+          setFullMobileNumber(response.data.uid);
+          if(response.data.user_profile){
+            if(response.data.user_profile.language_code !== locale){
+              response.data.user_profile.language_code = locale as 'tr' | 'en' | 'ar';
+              await patchUserProfile(
+                response.data.user_profile,
+                response.data.token,
+                credentials.idToken,
+                response.data.user_id
+              );
+            }
+            setUserProfile(response.data.user_profile);
+            router.replace('/');
+          } else if(response.data.is_new_user || !response.data.user_profile) {
+            router.replace('/registration/user-details');
+          } else {
+            return;
+          }
+        }
+      }
+    } catch (e){
+      console.log(`Error when login: ${e}`);
+    }
+  }
+
+  const localWord = locale === 'ar' ? 'arabic' : locale === 'tr' ? 'turkish' : 'english';
+
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <View style={{alignItems: 'flex-end', padding: 16}}>
-          <Button 
-            buttonType={ButtonStyles.PLAIN}
-            label={isRegisterMode ? t('login_screen_login_button') : t('login_screen_signup_button')}
-            onPress={()=>setIsRegisterMode((prev) => !prev)}
-          />
-        </View>
+    <>
+      <StatusBar hidden={true} />
+      <View style={{flex: 1, backgroundColor: Colors.primary}}>
         <ScrollView 
           style={{flex: 1}} 
-          contentContainerStyle={{paddingBottom: 50}}
+          contentContainerStyle={{flexGrow: 1}}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={true}
+          showsVerticalScrollIndicator={false}
+          bounces={true}
         >
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.loginContainer}>
-              <Image source={imgHeraIcon} style={{width: 250, height:150}}/>
-              <Text style={GlobalStyles.HeadingText}>{t('hera_official_name')}</Text>
-              {/* <Text style={{...GlobalStyles.NormalText, marginTop: Spacing.large}}>{t('login_screen_title')}</Text> */}
-              <View style={styles.loginInputsContainer}>
+          <View style={styles.headerContainer}>
+              <RNImage
+                source={imgBoarding02} 
+                style={{
+                  width: imageSize.width,
+                  height: imageSize.height,
+                }} 
+                resizeMode="contain"
+              />
+              <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                <Image source={imgHeraIcon} style={{width: 90, height:150/250 * 90}}/>
+                <Text style={[GlobalStyles.HeadingText, {left: -Spacing.standard}]}>{t('hera_official_name')}</Text>
+              </View>
+            <View style={styles.changeLanguageContainer}>
               <View>
-              <Text style={{marginTop: Spacing.large, marginBottom: Spacing.medium, ...GlobalStyles.NormalText}}>{t('login_screen_select_language_dropdown_hint')}</Text>
+              <Text style={
+                  {
+                    textAlign: 'left',
+                    marginTop: Spacing.large,
+                    marginBottom: Spacing.medium, 
+                    ...GlobalStyles.NormalText
+                  }
+                }
+              >
+                {t('login_screen_select_language_dropdown_hint')}
+              </Text>
               <DropDownPicker 
                 items={languages}
                 style={{marginTop: 8}}
-                // label={languages.filter(l => l.key===selectedLanguage)[0].label} 
                 initialKeySelection={locale}
                 onItemSelectionChanged={(key) => setCurrentLanguage(key)}
               />
               </View>
-              <View>
-              <Text style={{marginTop: Spacing.large, marginBottom: Spacing.medium, ...GlobalStyles.NormalText}}>{t('login_screen_phone_number_hint')}</Text>
-              <View style={{flexDirection: 'row', gap: 8 , alignContent: 'space-between', marginTop: 8}}>
-                <CountryModalPicker
-                  style={{width:75}}
-                  preferredCountries={['TR', 'US']}
-                  defaultCallingCode="+90"
-                  onCountrySelectionChanged={(v) => setSelectedCountryCallingCode(v)}
+            </View>
+          </View>
+          <View style={{ minHeight: 75, backgroundColor: '#fff'}} />
+          <View style={styles.footerContainer}>
+            <Text style={[GlobalStyles.HeadingText, {color: '#fff', textAlign: 'center'}]}>{t('login_screen_welcome')}</Text>
+            <Text style={[GlobalStyles.NormalText, {color: '#ddd', textAlign: 'center'}]}>{t('login_screen_introduce_hera')}</Text>
+            <View style={{marginTop: Spacing.large, gap: Spacing.standard}}>
+              <Button
+                style={
+                  {
+                    width: '100%',
+                    paddingHorizontal: Spacing.large,
+                    marginTop: Spacing.large
+                  }
+                }
+                buttonType={ButtonStyles.UNFILLED}
+                label={t('login_screen_get_started')}
+                onPress={async () => {
+                  Keyboard.dismiss();
+                  handleLogin();
+                }}
+              />
+              <View style={
+                {
+                  flexDirection: 'row',
+                  gap: Spacing.medium,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }
+              }>
+                <TextLink 
+                  pathname="/auth/web-view-screen"
+                  params={{ uri: `https://heradigitalhealth.org/data-protection-policy-${localWord}/`, title: t('privacy_policy_toolbar_title')}}
                 />
-                <TextInput
-                  style={[GlobalStyles.InputBoxStyle, GlobalStyles.NormalText, {flex:1}]}
-                  onChangeText={(t) => setMobileNumber(t)}
-                  value={mobileNumber}
-                  placeholder={t('login_screen_phone_number_hint')}
-                  keyboardType="number-pad"
-                  returnKeyType="done"
-                  onSubmitEditing={() => Keyboard.dismiss()}
+                <Text style={{fontSize: 8, color: Colors.disabled}}>|</Text>
+                <TextLink 
+                  pathname="/auth/web-view-screen"
+                  params={{ uri: `https://heradigitalhealth.org/terms-and-conditions-${localWord}/`, title: t('terms_of_use_toolbar_title')}}
                 />
-              </View>
-              </View>
-              <View style={styles.loginButtonsContainer}>
-                <Button
-                  label={isRegisterMode ? t('login_screen_signup_button') : t('login_screen_login_button')}
-                  onPress={async () => {
-                    Keyboard.dismiss();
-                    handleRequestOtp();
-                  }}
-                />
+                <Text style={{fontSize: 8, color: Colors.disabled}}>|</Text>
+                <Text style={{fontSize: 8, color: Colors.disabled}}>{`${Constants.expoConfig?.version} (${Platform.OS === 'ios' ? Constants.expoConfig?.ios?.buildNumber : Constants.expoConfig?.android?.versionCode})`}</Text>
               </View>
             </View>
           </View>
-          </TouchableWithoutFeedback>
         </ScrollView>
-      </KeyboardAvoidingView>
-      {/* <CloudflareTurnstile
-        show={showCaptcha}
-        setIsShow={setShowCaptcha}
-        successFn={async (token) => {
-          await handleRequestOtp(token);
-        }}
-      /> */}
-    </SafeAreaView>
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  loginButtonsContainer:{
-    marginTop: 26,
-    marginBottom: 20,
-  },
-  loginContainer: {
-    paddingHorizontal: 16,
+  headerContainer: {
+    // paddingHorizontal: 16,
+    backgroundColor: '#fff',
     alignItems: 'center',
     paddingTop: 20,
-    paddingBottom: 40,
+    gap: Spacing.xlarge
+    // paddingBottom: 40,
   },
-  loginInputsContainer: {
-    marginTop: 32,
+  changeLanguageContainer: {
+    paddingHorizontal: Spacing.large,
     width: '100%',
-    gap: Spacing.large,
     alignSelf: 'flex-start',
+  },
+  footerContainer: {
+    backgroundColor: Colors.primary,
+    // flex:1,
+    padding: Spacing.large,
+    // height: 700,
+    borderTopRightRadius: Spacing.xxlarge,
+    borderTopLeftRadius: Spacing.xxlarge,
+    gap: Spacing.large,
+    marginTop: -50
   }
 })

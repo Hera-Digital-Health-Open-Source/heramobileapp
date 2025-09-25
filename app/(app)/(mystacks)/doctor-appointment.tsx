@@ -29,7 +29,7 @@ export default function DoctorAppointment() {
   }
 
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
       <View style={styles.container}>
         <View style={{flex:1, gap: Spacing.large}}>
           <Text style={GlobalStyles.HeadingText}>{t('doctor_appointment_screen_title')}</Text>
@@ -37,7 +37,7 @@ export default function DoctorAppointment() {
           <Image source={imgDoctorAppointmentMain} style={{width: 330, height: 330, marginHorizontal: 'auto'}} />
         </View>
         <Button
-            // style={{flex: 1}}
+            style={{marginBottom: Spacing.xlarge}}
             buttonType={ButtonStyles.FILLED}
             label={t('doctor_appointment_screen_call_hotline')}
             onPress={openPhoneApp}
@@ -51,8 +51,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: Spacing.large,
-    marginTop: Spacing.xxlarge,
+    // marginTop: Spacing.xxlarge,
     gap: Spacing.xxlarge,
+    backgroundColor: '#fff'
   },
   yesNoContainer: {
     flex:1,

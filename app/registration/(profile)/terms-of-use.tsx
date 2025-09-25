@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: Spacing.large,
     gap: Spacing.large,
-    marginTop: Spacing.xxlarge,
+    // marginTop: Spacing.xxlarge,
     backgroundColor: '#fff',
   },
   continueButton: {

@@ -4,13 +4,15 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useHttpClient } from "@/context/HttpClientContext";
 import { useAuthStore } from "@/store/authStore";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function ChildAdd(){
   const { childId } = useLocalSearchParams();
   const [child, setChild] = useState<Child | undefined>(undefined);
   const { sendRequestFetch } = useHttpClient();
-  const { session } = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const id = childId ? Number(childId) : undefined;
 
@@ -22,7 +24,8 @@ export default function ChildAdd(){
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 
@@ -47,8 +50,8 @@ export default function ChildAdd(){
   }, [id]);
 
   if(child){
-    return (<ChildView introduceText="Edit a child" child={child}/>);
+    return (<ChildView introduceText={t('edit_a_child_screen_toolbar_title')} child={child}/>);
   } else {
-    return (<ChildView introduceText="Add a child"/>);
+    return (<ChildView introduceText={t('children_info_screen_add_a_child_button')}/>);
   }
 }

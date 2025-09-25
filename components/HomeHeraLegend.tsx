@@ -5,10 +5,10 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 
 export default function HomeHeraLegend(){
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   return (
-    <View style={styles.legendContainer}>
+    <View style={[styles.legendContainer, locale === 'tr' ? {width: '72%'} : {}]}>
       <View style={styles.headerContainer}>
         <Image source={heraIcon} style={{width: 38, height: 35, marginRight: 10}} />
         <Text style={styles.titleText}>{t('hera_official_name')}</Text>

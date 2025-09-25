@@ -13,12 +13,17 @@ export default function StacksLayout(){
       headerShown: true,
       headerTitle: '',
       headerShadowVisible: false,
+      headerTransparent: false,
+      headerStyle: {
+        backgroundColor: '#fff',
+      },
       // Use custom back button that respects language changes
       headerLeft: (props) => props.canGoBack ? <CustomBackButton /> : undefined,
       headerBackVisible: false, // Hide default back button
       headerTitleAlign: 'center',
     }}>
       <Stack.Screen name="index" options={{headerShown: false}} />
+      <Stack.Screen name="web-view-screen" options={{headerShown: false}} />
     </Stack>  
   );
 }

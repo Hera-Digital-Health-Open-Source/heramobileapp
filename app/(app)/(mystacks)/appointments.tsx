@@ -37,7 +37,7 @@ export default function Appointments() {
   const [isCalendarView, setIsCalendarView] = useState(true);
   const { sendRequestFetch } = useHttpClient();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const { session } = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const [ selectedAppointments, setSelectedAppointments ] = useState<Appointment[]>([]);
   const [ selectedDay, setSelectedDay ] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -54,7 +54,8 @@ export default function Appointments() {
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 
@@ -75,7 +76,8 @@ export default function Appointments() {
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 
@@ -96,7 +98,8 @@ export default function Appointments() {
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 
@@ -116,7 +119,8 @@ export default function Appointments() {
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 
@@ -138,7 +142,7 @@ export default function Appointments() {
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
       },
     });
 
@@ -157,7 +161,8 @@ export default function Appointments() {
       headers: {
         'Accept-Language': 'en',
         'Content-Type': 'application/json',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
       data: child,
     });
@@ -177,7 +182,8 @@ export default function Appointments() {
       headers: {
         'Accept-Language': 'en',
         'Content-Type': 'application/json',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 
@@ -240,7 +246,7 @@ export default function Appointments() {
   const renderAppointmentPregnancyListItem = (item : Appointment) => {
     return (
       <View style={[styles.item, {flexDirection: 'row', alignItems: 'center'}]}>
-        <View style={{flex: 5, gap: Spacing.medium}}>
+        <View style={{flex: 5, gap: Spacing.medium, alignItems:'flex-start'}}>
           <Text style={GlobalStyles.SubHeadingText}>{item.date}</Text>
           <Text style={styles.title}>{t('my_appointments_pregnancy_check')}</Text>
           <Text style={{}}>{''}</Text>
@@ -333,7 +339,7 @@ export default function Appointments() {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <DynamicNavigationHeader />
+      {/* <DynamicNavigationHeader /> */}
       <View style={styles.container}>
       <Text style={[GlobalStyles.SubHeadingText, {textAlign: 'center'}]}>{t('home_screen_my_appointments_title')}</Text>
       <View style={{ flexDirection: 'row', gap: 10, width: '75%', marginLeft: Spacing.medium }}>
@@ -403,7 +409,7 @@ const styles = StyleSheet.create({
   // },
   container: {
     flex: 1,
-    marginTop: Spacing.xxlarge,
+    marginTop: 0,
     gap: Spacing.medium,
   },
   header: {

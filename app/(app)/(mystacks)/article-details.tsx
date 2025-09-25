@@ -26,7 +26,7 @@ export default function ArticleDetailsScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { sendRequestFetch } = useHttpClient();
-  const { session } = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const { userProfile } = useProfileStore();
   const router = useRouter();
 
@@ -41,7 +41,8 @@ export default function ArticleDetailsScreen() {
           method: 'GET',
           headers: {
             'Accept-Language': 'en',
-            Authorization: 'Token ' + session,
+            Authorization: 'Bearer ' + session,
+            'Id-Authorization': 'Bearer ' + idToken!
           },
         });
 

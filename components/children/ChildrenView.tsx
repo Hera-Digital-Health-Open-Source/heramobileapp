@@ -13,7 +13,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 export default function ChildrenView({showIamDone}: { showIamDone: boolean}) {
   const { sendRequestFetch } = useHttpClient();
   const [children, setChildren] = useState<Child[]>([]);
-  const { session } = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const {t} = useTranslation();
   const router = useRouter();
 
@@ -32,7 +32,8 @@ export default function ChildrenView({showIamDone}: { showIamDone: boolean}) {
       method: 'GET',
       headers: {
         'Accept-Language': 'en',
-        Authorization: 'Token ' + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 
@@ -91,12 +92,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
     paddingHorizontal: Spacing.large,
-    marginTop: Spacing.xxlarge,
+    // marginTop: Spacing.xxlarge,
     gap: Spacing.xxlarge,
   },
   actionButtonsContainer: {
     flexDirection: 'row',
     width: '100%',
-    gap: Spacing.xlarge
+    gap: Spacing.xlarge,
+    marginBottom: Spacing.xlarge
   },
 });

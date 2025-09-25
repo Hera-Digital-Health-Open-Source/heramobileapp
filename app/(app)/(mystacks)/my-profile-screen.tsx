@@ -16,7 +16,7 @@ export default function MyProfileScreen(){
   const router = useRouter();
   const [userProfileSynced, setUserProfileSynced] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const { session } = useAuthStore();
+  const { session, idToken } = useAuthStore();
 
   useEffect(() => {
     let isMounted = true; // Flag to prevent state updates if component unmounts
@@ -36,7 +36,8 @@ export default function MyProfileScreen(){
           method: 'GET',
           headers: {
             'Accept-Language': 'en',
-            Authorization: 'Token ' + session,
+            Authorization: 'Bearer ' + session,
+            'Id-Authorization': 'Bearer ' + idToken!
           },
         });
 

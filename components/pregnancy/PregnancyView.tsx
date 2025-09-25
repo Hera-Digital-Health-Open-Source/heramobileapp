@@ -16,7 +16,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
   const [prenatalVisits, setPrenatalVisits] = useState<string>("");
   const [pregnancyWeek, setPregnancyWeek] = useState<string>("");
   const {sendRequestFetch} = useHttpClient();
-  const {session} = useAuthStore();
+  const { session, idToken } = useAuthStore();
   const {t} = useTranslation();
   const router = useRouter();
 
@@ -64,7 +64,8 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
       headers: {
         'Accept-Language': 'en',
         'Content-Type': 'application/json',
-        Authorization: 'Token ' + session
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       }
     };
 
@@ -87,7 +88,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
 
   return(
     <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
-      <View style={{flex: 1, gap: Spacing.large}}>
+      <View style={{flex: 1, gap: Spacing.large, backgroundColor: '#fff'}}>
         <View style={styles.container}>
           <View style={{gap: Spacing.small}}>
             <Text style={GlobalStyles.HeadingText}>{t('my_pregnancy_screen_toolbar_title')}</Text>
@@ -171,20 +172,22 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
               )}
             </View>
           </View>
-          {(pregnancy || !isInRegistrationProcess) && (
-            <Button
-              buttonType={ enableContinue ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
-              label={t('general_save_button')}
-              onPress={enableContinue ? addSavePregnancy : () => {}}
-            /> 
-          )}
-          {isInRegistrationProcess && (
-            <Button
-              buttonType={ enableContinue ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
-              label={t('otp_screen_continue_button')}
-              onPress={enableContinue ? addSavePregnancy : () => {}}
-            /> 
-          )}
+          <View style={{marginBottom: Spacing.xlarge}}>
+            {(pregnancy || !isInRegistrationProcess) && (
+              <Button
+                buttonType={ enableContinue ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
+                label={t('general_save_button')}
+                onPress={enableContinue ? addSavePregnancy : () => {}}
+              /> 
+            )}
+            {isInRegistrationProcess && (
+              <Button
+                buttonType={ enableContinue ? ButtonStyles.FILLED : ButtonStyles.DISABLED}
+                label={t('otp_screen_continue_button')}
+                onPress={enableContinue ? addSavePregnancy : () => {}}
+              /> 
+            )}
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -195,7 +198,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: Spacing.large,
-    marginTop: Spacing.xxlarge,
+    // marginTop: Spacing.xxlarge,
     gap: Spacing.xxlarge,
     backgroundColor: '#fff',
   },

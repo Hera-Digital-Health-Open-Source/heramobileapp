@@ -1,13 +1,27 @@
-import 'dotenv/config';
+// Determine which environment file to load
+const environment = process.env.NODE_ENV || process.env.EXPO_PUBLIC_ENV || 'development';
+
+// Load the appropriate .env file
+const envFile = environment === 'production' ? '.env.production' : '.env.development';
+require('dotenv').config({ path: envFile });
+
+if(environment === 'development'){
+  console.log('='.repeat(100))
+  console.log(`🌍 Loading environment: ${environment} from ${envFile}`);
+  
+  console.log(process.env.EXPO_PUBLIC_AUTH0_DOMAIN)
+  console.log(process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID)
+  console.log(process.env.EXPO_PUBLIC_BASE_URL)
+}
 
 export default () => ({
   expo: {
     name: "Hera Digital Health",
     slug: "hera-digital-health",
-    version: "1.0.33",
+    version: "1.1.0",
     orientation: "portrait",
     icon: "./assets/images/adaptive-icon.png",
-    scheme: "myapp",
+    scheme: "androidapp", //myapp
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     // updates: {
@@ -18,7 +32,7 @@ export default () => ({
     //   policy: "appVersion"
     // },
     ios: {
-      buildNumber: "9",
+      buildNumber: "33",
       icon: "./assets/images/ios-light.png",
       supportsTablet: true,
       bundleIdentifier: "com.heradigitalhealth.ios",
@@ -30,7 +44,7 @@ export default () => ({
       }
     },
     android: {
-      versionCode: 20,
+      versionCode: 33,
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff"
@@ -47,7 +61,7 @@ export default () => ({
         "android.permission.ACCESS_FINE_LOCATION"
       ],
       manifestPlaceholders: {
-        auth0Domain: "heradigitalhealth.eu.auth0.com",     // 🔁 use your real Auth0 domain
+        auth0Domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN || "heradigitalhealth.eu.auth0.com",
         auth0Scheme: "myapp",                    // 🔁 use your actual scheme
       },
     },
@@ -57,6 +71,16 @@ export default () => ({
       favicon: "./assets/images/favicon.png"
     },
     plugins: [
+      [
+        'expo-build-properties',
+        {
+          android: {
+            compileSdkVersion: 35,
+            targetSdkVersion: 35,
+            buildToolsVersion: '35.0.0',
+          },
+        },
+      ],
       "expo-router",
       [
         "expo-splash-screen",
@@ -81,7 +105,7 @@ export default () => ({
       [
         "react-native-auth0",
         {
-          domain: "heradigitalhealth.eu.auth0.com"
+          domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN || "heradigitalhealth.eu.auth0.com"
         }
       ],
       "expo-secure-store",

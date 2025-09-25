@@ -36,7 +36,7 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
   const [isUpdating, setIsUpdating] = useState(false);
   const { setGender, setName, setDateOfBirth } = useRegistration();
   const { sendRequestFetch } = useHttpClient();
-  const { session, userId } = useAuthStore();
+  const { session, userId, idToken } = useAuthStore();
   const {setUserProfile} = useProfileStore();
   const router = useRouter();
 
@@ -60,7 +60,8 @@ export default function ProfileView({ profile }: { profile?: UserProfile }) {
         "Accept-Language": "en",
         "Content-Type": "application/json",
         Accept: "application/json",
-        Authorization: "Token " + session,
+        Authorization: 'Bearer ' + session,
+        'Id-Authorization': 'Bearer ' + idToken!
       },
     });
 

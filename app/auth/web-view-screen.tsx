@@ -1,16 +1,16 @@
 import { WebView } from 'react-native-webview';
-import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import DynamicNavigationHeader from '@/components/DynamicNavigationHeader';
 
 export default function WebViewScreen() {
-  const router = useRouter();
   const { uri, title } = useLocalSearchParams<{ uri: string, title: string }>();
+  const router = useRouter();
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Custom Header */}
       <View style={styles.header}>
         <TouchableOpacity 
           style={styles.backButton}
@@ -21,6 +21,8 @@ export default function WebViewScreen() {
         <Text style={styles.headerTitle}>{title}</Text>
         <View style={styles.placeholder} />
       </View>
+      
+      {/* WebView */}
       <WebView
         style={styles.webView}
         source={{ uri: uri }}
