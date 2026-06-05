@@ -1,4 +1,5 @@
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import { DrawerActions } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Pressable, Text, View, Linking, Platform } from "react-native";
@@ -23,8 +24,11 @@ export default function CustomDrawerContent(props: any) {
 
   const localWord = locale === 'ar' ? 'arabic' : locale === 'tr' ? 'turkish' : 'english';
 
+  const closeDrawer = () => props.navigation?.dispatch(DrawerActions.closeDrawer());
+
   const handleSignOut = async () => {
     try{
+      closeDrawer();
       setUserProfile(null);
       signOut();
       await clearSession();
@@ -36,6 +40,7 @@ export default function CustomDrawerContent(props: any) {
   };
 
   const handleOpenFacebookGroup = async () => {
+    closeDrawer();
     let url = Platform.OS === 'ios' ? 'fb://group?id=327710368767013' : 'fb://group/327710368767013';
 
     try {
@@ -73,10 +78,13 @@ export default function CustomDrawerContent(props: any) {
               {t('settings_screen_visit_hera_web_title')}
             </Text>
           )}
-          onPress={() => router.push({
-            pathname: '/web-view-screen',
-            params: { uri: locale === 'en' ? `https://heradigitalhealth.org/` : `https://heradigitalhealth.org/${locale}` },
-          })} 
+          onPress={() => {
+            closeDrawer();
+            router.push({
+              pathname: '/web-view-screen',
+              params: { uri: locale === 'en' ? `https://heradigitalhealth.org/` : `https://heradigitalhealth.org/${locale}` },
+            });
+          }}
         />
         {/* <DrawerItem 
           style={{}}
@@ -130,11 +138,14 @@ export default function CustomDrawerContent(props: any) {
               {t('settings_screen_faq_title')}
             </Text>
           )}
-          onPress={() => router.push({
-            pathname: '/web-view-screen',
-            // params: { uri: `https://heradigitalhealth.org/${locale}/frequently-asked-questions/` },
-            params: { uri: `https://heradigitalhealth.org/faq-${localWord}/` },
-          })}
+          onPress={() => {
+            closeDrawer();
+            router.push({
+              pathname: '/web-view-screen',
+              // params: { uri: `https://heradigitalhealth.org/${locale}/frequently-asked-questions/` },
+              params: { uri: `https://heradigitalhealth.org/faq-${localWord}/` },
+            });
+          }}
         />
         <DrawerItem 
           style={{}}
@@ -151,10 +162,13 @@ export default function CustomDrawerContent(props: any) {
               {t('settings_screen_kvkk_title')}
             </Text>
           )}
-          onPress={() => router.push({
-            pathname: '/web-view-screen',
-            params: { uri: `https://heradigitalhealth.org/data-protection-policy-${localWord}/` },
-          })}
+          onPress={() => {
+            closeDrawer();
+            router.push({
+              pathname: '/web-view-screen',
+              params: { uri: `https://heradigitalhealth.org/data-protection-policy-${localWord}/` },
+            });
+          }}
         />
         <DrawerItem 
           style={{}}
@@ -171,10 +185,13 @@ export default function CustomDrawerContent(props: any) {
               {t('settings_screen_user_agreement_title')}
             </Text>
           )}
-          onPress={() => router.push({
-            pathname: '/web-view-screen',
-            params: { uri: `https://heradigitalhealth.org/terms-and-conditions-${localWord}/` },
-          })}
+          onPress={() => {
+            closeDrawer();
+            router.push({
+              pathname: '/web-view-screen',
+              params: { uri: `https://heradigitalhealth.org/terms-and-conditions-${localWord}/` },
+            });
+          }}
         />
         {/* <DrawerItem 
           style={{}}
@@ -211,10 +228,13 @@ export default function CustomDrawerContent(props: any) {
               {t('settings_screen_contact_us_title')}
             </Text>
           )}
-          onPress={() => router.push({
-            pathname: '/web-view-screen',
-            params: { uri: `https://heradigitalhealth.org/contact-${localWord}/` },
-          })}
+          onPress={() => {
+            closeDrawer();
+            router.push({
+              pathname: '/web-view-screen',
+              params: { uri: `https://heradigitalhealth.org/contact-${localWord}/` },
+            });
+          }}
         />
         <DrawerItem 
           style={{}}
@@ -231,7 +251,10 @@ export default function CustomDrawerContent(props: any) {
               {t('my_profile_screen_toolbar_title')}
             </Text>
           )}
-          onPress={() => router.push('/my-profile-screen')}
+          onPress={() => {
+            closeDrawer();
+            router.push('/my-profile-screen');
+          }}
         />
       </DrawerContentScrollView>
       <View style={{padding: 20, borderTopWidth: 1, borderTopColor: "#dde3fe", paddingBottom: 20 + bottom}}>

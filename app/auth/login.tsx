@@ -42,7 +42,7 @@ export default function Login(){
   const { t } = useTranslation();
   const { setAppLanguage, locale } = useI18n();
   const router = useRouter();
-  const { authorize, error, getCredentials, clearSession } = useAuth0();
+  const { authorize, error, getCredentials, clearSession, clearCredentials } = useAuth0();
   const { sendRequestFetch } = useHttpClient();
   const { signOut, setSession, setIdToken, setUserId, userId, session, setFullMobileNumber} = useAuthStore();
 
@@ -131,27 +131,53 @@ export default function Login(){
 
   const ensureCredentials = async () => {
     try {
-      // Try to reuse existing credentials
-      const currentCredentials = await getCredentials();
-      if(currentCredentials){
-        return currentCredentials;
-      } else {
-        console.warn("No valid credentials found, authorizing...");
-
-        console.log(`Identifier: ${process.env.EXPO_PUBLIC_API_IDENTIFIER}`)
-        // Run login flow
-        await authorize({
-          audience: process.env.EXPO_PUBLIC_API_IDENTIFIER,
-          scope: 'openid profile offline_access email', // include other API scopes as needed
-        });
-
-        return await getCredentials();
+      let currentCredentials: Credentials | undefined;
+      try {
+        currentCredentials = await getCredentials();
+      } catch (err: any) {
+        // react-native-auth0 throws NO_CREDENTIALS on first launch instead of returning null
+        if (err?.code !== 'NO_CREDENTIALS') {
+          throw err;
+        }
       }
+
+      if (currentCredentials) {
+        return currentCredentials;
+      }
+
+      console.warn("No valid credentials found, authorizing...");
+
+      console.log(`Identifier: ${process.env.EXPO_PUBLIC_API_IDENTIFIER}`)
+      // Run login flow
+      await authorize({
+        audience: process.env.EXPO_PUBLIC_API_IDENTIFIER,
+        scope: 'openid profile offline_access email', // include other API scopes as needed
+      });
+
+      const credentials = await getCredentials();
+      return credentials;
     } catch (err) {
       console.error(err);
       // setUserProfile(null);
       // signOut();
       // await clearSession();
+      return undefined;
+    }
+  }
+
+  const forceReauthenticate = async (): Promise<Credentials | undefined> => {
+    try {
+      await clearCredentials();
+      await clearSession();
+      await authorize({
+        audience: process.env.EXPO_PUBLIC_API_IDENTIFIER,
+        scope: 'openid profile offline_access email',
+      });
+      return await getCredentials();
+    } catch (err: any) {
+      if (err?.code !== 'NO_CREDENTIALS') {
+        console.error(err);
+      }
       return undefined;
     }
   }
@@ -171,8 +197,9 @@ export default function Login(){
       // console.log(new Date());
       // console.log(`----- Credentials are received from auth0: ${credentials ? JSON.stringify(credentials).substring(0,40) : ''}...`);
       // console.log(credentials.idToken)
-      if(credentials && credentials.idToken){
-        const response = await sendRequestFetch<{
+      let activeCredentials: Credentials = credentials;
+      if(activeCredentials && activeCredentials.idToken){
+        const exchangeForSession = (creds: Credentials) => sendRequestFetch<{
           token: string,
           is_new_user: boolean,
           user_id: number,
@@ -184,15 +211,30 @@ export default function Login(){
           headers: {
             'Accept-Language': 'en',
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + credentials.accessToken,
-            'Id-Authorization': 'Bearer ' + credentials.idToken
+            Authorization: 'Bearer ' + creds.accessToken,
+            'Id-Authorization': 'Bearer ' + creds.idToken
           },
         });
 
-        // console.log(`----- ${response.isTokenExpired ? 'The id token is expired!' : 'The id token is ok!'}`)
+        let response = await exchangeForSession(activeCredentials);
+
         if(response.isTokenExpired){
-          await clearSession();
-          return router.replace('/auth/login');
+          // Stale Auth0 creds (e.g. from a previous tenant) — wipe and re-authorize,
+          // then retry the backend exchange exactly once.
+          const refreshed = await forceReauthenticate();
+          if(!refreshed || !refreshed.idToken){
+            setUserProfile(null);
+            signOut();
+            await clearSession();
+            return;
+          }
+          activeCredentials = refreshed;
+          response = await exchangeForSession(activeCredentials);
+
+          if(response.isTokenExpired || response.error){
+            Alert.alert(t('connection_error_title'), t('connection_error_message'));
+            return;
+          }
         }
 
         if(response.error){
@@ -204,8 +246,8 @@ export default function Login(){
           // console.log(`----- ${response.data.user_profile ? 'User profile is ok' : 'User profile is missing!'}`)
           // console.log('----- Setting importants values in the store')
 
-          setSession(credentials.accessToken);
-          setIdToken(credentials.idToken);
+          setSession(activeCredentials.accessToken);
+          setIdToken(activeCredentials.idToken);
           setUserId(response.data.user_id);
           setFullMobileNumber(response.data.uid);
           if(response.data.user_profile){
@@ -214,7 +256,7 @@ export default function Login(){
               await patchUserProfile(
                 response.data.user_profile,
                 response.data.token,
-                credentials.idToken,
+                activeCredentials.idToken,
                 response.data.user_id
               );
             }

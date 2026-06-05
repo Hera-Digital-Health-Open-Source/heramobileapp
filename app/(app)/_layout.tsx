@@ -2,14 +2,15 @@ import { Redirect, Stack } from 'expo-router';
 import Protected from '../protected';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
+import type { DrawerContentComponentProps } from '@react-navigation/drawer';
 import CustomDrawerContent from '@/components/CustomDrawerContent';
 
 export default function AppLayout() {
   return (
     <Protected>
       <GestureHandlerRootView style={{ flex: 1 }}>
-          <Drawer 
-            drawerContent={() => <CustomDrawerContent />}
+          <Drawer
+            drawerContent={(props: DrawerContentComponentProps) => <CustomDrawerContent {...props} />}
             screenOptions={{
               headerShown: false,
               drawerHideStatusBarOnOpen: true,

@@ -55,6 +55,7 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
             body: JSON.stringify(requestObj.data),
           };
 
+          console.log('[HTTP]', requestOptions.method, baseURL + requestObj.url);
           let response = await fetch(baseURL + requestObj.url, requestOptions);
           let responseStatus = response.status;
 
@@ -62,7 +63,15 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
             // This means the accessToken is expired
             // so try to refresh the accessToken
             console.warn('Token is exipred (from server) - try to refresh tokens')
-            const credentials = await getCredentials();
+            let credentials;
+            try {
+              credentials = await getCredentials();
+            } catch (err: any) {
+              // react-native-auth0 throws NO_CREDENTIALS when the store is empty
+              if (err?.code !== 'NO_CREDENTIALS') {
+                throw err;
+              }
+            }
             if(credentials && credentials.accessToken){
               let headers = requestObj.headers;
               headers = {
@@ -96,6 +105,10 @@ export default function HttpClientProvider({children}:{children: ReactNode}){
           }
 
           if (responseStatus >= 400){
+            try {
+              const bodyText = await response.clone().text();
+              console.log('[HTTP fail]', responseStatus, bodyText.slice(0, 400));
+            } catch {}
             return {
               data: null,
               isTokenExpired,
