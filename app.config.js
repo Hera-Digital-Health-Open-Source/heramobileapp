@@ -32,7 +32,7 @@ export default () => ({
     //   policy: "appVersion"
     // },
     ios: {
-      buildNumber: "41",
+      buildNumber: "42",
       icon: "./assets/images/ios-light.png",
       supportsTablet: true,
       bundleIdentifier: "com.heradigitalhealth.ios",
@@ -44,7 +44,7 @@ export default () => ({
       }
     },
     android: {
-      versionCode: 41,
+      versionCode: 42,
       // Android 16 (API 36) no longer lets apps opt out of edge-to-edge
       edgeToEdgeEnabled: true,
       adaptiveIcon: {
