@@ -1,4 +1,5 @@
-import { SafeAreaView, View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import { useEffect, useState } from "react";
 import DateModalPicker from "@/components/DateModalPicker";
@@ -141,7 +142,7 @@ export default function ChildView({introduceText, child} : {introduceText: strin
   }, [child]);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+    <SafeAreaView edges={["left", "right", "bottom"]} style={{flex: 1, backgroundColor: '#fff'}}>
       <ScrollView style={{flex:1}}>
       <View style={styles.container}>
         <View style={{gap: Spacing.large}}>

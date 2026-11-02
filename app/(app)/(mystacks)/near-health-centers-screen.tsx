@@ -9,10 +9,10 @@ import {
   View,
   Text,
   Linking,
-  SafeAreaView,
   Modal,
   Pressable,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { MarkerPressEvent, PROVIDER_GOOGLE } from 'react-native-maps';
 import {Marker, Callout} from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -169,7 +169,7 @@ export default function NearHealthCentersScreen() {
   }
 
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView edges={['left', 'right', 'bottom']} style={{flex:1}}>
       <MapView 
         style={styles.map}
         initialRegion={INITIAL_REGION}

@@ -1,4 +1,5 @@
-import { StyleSheet, SafeAreaView} from "react-native";
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Spacing } from "@/assets/theme";
 import { useRegistration } from "@/context/RegistrationContext";
 import ProfileView from "@/components/profile/ProfileView";
@@ -6,7 +7,7 @@ import ProfileView from "@/components/profile/ProfileView";
 export default function UserDetails(){
 
   return (
-    <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
+    <SafeAreaView edges={["left", "right", "bottom"]} style={{flex:1, backgroundColor: '#fff'}}>
       <ProfileView profile={undefined}/>
     </SafeAreaView>
   );

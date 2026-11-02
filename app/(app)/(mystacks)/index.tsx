@@ -1,4 +1,5 @@
-import { View, StyleSheet, Alert, Linking, ScrollView } from "react-native";
+import { View, StyleSheet, Alert, Linking, ScrollView, Platform } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { 
   imgHomeAppointments,
@@ -38,6 +39,7 @@ export default function Index() {
   const navigation = useNavigation();
   const { t } = useTranslation();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const emergencyCall = () => {
     const locals = Localization.getLocales();
@@ -137,7 +139,8 @@ export default function Index() {
     },
   ];
   return (
-    <View style={{ flex: 1 }}>
+    // Android draws edge-to-edge, so keep the white strip under the status bar it had before
+    <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: Platform.OS === 'android' ? insets.top : 0 }}>
       <ScrollView 
         style={{ flex: 1 }}
         contentContainerStyle={{

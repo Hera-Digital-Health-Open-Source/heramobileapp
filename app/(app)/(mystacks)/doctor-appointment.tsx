@@ -1,5 +1,6 @@
 import Button, { ButtonStyles } from "@/components/Button";
-import { SafeAreaView, View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import { imgDoctorAppointmentMain, imgFamily } from "@/assets/images/images";
 import { Image } from "expo-image";
@@ -29,7 +30,7 @@ export default function DoctorAppointment() {
   }
 
   return (
-    <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
+    <SafeAreaView edges={["left", "right", "bottom"]} style={{flex:1, backgroundColor: '#fff'}}>
       <View style={styles.container}>
         <View style={{flex:1, gap: Spacing.large}}>
           <Text style={GlobalStyles.HeadingText}>{t('doctor_appointment_screen_title')}</Text>

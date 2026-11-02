@@ -1,6 +1,7 @@
 import ProfileView from "@/components/profile/ProfileView";
 import { useEffect, useState } from "react";
 import { Alert, View, ActivityIndicator } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useProfileStore } from "@/store/profileStore";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -81,7 +82,7 @@ export default function MyProfileScreen(){
   }, [session]); // Only depend on session
 
   return(
-    <View style={{flex:1, backgroundColor: '#fff'}}>
+    <SafeAreaView edges={["left", "right", "bottom"]} style={{flex:1, backgroundColor: '#fff'}}>
       {userProfileSynced && userProfile ? (
         <ProfileView profile={userProfile} />
       ) : isLoading ? (
@@ -89,6 +90,6 @@ export default function MyProfileScreen(){
           <ActivityIndicator size="large" color={Colors.primary} />
         </View>
       ) : null}
-    </View>
+    </SafeAreaView>
   )
 }

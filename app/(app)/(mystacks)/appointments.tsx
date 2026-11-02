@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, SafeAreaView, useWindowDimensions, StyleProp, ViewStyle, RefreshControl } from 'react-native';
+import { View, Text, FlatList, StyleSheet, useWindowDimensions, StyleProp, ViewStyle, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Calendar } from 'react-native-calendars';
 import { Colors, GlobalStyles, Spacing } from '@/assets/theme';
 import { useState } from 'react';
@@ -338,7 +339,7 @@ export default function Appointments() {
   const currentMonth = new Date().toISOString().split('T')[0] // Get current date in YYYY-MM-DD format
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+    <SafeAreaView edges={['left', 'right', 'bottom']} style={{flex: 1, backgroundColor: '#fff'}}>
       {/* <DynamicNavigationHeader /> */}
       <View style={styles.container}>
       <Text style={[GlobalStyles.SubHeadingText, {textAlign: 'center'}]}>{t('home_screen_my_appointments_title')}</Text>

@@ -18,7 +18,7 @@ export default () => ({
   expo: {
     name: "Hera Digital Health",
     slug: "hera-digital-health",
-    version: "1.1.2",
+    version: "1.1.3",
     orientation: "portrait",
     icon: "./assets/images/adaptive-icon.png",
     scheme: "androidapp", //myapp
@@ -45,6 +45,8 @@ export default () => ({
     },
     android: {
       versionCode: 41,
+      // Android 16 (API 36) no longer lets apps opt out of edge-to-edge
+      edgeToEdgeEnabled: true,
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff"
@@ -75,9 +77,9 @@ export default () => ({
         'expo-build-properties',
         {
           android: {
-            compileSdkVersion: 35,
-            targetSdkVersion: 35,
-            buildToolsVersion: '35.0.0',
+            compileSdkVersion: 36,
+            targetSdkVersion: 36,
+            buildToolsVersion: '36.0.0',
           },
         },
       ],
