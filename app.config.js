@@ -22,7 +22,9 @@ export default () => ({
     orientation: "portrait",
     icon: "./assets/images/adaptive-icon.png",
     scheme: "androidapp", //myapp
-    userInterfaceStyle: "automatic",
+    // The UI is designed for light mode only. "automatic" lets dark-mode phones turn native
+    // widgets (e.g. the Android Picker text) white on our light backgrounds.
+    userInterfaceStyle: "light",
     newArchEnabled: true,
     // updates: {
     //   enabled: true,
