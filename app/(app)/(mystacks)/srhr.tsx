@@ -8,10 +8,10 @@ import {
   Platform,
   UIManager,
   Pressable,
-  SafeAreaView,
   ScrollView,
   TextInput
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors, GlobalStyles, Spacing } from '@/assets/theme';
 import { useHttpClient } from '@/context/HttpClientContext';
 import { useAuthStore } from '@/store/authStore';
@@ -107,7 +107,7 @@ export default function SrhrScreen() {
   }, [searchInput, sections]);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+    <SafeAreaView edges={['left', 'right', 'bottom']} style={{flex: 1, backgroundColor: '#fff'}}>
       {!isEmptySections && (
         <View>
           <View style={localStyles.searchContainer}>

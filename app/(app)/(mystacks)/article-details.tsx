@@ -3,10 +3,10 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   ActivityIndicator
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { Colors } from '@/assets/theme';
 import { useHttpClient } from '@/context/HttpClientContext';
@@ -69,7 +69,7 @@ export default function ArticleDetailsScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.container}>
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={Colors.primary} />
           <Text style={styles.loadingText}>Loading article...</Text>
@@ -80,7 +80,7 @@ export default function ArticleDetailsScreen() {
 
   if (error) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.container}>
         <View style={styles.centerContainer}>
           <Text style={styles.errorText}>{error}</Text>
         </View>
@@ -89,7 +89,7 @@ export default function ArticleDetailsScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.container}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Text style={styles.title}>{article?.title || title}</Text>
         {article?.content && (

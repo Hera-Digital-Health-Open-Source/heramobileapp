@@ -7,6 +7,7 @@ import { Colors, GlobalStyles, Spacing } from "@/assets/theme";
 import Button, {ButtonStyles} from "@/components/Button";
 import { RelativePathString, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useI18n } from "@/context/I18nContext";
 import {useAuth0, Auth0Provider, Credentials} from 'react-native-auth0';
@@ -38,6 +39,7 @@ export default function Login(){
   const [mobileNumber, setMobileNumber] = useState<string | undefined>(undefined);
   const [completeMobileNumber, updateFullMobileNumber] = useState<string | undefined>(undefined);
   const [imageSize, setImageSize] = useState({ width: 200, height: 200 });
+  const insets = useSafeAreaInsets();
   const { userProfile, setUserProfile } = useProfileStore();
   const { t } = useTranslation();
   const { setAppLanguage, locale } = useI18n();
@@ -282,12 +284,13 @@ export default function Login(){
       <View style={{flex: 1, backgroundColor: Colors.primary}}>
         <ScrollView 
           style={{flex: 1}} 
-          contentContainerStyle={{flexGrow: 1}}
+          contentContainerStyle={{flexGrow: 1, paddingBottom: Platform.OS === 'android' ? insets.bottom : 0}}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           bounces={true}
         >
-          <View style={styles.headerContainer}>
+          {/* On Android the status bar is hidden but the camera cutout stays, so push the header below it */}
+          <View style={[styles.headerContainer, Platform.OS === 'android' && {paddingTop: 20 + insets.top}]}>
               <RNImage
                 source={imgBoarding02} 
                 style={{

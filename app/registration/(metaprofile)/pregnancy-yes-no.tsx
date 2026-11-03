@@ -1,4 +1,5 @@
-import { SafeAreaView, View , Text, ScrollView, StyleSheet} from "react-native";
+import { View , Text, ScrollView, StyleSheet} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import Button, { ButtonStyles } from "@/components/Button";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -25,7 +26,7 @@ export default function PregnancyYesNo(){
   }
 
   return (
-    <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
+    <SafeAreaView edges={["left", "right", "bottom"]} style={{flex:1, backgroundColor: '#fff'}}>
       <View style={styles.container}>
         <View style={{gap: Spacing.small}}>
           <Text style={GlobalStyles.HeadingText}>{t('your_pregnancy_screen_toolbar_title')}</Text>

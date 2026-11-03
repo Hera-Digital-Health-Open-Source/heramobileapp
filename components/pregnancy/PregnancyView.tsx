@@ -1,4 +1,5 @@
-import { SafeAreaView, View , Text, StyleSheet} from "react-native";
+import { View , Text, StyleSheet} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import Button, { ButtonStyles } from "@/components/Button";
 import { useEffect, useState } from "react";
@@ -87,7 +88,7 @@ export default function PregnancyView({introduceText, pregnancy, isInRegistratio
   }
 
   return(
-    <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
+    <SafeAreaView edges={["left", "right", "bottom"]} style={{flex:1, backgroundColor: '#fff'}}>
       <View style={{flex: 1, gap: Spacing.large, backgroundColor: '#fff'}}>
         <View style={styles.container}>
           <View style={{gap: Spacing.small}}>

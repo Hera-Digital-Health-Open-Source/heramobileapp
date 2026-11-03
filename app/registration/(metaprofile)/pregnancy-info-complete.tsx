@@ -1,5 +1,6 @@
 import Button, { ButtonStyles } from "@/components/Button";
-import { SafeAreaView, View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import { imgPregnancyInfoComplete } from "@/assets/images/images";
 import { Image } from "expo-image";
@@ -13,7 +14,7 @@ export default function PregnancyInfoComplete() {
   const info = `${t('your_pregnancy_screen_description_3')} ${t('your_pregnancy_screen_description_4')}`;
   
   return (
-    <SafeAreaView style={{flex:1, backgroundColor: 'white'}}>
+    <SafeAreaView edges={["left", "right", "bottom"]} style={{flex:1, backgroundColor: 'white'}}>
       <View style={styles.container}>
         <View style={{flex:1, gap: Spacing.large}}>
           <Text style={GlobalStyles.HeadingText}>{t('your_pregnancy_screen_toolbar_title')}</Text>

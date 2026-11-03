@@ -1,5 +1,6 @@
 import Button, { ButtonStyles } from "@/components/Button";
-import { SafeAreaView, View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import { imgFamily } from "@/assets/images/images";
 import { Image } from "expo-image";
@@ -13,7 +14,7 @@ export default function ChildInfo() {
   const info = t('children_info_screen_description');
 
   return (
-    <SafeAreaView style={{flex:1, backgroundColor: 'white'}}>
+    <SafeAreaView edges={["left", "right", "bottom"]} style={{flex:1, backgroundColor: 'white'}}>
       <View style={styles.container}>
         <View style={{flex:1, gap: Spacing.large}}>
           <Text style={GlobalStyles.HeadingText}>Child Info</Text>

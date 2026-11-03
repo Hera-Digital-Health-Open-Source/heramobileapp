@@ -1,4 +1,5 @@
-import { SafeAreaView, View , Text, ScrollView, StyleSheet} from "react-native";
+import { View , Text, ScrollView, StyleSheet} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { GlobalStyles, Spacing } from "@/assets/theme";
 import Button, { ButtonStyles } from "@/components/Button";
 import CheckBox from "@/components/CheckBox";
@@ -218,7 +219,7 @@ Kullanıcı tarafından kabul edilmiş sayılan bu sözleşme, HERA Inc. tarafı
   const termOfUse = locale === 'ar' ? termsOfUseAr : locale === 'tr' ? termsOfUseTr : termsOfUseEn;
 
   return (
-    <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
+    <SafeAreaView edges={["left", "right", "bottom"]} style={{flex:1, backgroundColor: '#fff'}}>
       <View style={styles.container}>
         <Text style={GlobalStyles.HeadingText}>{t('terms_of_use_toolbar_title')}</Text>
         <ScrollView>
